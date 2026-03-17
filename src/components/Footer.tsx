@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2 group">
-              <img src="/Technova%20logo.png" alt="Technova'26" className="w-8 h-8 rounded-full" />
+              <img src="/technova-logo.png" alt="Technova'26" className="w-8 h-8 rounded-full" />
               <span className="font-display font-bold text-xl tracking-tight text-white">
                 TECHNOVA<span className="text-blue-500">'26</span>
               </span>
