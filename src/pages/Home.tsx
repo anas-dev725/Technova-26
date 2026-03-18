@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe } from 'lucide-react';
-import anasProfile from '../assets/anas-profile.jpeg';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -388,7 +387,7 @@ export default function Home() {
           <div className="relative w-full overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             <div className="flex gap-6 w-max px-4">
               {[
-                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: anasProfile },
+                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: '/anas-profile.jpeg' },
                 { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Alex Rivera', role: 'Event Director', dept: 'OPERATIONS', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
