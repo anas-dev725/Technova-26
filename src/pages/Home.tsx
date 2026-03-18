@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe } from 'lucide-react';
+import anasProfile from '../assets/anas-profile.jpeg';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -380,14 +381,14 @@ export default function Home() {
       <section className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <p className="text-green-500 font-bold uppercase tracking-wider text-sm mb-2">THE MINDS BEHIND TECHNOVA</p>
+            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">THE MINDS BEHIND TECHNOVA</p>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Meet the Team</h2>
           </div>
 
           <div className="relative w-full overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             <div className="flex gap-6 w-max px-4">
               {[
-                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI & AR ENGINEERING', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
+                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: anasProfile },
                 { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Alex Rivera', role: 'Event Director', dept: 'OPERATIONS', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
@@ -397,14 +398,14 @@ export default function Home() {
                 { name: 'David Kim', role: 'Operations Head', dept: 'LOGISTICS', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop' },
               ].map((member, i) => (
                 <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-gray-900 shadow-xl shrink-0 snap-center">
-                  <img src={member.img} alt={member.name} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+                  <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" referrerPolicy="no-referrer" />
                   
                   {/* Always visible gradient and name */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
                     <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-14">
                       <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
                       <p className="text-gray-300 text-sm mb-2">{member.role}</p>
-                      <p className="text-green-400 text-xs font-bold uppercase tracking-wider">{member.dept}</p>
+                      <p className="text-blue-400 text-xs font-bold uppercase tracking-wider">{member.dept}</p>
                     </div>
                     
                     {/* Social links that fade in on hover */}
