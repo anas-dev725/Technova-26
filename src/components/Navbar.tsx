@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from './ThemeContext';
-import technovaLogo from '../assets/technova-logo.png';
+import { logoBase64 } from '../assets/logo-base64';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,7 +51,7 @@ export default function Navbar() {
               }
             }}
           >
-            <img src={technovaLogo} alt="Technova'26" className="w-12 h-12 rounded-full transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
+            <img src={logoBase64} alt="Technova'26" className="w-12 h-12 rounded-full transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
           </Link>
 
           {/* Desktop Navigation */}
