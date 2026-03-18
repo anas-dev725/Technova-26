@@ -1,3 +1,4 @@
+// Technova'26 - Dream It & Ship It
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
