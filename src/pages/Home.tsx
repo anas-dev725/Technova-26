@@ -1,9 +1,9 @@
 // Technova'26 - Dream It & Ship It
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, AnimatePresence } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anas-profile-base64';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe } from 'lucide-react';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, X, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -30,6 +30,7 @@ function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number,
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
   // Smooth scroll for anchor links
   useEffect(() => {
@@ -92,26 +93,32 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
-              Registrations Are Live! Grab Your Spot.
+              Registrations Are Live! Grab Your Squad.
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tighter mb-6 text-gray-900 dark:text-white"
+              className="text-5xl md:text-7xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
             >
-              TECHNOVA'26<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-600 text-3xl md:text-5xl lg:text-6xl mt-4 block">
-                Dream It & Ship It
-              </span>
+              TECHNOVA'26
             </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-[#2563eb] text-2xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight mb-8"
+            >
+              Dream It & Ship It
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-10"
+              className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-12 leading-relaxed"
             >
               Grab your energy drinks and assemble your squad! The 2nd edition of Technova is back and it's bigger, bolder, and more mind-blowing than ever.
             </motion.p>
@@ -188,9 +195,14 @@ export default function Home() {
       <section id="about" className="py-24 bg-white dark:bg-[#0a0a0a] relative transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-gray-900 dark:text-white">
-                What's the hype about <span className="text-blue-500">Technova'26?</span>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="order-2 lg:order-1"
+            >
+              <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 text-gray-900 dark:text-white leading-tight tracking-tight">
+                What's the hype about <br />
+                <span className="text-blue-500">Technova'26?</span>
               </h2>
               <div className="space-y-6 text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
                 <p>
@@ -199,45 +211,48 @@ export default function Home() {
                 <p>
                   Whether you're a hardcore programmer, a pixel-perfect designer, a strategic gamer, or a visionary entrepreneur, we've got a playground set up just for you. Come test your limits, learn some crazy new skills, and vibe with industry pros.
                 </p>
-                <ul className="space-y-3 mt-6">
+                <div className="space-y-4 pt-4">
                   {[
                     '10+ mind-bending competition modules',
                     'Industry experts ready to judge (and mentor!)',
                     'Epic networking with top-tier tech companies',
                     'A massive prize pool and swag you\'ll actually wear'
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-6 h-6 text-blue-500 shrink-0" />
-                      <span className="text-gray-700 dark:text-gray-300">{item}</span>
-                    </li>
+                  ].map((text, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
+                      </div>
+                      <span className="text-gray-700 dark:text-gray-300 font-medium">{text}</span>
+                    </div>
                   ))}
-                </ul>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-white/10 relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1740&auto=format&fit=crop" 
-                  alt="Hackathon event" 
-                  className="w-full h-full object-cover opacity-80"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              </div>
-              
-              {/* Floating Stats Card */}
-              <div className="absolute -bottom-8 -left-8 bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 p-6 rounded-2xl shadow-2xl hidden md:block group hover:border-blue-500/50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-600/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Trophy className="w-6 h-6 text-blue-500" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white"><CountUp end={500} prefix="PKR " suffix="K+" /></div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">In Prizes & Swag</div>
-                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
+            
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.9 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               className="relative order-1 lg:order-2"
+            >
+              <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700">
+                <img 
+                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800" 
+                  alt="Hackathon vibe" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              {/* Floating Stat Blob */}
+              <div className="absolute -bottom-6 -left-6 md:-left-10 w-56 h-28 bg-[#111] border border-gray-800 rounded-3xl flex items-center gap-4 p-6 shadow-2xl z-20">
+                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <Trophy className="w-6 h-6 text-blue-500" />
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-white">PKR 500K+</div>
+                  <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">In Prizes & Swag</div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -274,7 +289,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-gray-900 dark:text-white">A Taste of the <span className="text-blue-500">Action</span></h2>
+                  <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white tracking-tight">A Taste of the <span className="text-blue-500">Action</span></h2>
               <p className="text-gray-600 dark:text-gray-400 max-w-2xl">Just a sneak peek at what's going down. With <span className="font-bold text-blue-500">10+ modules</span> ranging from intense coding battles to creative design showdowns, pick your poison.</p>
             </div>
             <Link 
@@ -288,15 +303,15 @@ export default function Home() {
           <div className="relative w-full overflow-hidden">
             <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite]">
               {[
-                { title: 'Speed Programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 50K' },
-                { title: 'Capture The Flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 65K' },
+                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
+                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
+                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
+                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
                 // Duplicate for seamless loop
-                { title: 'Speed Programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 50K' },
-                { title: 'Capture The Flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 65K' },
+                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
+                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
+                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
+                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
               ].map((mod, i) => {
                 const Icon = mod.icon;
                 const TeamIcon = mod.teamIcon;
@@ -319,7 +334,7 @@ export default function Home() {
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{mod.title}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">{mod.desc}</p>
-                    <Link to="/modules" className="text-sm font-medium text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-1">
+                    <Link to={`/modules/${mod.id}`} className="text-sm font-medium text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-1">
                       Check it out <ChevronRight className="w-4 h-4" />
                     </Link>
                   </div>
@@ -330,48 +345,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Highlights */}
-      <section id="highlights" className="py-24 bg-white dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-gray-900 dark:text-white">Vibes from <span className="text-blue-500">Last Year</span></h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Technova'25 was an absolute blast. We had over 1,000 participants from 50+ universities, 48 hours of non-stop coding, and some of the most innovative projects we've ever seen. From AI-driven healthcare solutions to next-gen blockchain apps, the energy was unmatched. Take a look at the moments that made it unforgettable.
+      {/* Legacy Highlights Section */}
+      <section id="highlights" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">LAST YEAR'S ECHOES</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6">Legacy of <span className="text-blue-500">Technova'25</span></h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed font-medium">
+              We brought together 1,200+ participants from over 30 universities to compete in 12+ competition modules. Relive the moments that made Technova'25 legendary.
             </p>
+            <Link 
+              to="/legacy"
+              className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 font-black text-sm uppercase tracking-widest group"
+            >
+              Explore Full Legacy Highlights <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-          
-          <div className="relative w-full overflow-hidden rounded-3xl">
-            <div className="flex w-[200%] animate-[slide_40s_linear_infinite]">
-              {[
-                "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1561489413-985b06da5bee?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1558403194-611308249627?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop",
-                // Duplicate for seamless loop
-                "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1561489413-985b06da5bee?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop",
-              ].map((src, i) => (
-                <div key={i} className="w-1/5 shrink-0 px-2">
-                  <div className="aspect-[4/3] rounded-2xl overflow-hidden relative group">
-                    <img 
-                      src={src} 
-                      alt={`Highlight ${i + 1}`} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      referrerPolicy="no-referrer" 
-                    />
-                    <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-overlay" />
-                  </div>
-                </div>
-              ))}
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[400px] md:h-[600px]">
+            <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl">
+              <img 
+                src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1740" 
+                alt="Highlight 1" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                <span className="text-white font-bold">The Hackathon Floor</span>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-3xl">
+              <img 
+                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740" 
+                alt="Highlight 2" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="relative group overflow-hidden rounded-3xl">
+              <img 
+                src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1740" 
+                alt="Highlight 3" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
+              <img 
+                src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1740" 
+                alt="Highlight 4" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
+              <img 
+                src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=1712" 
+                alt="Highlight 5" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
             </div>
           </div>
         </div>
@@ -410,13 +443,13 @@ export default function Home() {
                     
                     {/* Social links that fade in on hover */}
                     <div className="absolute bottom-8 left-8 flex items-center gap-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
-                      <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
                         <Github className="w-5 h-5" />
                       </a>
-                      <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
                         <Linkedin className="w-5 h-5" />
                       </a>
-                      <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+                      <a href="https://technova.iobm.edu.pk" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
                         <Globe className="w-5 h-5" />
                       </a>
                     </div>
@@ -429,97 +462,166 @@ export default function Home() {
       </section>
 
       {/* Sponsors */}
-      <section id="sponsors" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <section id="sponsors" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-16">
-            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">BACKED BY THE BEST</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Shoutout to our <span className="text-blue-500">Partners</span></h2>
+            <p className="text-blue-500 font-black uppercase tracking-[0.3em] text-xs mb-3">Backed by the Best</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Our Strategic <span className="text-blue-500">Partners</span></h2>
           </div>
           
-          <div className="space-y-12 mb-20">
-            {/* Row 1: Left to Right */}
-            <div className="relative flex overflow-hidden">
-              <div className="flex gap-6 animate-[slide_40s_linear_infinite]">
-                {[
-                  { name: 'TECHCORP', icon: '🚀' },
-                  { name: 'INNOVATE.IO', icon: '💡' },
-                  { name: 'GLOBAL SYS', icon: '🌐' },
-                  { name: 'NEXUS', icon: '⚡' },
-                  { name: 'CYBERDYNE', icon: '🤖' },
-                  { name: 'TECHCORP', icon: '🚀' },
-                  { name: 'INNOVATE.IO', icon: '💡' },
-                  { name: 'GLOBAL SYS', icon: '🌐' },
-                  { name: 'NEXUS', icon: '⚡' },
-                  { name: 'CYBERDYNE', icon: '🤖' },
-                ].map((sponsor, idx) => (
-                  <div 
-                    key={idx} 
-                    className="group flex flex-col items-center justify-center p-8 w-64 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] hover:-translate-y-1 cursor-pointer relative overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="text-3xl mb-3 grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">{sponsor.icon}</span>
-                    <div className="text-lg md:text-xl font-display font-bold text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors relative z-10">{sponsor.name}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="relative group">
+            {/* Faded edges to indicate carousel continuity */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
 
-            {/* Row 2: Right to Left */}
-            <div className="relative flex overflow-hidden">
-              <div className="flex gap-6 animate-[slide_40s_linear_reverse_infinite]">
+            <div className="overflow-hidden py-10">
+              <div className="flex gap-12 w-max animate-[slide_40s_linear_infinite] hover:[animation-play-state:paused]">
                 {[
-                  { name: 'NEXUS', icon: '⚡' },
-                  { name: 'CYBERDYNE', icon: '🤖' },
-                  { name: 'TECHCORP', icon: '🚀' },
-                  { name: 'INNOVATE.IO', icon: '💡' },
-                  { name: 'GLOBAL SYS', icon: '🌐' },
-                  { name: 'NEXUS', icon: '⚡' },
-                  { name: 'CYBERDYNE', icon: '🤖' },
-                  { name: 'TECHCORP', icon: '🚀' },
-                  { name: 'INNOVATE.IO', icon: '💡' },
-                  { name: 'GLOBAL SYS', icon: '🌐' },
+                  { name: 'Red Bull', icon: '🥤' },
+                  { name: 'Google Cloud', icon: '☁️' },
+                  { name: 'Microsoft', icon: '💻' },
+                  { name: 'Amazon AWS', icon: '📦' },
+                  { name: 'GitHub', icon: '🐙' },
+                  { name: 'Uber', icon: '🚗' },
+                  { name: 'Meta', icon: '♾️' },
+                  { name: 'Tesla', icon: '🔋' },
+                  { name: 'Netflix', icon: '🎬' },
+                  { name: 'Spotify', icon: '🎵' },
+                  // Clone for infinite effect
+                  { name: 'Red Bull', icon: '🥤' },
+                  { name: 'Google Cloud', icon: '☁️' },
+                  { name: 'Microsoft', icon: '💻' },
+                  { name: 'Amazon AWS', icon: '📦' },
+                  { name: 'GitHub', icon: '🐙' },
+                  { name: 'Uber', icon: '🚗' }
                 ].map((sponsor, idx) => (
                   <div 
-                    key={idx} 
-                    className="group flex flex-col items-center justify-center p-8 w-64 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] hover:-translate-y-1 cursor-pointer relative overflow-hidden"
+                    key={idx}
+                    className="flex flex-col items-center justify-center p-8 w-48 aspect-square rounded-[3rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:border-blue-500/50 transition-all duration-500 group/item"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="text-3xl mb-3 grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">{sponsor.icon}</span>
-                    <div className="text-lg md:text-xl font-display font-bold text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors relative z-10">{sponsor.name}</div>
+                    <span className="text-5xl mb-4 grayscale group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-500">{sponsor.icon}</span>
+                    <span className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest group-hover/item:text-blue-500 transition-colors">
+                      {sponsor.name}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-8 md:p-12 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-left relative overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+          <div className="mt-20 bg-[#0a0a0a] border border-gray-800 rounded-[3rem] p-8 md:p-14 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 text-left relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
             
-            <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-3">Want to sponsor Technova'26?</h3>
-              <p className="text-gray-400 text-lg max-w-xl">Join us in shaping the future of technology and get your brand in front of thousands of top-tier innovators.</p>
+            <div className="relative z-10 flex-1">
+              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 leading-tight">Want to sponsor Technova'26?</h3>
+              <p className="text-gray-400 text-lg max-w-xl leading-relaxed">Join us in shaping the future of technology and get your brand in front of thousands of top-tier innovators.</p>
             </div>
-            <Link 
-              to="/sponsors" 
-              className="relative z-10 shrink-0 px-8 py-4 rounded-full bg-blue-600 text-white font-bold text-lg hover:bg-blue-500 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)] hover:-translate-y-1 flex items-center gap-2"
+            <button 
+              onClick={() => setIsInquiryOpen(true)}
+              className="relative z-10 shrink-0 px-10 py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
             >
-              Become a Sponsor <ArrowRight className="w-5 h-5" />
-            </Link>
+              Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-white dark:bg-[#050505] transition-colors duration-300 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <p className="text-blue-500 font-black uppercase tracking-[0.3em] text-[10px] mb-4">REAL STORIES</p>
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Voices of the <span className="text-blue-500">Arena</span></h2>
+            </div>
+          </div>
+
+          <div className="relative group">
+            <div className="flex gap-8 animate-[slide_30s_linear_infinite] hover:[animation-play-state:paused] w-max">
+              {[
+                { name: "Ahmed Raza", role: "Past Participant", text: "Technova'25 was a game-changer for me. The networking opportunities were insane, and the modules were actually challenging!", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200" },
+                { name: "Dr. Maria Khan", role: "Industry Judge", text: "The quality of projects at Technova is truly impressive. These students aren't just coding; they are solving real-world problems.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" },
+                { name: "Zainab Ali", role: "Module Evaluator", text: "Evaluating the UI/UX battles was a highlight of my year. The creativity and attention to detail were world-class.", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200" },
+                { name: "Hamza Sheik", role: "Winning Team Lead", text: "The competition was fierce but the environment was supportive. Technova is where legends are truly forged.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+                // Duplicate for loop
+                { name: "Ahmed Raza", role: "Past Participant", text: "Technova'25 was a game-changer for me. The networking opportunities were insane, and the modules were actually challenging!", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200" },
+                { name: "Dr. Maria Khan", role: "Industry Judge", text: "The quality of projects at Technova is truly impressive. These students aren't just coding; they are solving real-world problems.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" }
+              ].map((t, idx) => (
+                <div key={idx} className="w-[400px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 p-10 rounded-[2.5rem] relative group shadow-sm hover:shadow-2xl transition-all hover:border-blue-500/30">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white dark:border-white/10 shadow-lg group-hover:scale-110 transition-transform">
+                      <img src={t.img} alt={t.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 dark:text-white tracking-tight">{t.name}</h4>
+                      <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{t.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                    "{t.text}"
+                  </p>
+                  <div className="absolute top-10 right-10 text-6xl font-serif text-blue-500/10 select-none">"</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sponsor Inquiry Modal */}
+      <AnimatePresence>
+        {isInquiryOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsInquiryOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-[#111] rounded-[2.5rem] shadow-2xl overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 md:p-12">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white underline decoration-blue-500/30 underline-offset-8">Sponsorship Inquiry</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Let's build something epic together at Technova.</p>
+                  </div>
+                  <button onClick={() => setIsInquiryOpen(false)} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                    <X className="w-6 h-6 text-gray-400" />
+                  </button>
+                </div>
+
+                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsInquiryOpen(false); alert('Inquiry sent!'); }}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Company</label>
+                      <input type="text" required placeholder="Organization Name" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Work Email</label>
+                      <input type="email" required placeholder="contact@company.com" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors" />
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full py-5 rounded-2xl bg-blue-600 text-white font-black text-lg hover:bg-blue-500 transition-colors shadow-xl">Send Message</button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Location */}
       <section id="location" className="py-24 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">WHERE THE MAGIC HAPPENS</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Our <span className="text-blue-500">Location</span></h2>
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Our <span className="text-blue-500">Location</span></h2>
           </div>
           <div className="w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 relative group bg-gray-100 dark:bg-gray-900">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -539,34 +641,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24 bg-white dark:bg-[#050505] transition-colors duration-300">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* FAQ Section */}
+      <section id="faq" className="py-24 bg-black transition-colors duration-300">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-gray-900 dark:text-white">Got Questions? <span className="text-blue-500">We Got Answers.</span></h2>
-            <p className="text-gray-600 dark:text-gray-400">Everything you need to know before you jump in.</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4">
+              Got Questions? <span className="text-blue-500">We Got Answers.</span>
+            </h2>
+            <p className="text-gray-400 text-lg">Everything you need to know before you jump in.</p>
           </div>
-
+          
           <div className="space-y-4">
             {[
-              { q: "Who can actually participate?", a: "If you're currently enrolled in a university, you're in! Some modules even let high schoolers join the fun. Check the specific module rules for details." },
-              { q: "Do I have to pay to get in?", a: "There's a tiny registration fee per module just to keep things serious. But hey, grab those early bird discounts while you can!" },
-              { q: "Can I do more than one thing?", a: "Absolutely! As long as you haven't cloned yourself, just make sure the timings don't clash on the schedule." },
-              { q: "Do I need to bring a whole squad?", a: "Depends on your vibe! Some modules are solo missions, while others need a dynamic duo or a full 4-person squad." },
-            ].map((faq, i) => (
-              <div key={i} className="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-6 rounded-xl hover:border-blue-500/30 transition-colors">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{faq.q}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">{faq.a}</p>
+              {
+                q: "Who can actually participate?",
+                a: "If you're currently enrolled in a university, you're in! Some modules even let high schoolers join the fun. Check the specific module rules for details."
+              },
+              {
+                q: "Do I have to pay to get in?",
+                a: "There's a tiny registration fee per module just to keep things serious. But hey, grab those early bird discounts while you can!"
+              },
+              {
+                q: "Can I do more than one thing?",
+                a: "Absolutely! As long as you haven't cloned yourself, just make sure the timings don't clash on the schedule."
+              },
+              {
+                q: "Do I need to bring a whole squad?",
+                a: "Depends on your vibe! Some modules are solo missions, while others need a dynamic duo or a full squad. Check your module's requirements."
+              }
+            ].map((item, i) => (
+              <div key={i} className="p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-[#111] border border-gray-800 hover:border-gray-700 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-4">{item.q}</h3>
+                <p className="text-gray-400 leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Highlights */}
+      {/* Register CTA Section */}
       <section id="register" className="py-24 relative overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-[3rem] p-10 md:p-20 text-center relative overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-20 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />

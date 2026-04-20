@@ -10,9 +10,11 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Modules from './pages/Modules';
+import ModuleDetail from './pages/ModuleDetail';
 import Register from './pages/Register';
 import Sponsors from './pages/Sponsors';
 import About from './pages/About';
+import Legacy from './pages/Legacy';
 import ScrollToTop from './components/ScrollToTop';
 import Chatbot from './components/Chatbot';
 import { ThemeProvider } from './components/ThemeContext';
@@ -36,9 +38,11 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/modules" element={<Modules />} />
+              <Route path="/modules/:moduleId" element={<ModuleDetail />} />
               <Route path="/register/:moduleId" element={<Register />} />
               <Route path="/sponsors" element={<Sponsors />} />
               <Route path="/about" element={<About />} />
+              <Route path="/legacy" element={<Legacy />} />
             </Routes>
           </main>
           <Footer />

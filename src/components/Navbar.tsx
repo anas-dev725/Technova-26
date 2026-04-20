@@ -26,8 +26,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Modules', path: '/modules' },
     { name: 'About', path: '/about' },
+    { name: 'Modules', path: '/modules' },
     { name: 'Sponsors', path: '/sponsors' },
     { name: 'FAQ', path: '/#faq' },
   ];
@@ -86,12 +86,12 @@ export default function Navbar() {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <a
-              href="#register"
+            <Link
+              to="/modules"
               className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]"
             >
               Register Now
-            </a>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -147,13 +147,13 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <a
-                href="#register"
+              <Link
+                to="/modules"
                 className="mt-4 px-5 py-3 rounded-xl bg-blue-600 text-white text-center font-semibold hover:bg-blue-500 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Register Now
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
