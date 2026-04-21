@@ -107,7 +107,6 @@ export default function Sponsors() {
                         src={sponsor.logo} 
                         alt={sponsor.name} 
                         className="max-w-[85%] max-h-[85%] object-contain relative z-10 transition-transform duration-500 group-hover:scale-110" 
-                        referrerPolicy="no-referrer" 
                       />
                     </div>
                     <div className="mt-8 text-xs font-black text-gray-400 group-hover:text-blue-500 transition-colors uppercase tracking-[0.3em]">{sponsor.name}</div>
@@ -135,7 +134,6 @@ export default function Sponsors() {
                           src={sponsor.logo} 
                           alt={sponsor.name} 
                           className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-500 group-hover:scale-110" 
-                          referrerPolicy="no-referrer" 
                         />
                       </div>
                     ) : (

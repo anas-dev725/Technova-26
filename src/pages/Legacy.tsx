@@ -2,8 +2,8 @@ import { motion } from 'motion/react';
 import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import techVideo from '../assets/technova-highlight.mp4';
-import techOpening from '../assets/technova-1.jpeg';
-import techBattle from '../assets/technova-5.jpeg';
+import techOpening from '../assets/technova-1.jpg';
+import techBattle from '../assets/technova-5.jpg';
 import techFinale from '../assets/technova-4.jpg';
 
 export default function Legacy() {
@@ -150,7 +150,6 @@ export default function Legacy() {
                   src={item.img} 
                   alt={item.title} 
                   className="absolute inset-0 w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
                 />
               </motion.div>
             </div>
