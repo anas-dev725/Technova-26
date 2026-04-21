@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anas-profile-base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
-import technova3 from '../assets/technova 3.jpeg';
+import technova3 from '../assets/technova-3.jpeg';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
