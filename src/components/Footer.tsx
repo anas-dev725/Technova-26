@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin, Instagram, Mail, MapPin } from 'lucide-react';
-import { logoBase64 } from '../assets/logo-base64';
+import { technova_logoBase64 } from '../assets/technova-logo-base64';
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2 group">
-              <img src={logoBase64} alt="Technova'26" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
+              <img src={technova_logoBase64} alt="Technova'26" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
               <span className="font-display font-bold text-xl tracking-tight text-white">
                 TECHNOVA<span className="text-blue-500">'26</span>
               </span>
