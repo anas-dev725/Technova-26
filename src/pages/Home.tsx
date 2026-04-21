@@ -1,9 +1,11 @@
 // Technova'26 - Dream It & Ship It
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView, AnimatePresence } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anas-profile-base64';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, X, Handshake } from 'lucide-react';
+import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
+import technova3 from '../assets/technova 3.jpeg';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -30,7 +32,6 @@ function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number,
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
   // Smooth scroll for anchor links
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
             >
               TECHNOVA'26
             </motion.h1>
@@ -109,7 +110,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[#2563eb] text-2xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight mb-8"
+              className="text-[#2563eb] text-xl sm:text-2xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight mb-8"
             >
               Dream It & Ship It
             </motion.div>
@@ -160,12 +161,12 @@ export default function Home() {
               >
                 Explore Modules <ChevronRight className="w-5 h-5" />
               </Link>
-              <a
-                href="#highlights"
+              <Link
+                to="/legacy"
                 className="w-full sm:w-auto px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2"
               >
                 Last Year's Highlights
-              </a>
+              </Link>
             </motion.div>
 
             <motion.div
@@ -236,8 +237,8 @@ export default function Home() {
             >
               <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700">
                 <img 
-                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800" 
-                  alt="Hackathon vibe" 
+                  src={technova3} 
+                  alt="Technova Hype" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
@@ -410,6 +411,82 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Sponsors */}
+      <section id="sponsors" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-16">
+            <p className="text-blue-500 font-black uppercase tracking-[0.3em] text-xs mb-3">Backed by the Best</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Our Strategic <span className="text-blue-500">Partners</span></h2>
+          </div>
+          
+          <div className="relative group">
+            {/* Faded edges to indicate carousel continuity */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
+
+            <div className="overflow-hidden py-10">
+              <div className="flex gap-12 w-max animate-[slide_40s_linear_infinite] hover:[animation-play-state:paused]">
+                {[
+                  { name: 'B Braun', logo: bBraunLogo },
+                  { name: 'Telec', logo: telecLogo },
+                  { name: 'Express News', logo: expressNewsLogo },
+                  { name: 'Texitech', logo: texitechLogo },
+                  // Repeat multiple times for perfect infinite loop logic (must be even sets for -50% translation)
+                  { name: 'B Braun', logo: bBraunLogo },
+                  { name: 'Telec', logo: telecLogo },
+                  { name: 'Express News', logo: expressNewsLogo },
+                  { name: 'Texitech', logo: texitechLogo },
+                  { name: 'B Braun', logo: bBraunLogo },
+                  { name: 'Telec', logo: telecLogo },
+                  { name: 'Express News', logo: expressNewsLogo },
+                  { name: 'Texitech', logo: texitechLogo },
+                  { name: 'B Braun', logo: bBraunLogo },
+                  { name: 'Telec', logo: telecLogo },
+                  { name: 'Express News', logo: expressNewsLogo },
+                  { name: 'Texitech', logo: texitechLogo },
+                ].map((sponsor: any, idx) => (
+                  <div 
+                    key={idx}
+                    className="flex flex-col items-center justify-center px-8 py-6 min-w-[200px] h-32 rounded-3xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-sm hover:shadow-xl hover:border-blue-500/50 hover:bg-white/10 transition-all duration-500 group/item"
+                  >
+                    {sponsor.logo ? (
+                      <div className="w-full h-20 flex items-center justify-center p-3 bg-white rounded-2xl shadow-inner mb-4">
+                        <img 
+                          src={sponsor.logo} 
+                          alt={sponsor.name} 
+                          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover/item:scale-110" 
+                          referrerPolicy="no-referrer" 
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-4xl mb-4 grayscale group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-500">{sponsor.icon}</span>
+                    )}
+                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] transition-colors group-hover/item:text-blue-500">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-20 bg-[#0a0a0a] border border-gray-800 rounded-[3rem] p-8 md:p-14 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 text-left relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+            
+            <div className="relative z-10 flex-1">
+              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 leading-tight">Want to sponsor Technova'26?</h3>
+              <p className="text-gray-400 text-lg max-w-xl leading-relaxed">Join us in shaping the future of technology and get your brand in front of thousands of top-tier innovators.</p>
+            </div>
+            <Link 
+              to="/sponsors"
+              className="relative z-10 shrink-0 px-10 py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
+            >
+              Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Team */}
       <section className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -461,71 +538,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sponsors */}
-      <section id="sponsors" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-16">
-            <p className="text-blue-500 font-black uppercase tracking-[0.3em] text-xs mb-3">Backed by the Best</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Our Strategic <span className="text-blue-500">Partners</span></h2>
-          </div>
-          
-          <div className="relative group">
-            {/* Faded edges to indicate carousel continuity */}
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
-
-            <div className="overflow-hidden py-10">
-              <div className="flex gap-12 w-max animate-[slide_40s_linear_infinite] hover:[animation-play-state:paused]">
-                {[
-                  { name: 'Red Bull', icon: '🥤' },
-                  { name: 'Google Cloud', icon: '☁️' },
-                  { name: 'Microsoft', icon: '💻' },
-                  { name: 'Amazon AWS', icon: '📦' },
-                  { name: 'GitHub', icon: '🐙' },
-                  { name: 'Uber', icon: '🚗' },
-                  { name: 'Meta', icon: '♾️' },
-                  { name: 'Tesla', icon: '🔋' },
-                  { name: 'Netflix', icon: '🎬' },
-                  { name: 'Spotify', icon: '🎵' },
-                  // Clone for infinite effect
-                  { name: 'Red Bull', icon: '🥤' },
-                  { name: 'Google Cloud', icon: '☁️' },
-                  { name: 'Microsoft', icon: '💻' },
-                  { name: 'Amazon AWS', icon: '📦' },
-                  { name: 'GitHub', icon: '🐙' },
-                  { name: 'Uber', icon: '🚗' }
-                ].map((sponsor, idx) => (
-                  <div 
-                    key={idx}
-                    className="flex flex-col items-center justify-center p-8 w-48 aspect-square rounded-[3rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:border-blue-500/50 transition-all duration-500 group/item"
-                  >
-                    <span className="text-5xl mb-4 grayscale group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-500">{sponsor.icon}</span>
-                    <span className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest group-hover/item:text-blue-500 transition-colors">
-                      {sponsor.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-20 bg-[#0a0a0a] border border-gray-800 rounded-[3rem] p-8 md:p-14 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 text-left relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-            
-            <div className="relative z-10 flex-1">
-              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 leading-tight">Want to sponsor Technova'26?</h3>
-              <p className="text-gray-400 text-lg max-w-xl leading-relaxed">Join us in shaping the future of technology and get your brand in front of thousands of top-tier innovators.</p>
-            </div>
-            <button 
-              onClick={() => setIsInquiryOpen(true)}
-              className="relative z-10 shrink-0 px-10 py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
-            >
-              Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials */}
       <section className="py-24 bg-white dark:bg-[#050505] transition-colors duration-300 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -567,54 +579,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Sponsor Inquiry Modal */}
-      <AnimatePresence>
-        {isInquiryOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsInquiryOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-[#111] rounded-[2.5rem] shadow-2xl overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6 md:p-12">
-                <div className="flex justify-between items-start mb-8">
-                  <div>
-                    <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white underline decoration-blue-500/30 underline-offset-8">Sponsorship Inquiry</h2>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Let's build something epic together at Technova.</p>
-                  </div>
-                  <button onClick={() => setIsInquiryOpen(false)} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                    <X className="w-6 h-6 text-gray-400" />
-                  </button>
-                </div>
-
-                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsInquiryOpen(false); alert('Inquiry sent!'); }}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Company</label>
-                      <input type="text" required placeholder="Organization Name" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Work Email</label>
-                      <input type="email" required placeholder="contact@company.com" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 outline-none focus:border-blue-500 transition-colors" />
-                    </div>
-                  </div>
-                  <button type="submit" className="w-full py-5 rounded-2xl bg-blue-600 text-white font-black text-lg hover:bg-blue-500 transition-colors shadow-xl">Send Message</button>
-                </form>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Location */}
       <section id="location" className="py-24 bg-white dark:bg-[#0a0a0a] transition-colors duration-300">

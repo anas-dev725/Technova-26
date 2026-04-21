@@ -1,6 +1,10 @@
 import { motion } from 'motion/react';
-import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import techVideo from '../assets/technova-highlight.mp4';
+import techOpening from '../assets/technova 1.jpeg';
+import techBattle from '../assets/technova 5.jpeg';
+import techFinale from '../assets/technova 4.JPG';
 
 export default function Legacy() {
   const stats = [
@@ -14,17 +18,17 @@ export default function Legacy() {
     {
       title: "Opening Ceremony",
       desc: "A breathtaking commencement that ignited the spark of innovation. Industry pioneers and visionary keynotes shared their journeys, bridging the gap between classroom theory and real-world impact. The atmosphere was charged with high-octane energy as 1,200 participants prepared for an unforgettable technological odyssey.",
-      img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
+      img: techOpening
     },
     {
       title: "The Battle Grounds",
       desc: "This wasn't just a competition; it was a digital arena. From the relentless pressure of Speed Programming to the intricate creative wars of UI/UX battles, every module was meticulously designed to push cognitive boundaries. We saw code that didn't just run—it sang—and designs that redefined user experiences for a new generation.",
-      img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1740"
+      img: techBattle
     },
     {
       title: "Grand Finale",
       desc: "The culmination of grit, sweat, and thousands of lines of code. The closing ceremony was a celebration of resilience where champions were crowned and new alliances were forged. As the prize pool of PKR 400K was distributed, the true victory was clear: a stronger, more connected community of builders ready to take on the world.",
-      img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1740"
+      img: techFinale
     }
   ];
 
@@ -33,6 +37,7 @@ export default function Legacy() {
     { module: "Capture The Flag", team: "Byte Busters", uni: "ITU Lahore" },
     { module: "Website Designing", team: "Pixel Perfect", uni: "IOBM Karachi" },
     { module: "Esports (Valorant)", team: "Legacy Esports", uni: "NED University" },
+    { module: "Esports (Counter-Strike)", team: "Penta Shock", uni: "LUMS" },
     { module: "UI/UX Battle", team: "Design Labs", uni: "GIKI" },
     { module: "Datathon", team: "Data Wizards", uni: "LUMS" }
   ];
@@ -53,7 +58,7 @@ export default function Legacy() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-display font-bold mb-8 text-gray-900 dark:text-white tracking-tighter"
+            className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-8 text-gray-900 dark:text-white tracking-tighter"
           >
             Legacy of <span className="text-blue-500">Technova'25</span>
           </motion.h1>
@@ -86,6 +91,37 @@ export default function Legacy() {
             </motion.div>
           ))}
         </div>
+
+        {/* Video Highlights Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-32"
+        >
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-4 tracking-tighter">
+              Relive the <span className="text-blue-500">Intensity</span>
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">Experience the raw energy of Technova'25 in 4K.</p>
+          </div>
+
+          <div className="relative group aspect-video max-w-5xl mx-auto rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-8 border-white dark:border-white/5 bg-gray-900">
+            {/* Placeholder for when video is actually uploaded */}
+            <video 
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls 
+              className="w-full h-full object-cover"
+              poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
+            >
+              <source src={techVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </motion.div>
 
         {/* Section 1: The Glimpses */}
         <div className="space-y-32 mb-32">

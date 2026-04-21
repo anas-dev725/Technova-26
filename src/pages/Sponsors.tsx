@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Building2, Handshake, ArrowRight, CheckCircle2, Shield, Trophy, Zap, X } from 'lucide-react';
+import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 
 export default function Sponsors() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -71,7 +72,7 @@ export default function Sponsors() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white tracking-tight"
+            className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white tracking-tight"
           >
             Our Strategic <span className="text-blue-500 underline decoration-blue-500/30 underline-offset-8">Partners</span>
           </motion.h1>
@@ -87,28 +88,61 @@ export default function Sponsors() {
 
         {/* Current Sponsors Grid */}
         <div className="mb-32">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-12">
             {/* Platinum Partners */}
-            <div className="lg:col-span-3 mb-12">
-              <h2 className="text-sm font-black text-blue-500 uppercase tracking-[0.3em] mb-10 text-center">Platinum Partners</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {['Red Bull', 'Google Cloud'].map((name) => (
-                  <div key={name} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 p-16 rounded-[2.5rem] flex flex-col items-center justify-center hover:border-blue-500/50 transition-all group cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1">
-                    <div className="text-3xl font-display font-black text-gray-400/50 group-hover:text-blue-500 transition-colors uppercase tracking-widest">{name}</div>
-                    <div className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Main Partner</div>
-                  </div>
+            <div className="mb-8">
+              <h2 className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-12 text-center">Platinum Partners</h2>
+              <div className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-5xl mx-auto px-4">
+                {[
+                  { name: 'Texitech', logo: texitechLogo },
+                  { name: 'Telec', logo: telecLogo }
+                ].map((sponsor) => (
+                  <motion.div 
+                    key={sponsor.name} 
+                    whileHover={{ scale: 1.02, y: -5 }}
+                    className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 p-6 md:p-10 rounded-[2rem] flex flex-col items-center justify-center hover:border-blue-500/50 transition-all group cursor-pointer shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 min-w-[280px] md:min-w-[380px]"
+                  >
+                    <div className="relative w-full aspect-video flex items-center justify-center p-6 bg-white rounded-2xl">
+                      <img 
+                        src={sponsor.logo} 
+                        alt={sponsor.name} 
+                        className="max-w-[85%] max-h-[85%] object-contain relative z-10 transition-transform duration-500 group-hover:scale-110" 
+                        referrerPolicy="no-referrer" 
+                      />
+                    </div>
+                    <div className="mt-8 text-xs font-black text-gray-400 group-hover:text-blue-500 transition-colors uppercase tracking-[0.3em]">{sponsor.name}</div>
+                  </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* Gold Partners */}
-            <div className="lg:col-span-3 mb-12">
-              <h2 className="text-sm font-black text-yellow-500 uppercase tracking-[0.3em] mb-10 text-center">Gold Partners</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {['Microsoft', 'Amazon AWS', 'GitHub'].map((name) => (
-                  <div key={name} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 p-10 rounded-[2rem] flex flex-col items-center justify-center hover:border-yellow-500/50 transition-all group cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1">
-                    <div className="text-xl font-display font-black text-gray-400/50 group-hover:text-yellow-500 transition-colors uppercase tracking-widest text-center">{name}</div>
-                  </div>
+            {/* Gold & Strategic Partners */}
+            <div>
+              <h2 className="text-xs font-black text-yellow-500 uppercase tracking-[0.4em] mb-12 text-center">Gold & Strategic Partners</h2>
+              <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto px-4">
+                {[
+                  { name: 'B Braun', logo: bBraunLogo },
+                  { name: 'Express News', logo: expressNewsLogo }
+                ].map((sponsor: any) => (
+                  <motion.div 
+                    key={sponsor.name} 
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 p-5 md:p-8 rounded-[1.5rem] flex flex-col items-center justify-center hover:border-yellow-500/50 transition-all group cursor-pointer shadow-sm hover:shadow-xl min-w-[200px] md:min-w-[260px]"
+                  >
+                    {sponsor.logo ? (
+                      <div className="relative w-full aspect-video flex items-center justify-center p-4 bg-white rounded-xl">
+                        <img 
+                          src={sponsor.logo} 
+                          alt={sponsor.name} 
+                          className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-500 group-hover:scale-110" 
+                          referrerPolicy="no-referrer" 
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-2xl mb-2 grayscale group-hover:grayscale-0 transition-all">{sponsor.icon}</span>
+                    )}
+                    <div className="mt-4 text-[10px] font-black text-gray-400 group-hover:text-yellow-500 transition-colors uppercase tracking-[0.3em] text-center">{sponsor.name}</div>
+                  </motion.div>
                 ))}
               </div>
             </div>

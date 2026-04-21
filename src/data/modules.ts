@@ -56,7 +56,7 @@ export const modules: Module[] = [
   {
     id: 'esports-competition',
     title: 'Esports Competition',
-    description: 'Ready to dominate the arena? Grab your gear and battle it out in PUBG, Tekken, and FIFA. The crown is waiting for you!',
+    description: 'Ready to dominate the arena? Grab your gear and battle it out in PUBG, Counter-Strike, Tekken, and FIFA. The crown is waiting for you!',
     icon: Gamepad2,
     category: 'Gaming',
     mode: 'Individual',
@@ -68,6 +68,13 @@ export const modules: Module[] = [
         title: 'PUBG Mobile',
         description: 'Squad-based battle royale action. Drop in, loot up, and be the last team standing. Winner Winner Chicken Dinner!',
         mode: 'Squad',
+        prize: 'PKR 40K'
+      },
+      {
+        id: 'counter-strike',
+        title: 'Counter-Strike',
+        description: 'The ultimate tactical first-person shooter. Strategy, precision, and teamwork define the champions here.',
+        mode: 'Individual',
         prize: 'PKR 40K'
       },
       {

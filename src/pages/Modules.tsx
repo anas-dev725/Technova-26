@@ -35,7 +35,7 @@ export default function Modules() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white"
+            className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white"
           >
             Pick Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Poison</span>
           </motion.h1>

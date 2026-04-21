@@ -71,7 +71,7 @@ export default function ModuleDetail() {
                   <div className="w-20 h-20 rounded-3xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center border border-blue-600/20">
                     <Icon className="w-10 h-10 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-display font-bold text-gray-900 dark:text-white leading-tight">
+                  <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-bold text-gray-900 dark:text-white leading-tight">
                     {module.title}
                   </h1>
                 </div>
