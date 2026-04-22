@@ -2,7 +2,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
-import { anasProfileBase64, technova3Base64 } from '../assets/photosBase64';
+import { anasProfileBase64 } from '../assets/anasProfileBase64';
+import { technova3Base64 } from '../assets/technova3Base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 

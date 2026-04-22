@@ -1,7 +1,9 @@
 import { motion } from 'motion/react';
 import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { technova1Base64, technova5Base64, technova4Base64 } from '../assets/photosBase64';
+import { technova1Base64 } from '../assets/technova1Base64';
+import { technova5Base64 } from '../assets/technova5Base64';
+import { technova4Base64 } from '../assets/technova4Base64';
 
 export default function Legacy() {
   const stats = [
