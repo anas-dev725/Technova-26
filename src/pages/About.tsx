@@ -174,10 +174,10 @@ export default function About() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-32 border-t border-gray-100 dark:border-white/5 pt-32">
           {[
-            { label: 'EDITION', value: '10+' },
+            { label: 'EDITION', value: '2nd' },
             { label: 'IMPACT', value: '5K+' },
-            { label: 'MODULES', value: '15+' },
-            { label: 'LEGACY', value: '2024' }
+            { label: 'MODULES', value: '10+' },
+            { label: 'LEGACY', value: '2025' }
           ].map((stat, i) => (
             <div key={i} className="text-center">
               <div className="text-5xl md:text-7xl font-display font-black text-gray-900 dark:text-white mb-2">{stat.value}</div>

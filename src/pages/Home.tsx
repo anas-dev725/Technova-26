@@ -520,7 +520,6 @@ export default function Home() {
                   github: 'https://github.com/Talhaahmad9',
                   linkedin: 'Https://linkedin.com/in/talha-ahmad9'
                 },
-                { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Alex Rivera', role: 'Event Director', dept: 'OPERATIONS', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Sarah Chen', role: 'Technical Lead', dept: 'ENGINEERING', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
