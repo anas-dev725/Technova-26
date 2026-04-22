@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import techVideo from '../assets/technova-highlight.mp4';
 import { technova1Base64 } from '../assets/technova1Base64';
 import { technova5Base64 } from '../assets/technova5Base64';
 import { technova4Base64 } from '../assets/technova4Base64';
@@ -115,7 +116,7 @@ export default function Legacy() {
               className="w-full h-full object-cover"
               poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
             >
-              <source src="/technova-highlight.mp4" type="video/mp4" />
+              <source src={techVideo} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
