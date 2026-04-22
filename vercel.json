@@ -1,6 +1,13 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/showcase.mp4",
+      "destination": "/showcase.mp4"
+    },
+    {
+      "source": "/((?!.*\\..*).*)",
+      "destination": "/index.html"
+    }
   ]
 }

@@ -370,24 +370,15 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[400px] md:h-[600px]">
-            <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl border-4 border-white/5 shadow-2xl bg-gray-900">
-              <video 
-                autoPlay 
-                muted 
-                loop 
-                playsInline 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
-              >
-                <source src="/technova-showcase-final.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 backdrop-blur-md flex items-center justify-center border border-blue-500/30">
-                    <Zap className="w-5 h-5 text-blue-500" />
-                  </div>
-                  <span className="text-white font-bold tracking-tight">Watch Showcase Highlight</span>
-                </div>
+            <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova6Base64} 
+                alt="Highlight 1" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                <span className="text-white font-bold">The Innovation Arena</span>
               </div>
             </div>
             <div className="relative group overflow-hidden rounded-3xl">
