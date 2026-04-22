@@ -200,7 +200,7 @@ export default function Sponsors() {
           viewport={{ once: true }}
           className="relative bg-[#2563eb] rounded-[2rem] md:rounded-[3rem] p-10 md:p-14 text-center overflow-hidden shadow-2xl"
         >
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
+
           
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
             <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
