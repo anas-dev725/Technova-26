@@ -31,14 +31,6 @@ function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number,
 }
 
 export default function Home() {
-  console.log('Home Media Checks:', { 
-    anasProfile, technova3, 
-    bBraun: bBraunLogo.substring(0, 30) + '...', 
-    telec: telecLogo.substring(0, 30) + '...',
-    expressNews: expressNewsLogo.substring(0, 30) + '...',
-    texitech: texitechLogo.substring(0, 30) + '...'
-  });
-
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Smooth scroll for anchor links
@@ -243,11 +235,11 @@ export default function Home() {
                whileInView={{ opacity: 1, scale: 1 }}
                className="relative order-1 lg:order-2"
             >
-              <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700">
+              <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700 bg-red-500">
                 <img 
                   src={technova3} 
                   alt="Technova Hype" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover bg-red-500"
                 />
               </div>
               {/* Floating Stat Blob */}
@@ -514,8 +506,8 @@ export default function Home() {
                 { name: 'Priya Patel', role: 'Marketing Lead', dept: 'GROWTH', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop' },
                 { name: 'David Kim', role: 'Operations Head', dept: 'LOGISTICS', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop' },
               ].map((member, i) => (
-                <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-gray-900 shadow-xl shrink-0 snap-center">
-                  <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" referrerPolicy="no-referrer" />
+                <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-red-500 shadow-xl shrink-0 snap-center">
+                  <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110 bg-red-500" />
                   
                   {/* Always visible gradient and name */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">

@@ -7,8 +7,6 @@ import techBattle from '../assets/technova-5.jpg';
 import techFinale from '../assets/technova-4.jpg';
 
 export default function Legacy() {
-  console.log('Legacy Media Checks:', { techVideo, techOpening, techBattle, techFinale });
-  
   const stats = [
     { label: 'Participants', value: '1,200+', icon: Users },
     { label: 'Universities', value: '30+', icon: Globe },
