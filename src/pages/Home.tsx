@@ -2,9 +2,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
-import anasProfile from '../assets/anas-profile.jpg';
+import { anasProfileBase64, technova3Base64 } from '../assets/photosBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
-import technova3 from '../assets/technova-3.jpg';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
@@ -235,11 +234,11 @@ export default function Home() {
                whileInView={{ opacity: 1, scale: 1 }}
                className="relative order-1 lg:order-2"
             >
-              <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700 bg-red-500">
+              <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700">
                 <img 
-                  src={technova3} 
+                  src={technova3Base64} 
                   alt="Technova Hype" 
-                  className="w-full h-full object-cover bg-red-500"
+                  className="w-full h-full object-cover"
                 />
               </div>
               {/* Floating Stat Blob */}
@@ -497,7 +496,7 @@ export default function Home() {
           <div className="relative w-full overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             <div className="flex gap-6 w-max px-4">
               {[
-                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: anasProfile },
+                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: anasProfileBase64 },
                 { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Alex Rivera', role: 'Event Director', dept: 'OPERATIONS', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
@@ -506,8 +505,8 @@ export default function Home() {
                 { name: 'Priya Patel', role: 'Marketing Lead', dept: 'GROWTH', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop' },
                 { name: 'David Kim', role: 'Operations Head', dept: 'LOGISTICS', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop' },
               ].map((member, i) => (
-                <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-red-500 shadow-xl shrink-0 snap-center">
-                  <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110 bg-red-500" />
+                <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-gray-900 shadow-xl shrink-0 snap-center">
+                  <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" />
                   
                   {/* Always visible gradient and name */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
