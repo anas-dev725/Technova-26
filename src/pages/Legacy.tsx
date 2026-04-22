@@ -157,7 +157,7 @@ export default function Legacy() {
 
         {/* Prize Winners Section */}
         <div className="bg-gray-900 rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-20 overflow-hidden relative mb-32">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
           
           <div className="relative z-10">
