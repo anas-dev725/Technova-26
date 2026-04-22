@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import techVideo from '../assets/technova-highlight.mp4';
 import techOpening from '../assets/technova-1.jpg';
 import techBattle from '../assets/technova-5.jpg';
-import techFinale from '../assets/technova 4.jpg';
+import techFinale from '../assets/technova-4.jpg';
 
 export default function Legacy() {
   const stats = [
