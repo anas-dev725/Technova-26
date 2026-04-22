@@ -126,7 +126,7 @@ export default function Legacy() {
               className="w-full h-full object-cover"
               poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
             >
-              <source src="/showcase.mp4" type="video/mp4" />
+              <source src="/technova-showcase-final.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
