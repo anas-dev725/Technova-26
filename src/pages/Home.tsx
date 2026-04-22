@@ -10,6 +10,7 @@ import { technova2Base64 } from '../assets/technova2Base64';
 import { technova7Base64 } from '../assets/technova7Base64';
 import { technova8Base64 } from '../assets/technova8Base64';
 import { technova9Base64 } from '../assets/technova9Base64';
+import { technova10Base64 } from '../assets/technova10Base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
@@ -517,7 +518,7 @@ export default function Home() {
                   dept: 'AI Development Engineer', 
                   img: talhaAhmedBase64,
                   github: 'https://github.com/Talhaahmad9',
-                  linkedin: 'https://linkedin.com/in/talha-ahmad9'
+                  linkedin: 'Https://linkedin.com/in/talha-ahmad9'
                 },
                 { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },

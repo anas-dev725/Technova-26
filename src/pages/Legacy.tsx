@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { technova1Base64 } from '../assets/technova1Base64';
 import { technova5Base64 } from '../assets/technova5Base64';
 import { technova4Base64 } from '../assets/technova4Base64';
+import { technova10Base64 } from '../assets/technova10Base64';
 
 export default function Legacy() {
   const stats = [
@@ -37,7 +38,7 @@ export default function Legacy() {
         author: "Ayaan Amir",
         role: "Winner, Startup Launchpad"
       },
-      img: technova4Base64
+      img: technova10Base64
     }
   ];
 
