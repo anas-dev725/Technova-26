@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anas-profile-base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
+import { technova_3Base64 as technova3 } from '../assets/technova-3-base64';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
@@ -236,7 +237,7 @@ export default function Home() {
             >
               <div className="aspect-video lg:aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl transition-transform duration-700">
                 <img 
-                  src="/technova-3.jpg" 
+                  src={technova3} 
                   alt="Technova Hype" 
                   className="w-full h-full object-cover"
                 />
