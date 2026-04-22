@@ -31,6 +31,14 @@ function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number,
 }
 
 export default function Home() {
+  console.log('Home Media Checks:', { 
+    anasProfile, technova3, 
+    bBraun: bBraunLogo.substring(0, 30) + '...', 
+    telec: telecLogo.substring(0, 30) + '...',
+    expressNews: expressNewsLogo.substring(0, 30) + '...',
+    texitech: texitechLogo.substring(0, 30) + '...'
+  });
+
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Smooth scroll for anchor links
