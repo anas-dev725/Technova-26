@@ -2,9 +2,9 @@ import { motion } from 'motion/react';
 import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import techVideo from '../assets/technova-highlight.mp4';
-import { technova_1Base64 as techOpening } from '../assets/technova-1-base64';
-import { technova_5Base64 as techBattle } from '../assets/technova-5-base64';
-import { technova_4Base64 as techFinale } from '../assets/technova-4-base64';
+import techOpening from '../assets/technova-1.jpg';
+import techBattle from '../assets/technova-5.jpg';
+import techFinale from '../assets/technova-4.jpg';
 
 export default function Legacy() {
   const stats = [

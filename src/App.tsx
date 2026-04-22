@@ -4,7 +4,6 @@
  */
 
 // Technova'26 - Dream It & Ship It
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -18,16 +17,8 @@ import Legacy from './pages/Legacy';
 import ScrollToTop from './components/ScrollToTop';
 import Chatbot from './components/Chatbot';
 import { ThemeProvider } from './components/ThemeContext';
-import { faviconBase64 } from './assets/favicon-base64';
 
 export default function App() {
-  useEffect(() => {
-    const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-    if (link) {
-      link.href = faviconBase64;
-    }
-  }, []);
-
   return (
     <ThemeProvider>
       <Router>
