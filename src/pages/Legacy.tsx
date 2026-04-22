@@ -1,10 +1,7 @@
 import { motion } from 'motion/react';
 import { Trophy, Users, Globe, Zap, Calendar, MapPin, ArrowRight, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import techVideo from '../assets/technova-highlight.mp4';
-import techOpening from '../assets/technova-1.jpg';
-import techBattle from '../assets/technova-5.jpg';
-import techFinale from '../assets/technova-4.jpg';
+import { technova1Base64, technova5Base64, technova4Base64 } from '../assets/photosBase64';
 
 export default function Legacy() {
   const stats = [
@@ -18,17 +15,17 @@ export default function Legacy() {
     {
       title: "Opening Ceremony",
       desc: "A breathtaking commencement that ignited the spark of innovation. Industry pioneers and visionary keynotes shared their journeys, bridging the gap between classroom theory and real-world impact. The atmosphere was charged with high-octane energy as 1,200 participants prepared for an unforgettable technological odyssey.",
-      img: techOpening
+      img: technova1Base64
     },
     {
       title: "The Battle Grounds",
       desc: "This wasn't just a competition; it was a digital arena. From the relentless pressure of Speed Programming to the intricate creative wars of UI/UX battles, every module was meticulously designed to push cognitive boundaries. We saw code that didn't just run—it sang—and designs that redefined user experiences for a new generation.",
-      img: techBattle
+      img: technova5Base64
     },
     {
       title: "Grand Finale",
       desc: "The culmination of grit, sweat, and thousands of lines of code. The closing ceremony was a celebration of resilience where champions were crowned and new alliances were forged. As the prize pool of PKR 400K was distributed, the true victory was clear: a stronger, more connected community of builders ready to take on the world.",
-      img: techFinale
+      img: technova4Base64
     }
   ];
 
@@ -116,7 +113,7 @@ export default function Legacy() {
               className="w-full h-full object-cover"
               poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
             >
-              <source src={techVideo} type="video/mp4" />
+              <source src="/technova-highlight.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
