@@ -36,12 +36,12 @@ export const modules: Module[] = [
   {
     id: 'capture-the-flag',
     title: 'Capture The Flag',
-    description: 'Think you can hack it? Test your cybersecurity chops in a fast-paced hunt for vulnerabilities. Let\'s see who finds the flags first!',
+    description: 'Step into the world of cybersecurity. Work with your squad to discover vulnerabilities and learn to secure digital environments in a fun, collaborative challenge.',
     icon: Shield,
     category: 'Tech',
     mode: 'Squad',
     prize: 'PKR 75K',
-    longDescription: 'Calling all ethical hackers! This is a 6-hour marathon where your squad will dive deep into systems, find hidden flaws, and exploit them. It\'s fast, it\'s intense, and it\'s the ultimate test of your digital defense skills.'
+    longDescription: 'Calling all tech enthusiasts! This is a 6-hour journey where your squad will dive into systems, uncovering how they work and learning to protect them. It\'s an engaging test of your curiosity and problem-solving skills.'
   },
   {
     id: 'database-designing',
@@ -56,38 +56,38 @@ export const modules: Module[] = [
   {
     id: 'esports-competition',
     title: 'Esports Competition',
-    description: 'Ready to dominate the arena? Grab your gear and battle it out in PUBG, Counter-Strike, Tekken, and FIFA. The crown is waiting for you!',
+    description: 'Unleash your gaming passion. Join fellow enthusiasts to showcase your strategy and skills in some of the most popular titles in a lively, community-focused arena.',
     icon: Gamepad2,
     category: 'Gaming',
     mode: 'Individual',
     prize: 'PKR 70K',
-    longDescription: 'Welcome to the Technova Esports Arena! This is where local legends become champions. We\'ve picked the hottest titles to test your reflexes and strategy. Whether you\'re carrying your squad or fighting solo, the energy is going to be electric.',
+    longDescription: 'Welcome to the Technova Esports Arena! This is where passion meets play. We\'ve picked the hottest titles to celebrate your strategy and reflexes. Whether you\'re teaming up with your squad or playing solo, come share the excitement and show us your best moves.',
     subGames: [
       {
         id: 'pubg-mobile',
         title: 'PUBG Mobile',
-        description: 'Squad-based battle royale action. Drop in, loot up, and be the last team standing. Winner Winner Chicken Dinner!',
+        description: 'Squad-based action and strategy. Drop in, explore, and work with your team to navigate the arena in this fan-favorite title.',
         mode: 'Squad',
         prize: 'PKR 40K'
       },
       {
         id: 'counter-strike',
         title: 'Counter-Strike',
-        description: 'The ultimate tactical first-person shooter. Strategy, precision, and teamwork define the champions here.',
+        description: 'A masterpiece of tactical play. Use your precision and teamwork to navigate challenges in this iconic game.',
         mode: 'Individual',
         prize: 'PKR 40K'
       },
       {
         id: 'tekken-8',
         title: 'Tekken 8',
-        description: 'The King of Iron Fist Tournament returns. Master your combos and timing to dominate 1v1 tactical combat.',
+        description: 'Master your favorite characters and showcase your timing in friendly 1v1 tactical matches.',
         mode: 'Individual',
         prize: 'PKR 15K'
       },
       {
         id: 'fifa-25',
         title: 'FIFA 25',
-        description: 'Think you\'re the best on the pitch? Control your team and lead them to glory in this pro football simulation.',
+        description: 'Showcase your football knowledge and lead your team with skill in this immersive pro simulation.',
         mode: 'Individual',
         prize: 'PKR 15K'
       }
@@ -106,12 +106,12 @@ export const modules: Module[] = [
   {
     id: 'speed-programming',
     title: 'Speed Programming',
-    description: 'The clock is ticking! Write hyper-efficient algorithms against time and prove you\'re the fastest coder in the room.',
+    description: 'Put your logic to the test. Work through engaging algorithmic puzzles and see how elegantly you can solve challenges in a supportive atmosphere.',
     icon: Zap,
     category: 'Tech',
     mode: 'Individual',
     prize: 'PKR 65K',
-    longDescription: 'This is the ultimate test for competitive programmers. You\'ll be solving complex algorithmic challenges under extreme time constraints using C++, Python, or Java. May the fastest algorithm win!'
+    longDescription: 'This is an exciting opportunity for coding enthusiasts. You\'ll be solving intriguing algorithmic puzzles using C++, Python, or Java. It\'s a great way to showcase your thinking and build your coding confidence!'
   },
   {
     id: 'fyp-displays',
@@ -126,12 +126,12 @@ export const modules: Module[] = [
   {
     id: 'startup-launchpad',
     title: 'Startup Launchpad',
-    description: 'Got a billion-dollar vision? Pitch your startup idea to real-world investors and see if you have what it takes to be the next unicorn.',
+    description: 'Have a unique idea? Share your vision and get feedback from experienced mentors to help turn your innovative concepts into something real.',
     icon: Rocket,
     category: 'Innovation',
     mode: 'Squad',
     prize: 'PKR 100K',
-    longDescription: 'Do you have what it takes to disrupt the market? Pitch your business model, prototype, and growth strategy to a room full of potential investors. It\'s time to turn that idea into a reality.'
+    longDescription: 'Do you see a way to make a difference? Share your business concepts and prototypes with a supportive community. It\'s a fantastic platform to learn, grow, and take the first steps toward bringing your ideas to life.'
   },
   {
     id: 'prompt-engineering',

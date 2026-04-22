@@ -3,7 +3,13 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
+import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
 import { technova3Base64 } from '../assets/technova3Base64';
+import { technova6Base64 } from '../assets/technova6Base64';
+import { technova2Base64 } from '../assets/technova2Base64';
+import { technova7Base64 } from '../assets/technova7Base64';
+import { technova8Base64 } from '../assets/technova8Base64';
+import { technova9Base64 } from '../assets/technova9Base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
@@ -88,7 +94,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-8"
+              className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-[10px] sm:text-sm font-medium mb-8"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -101,7 +107,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
             >
               TECHNOVA'26
             </motion.h1>
@@ -110,7 +116,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[#2563eb] text-xl sm:text-2xl md:text-5xl lg:text-7xl font-display font-bold tracking-tight mb-8"
+              className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8"
             >
               Dream It & Ship It
             </motion.div>
@@ -271,7 +277,7 @@ export default function Home() {
             ].map((stat, index) => (
               <div 
                 key={index} 
-                className="group relative p-6 md:p-8 rounded-3xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl dark:hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] hover:-translate-y-2 transition-all duration-300 flex flex-col items-center justify-center overflow-hidden"
+                className={`group relative p-6 md:p-8 rounded-3xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl dark:hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] hover:-translate-y-2 transition-all duration-300 flex flex-col items-center justify-center overflow-hidden ${index === 4 ? 'col-span-2 md:col-span-1' : ''}`}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900 dark:text-white mb-3 flex items-baseline justify-center whitespace-nowrap relative z-10 group-hover:scale-110 transition-transform duration-300">
@@ -289,8 +295,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-                  <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white tracking-tight">A Taste of the <span className="text-blue-500">Action</span></h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl">Just a sneak peek at what's going down. With <span className="font-bold text-blue-500">10+ modules</span> ranging from intense coding battles to creative design showdowns, pick your poison.</p>
+                  <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white tracking-tight">Explore the <span className="text-blue-500">Modules</span></h2>
+              <p className="text-gray-600 dark:text-gray-400 max-w-2xl">Get a glimpse of the exciting challenges waiting for you. With <span className="font-bold text-blue-500">10+ modules</span> ranging from innovative coding sprints to creative design showcases, there's a perfect path for everyone. What will you build?</p>
             </div>
             <Link 
               to="/modules" 
@@ -301,17 +307,17 @@ export default function Home() {
           </div>
 
           <div className="relative w-full overflow-hidden">
-            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite]">
+            <div className="flex gap-6 w-max animate-[slide_15s_linear_infinite]">
               {[
-                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
-                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
+                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Put your logic to the test. Work through engaging algorithmic puzzles in a supportive atmosphere.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
+                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Explore the world of cybersecurity. Discover vulnerabilities and learn to secure digital environments.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
+                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Unleash your creativity! Craft stunning, responsive, and buttery-smooth web experiences.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
+                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Celebrate your strategy and skills in a community-focused arena with fellow enthusiasts.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
                 // Duplicate for seamless loop
-                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Fingers on the keyboard! Write hyper-efficient algorithms against a ticking clock.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
-                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Calling all ethical hackers. Find vulnerabilities, exploit systems, and secure the flags.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Got an eye for aesthetics? Build stunning, responsive, and buttery-smooth web interfaces.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Show off your gaming skills in FIFA, PUBG, Valorant, and Tekken.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
+                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Put your logic to the test. Work through engaging algorithmic puzzles in a supportive atmosphere.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
+                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Explore the world of cybersecurity. Discover vulnerabilities and learn to secure digital environments.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
+                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Unleash your creativity! Craft stunning, responsive, and buttery-smooth web experiences.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
+                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Celebrate your strategy and skills in a community-focused arena with fellow enthusiasts.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
               ].map((mod, i) => {
                 const Icon = mod.icon;
                 const TeamIcon = mod.teamIcon;
@@ -365,18 +371,18 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[400px] md:h-[600px]">
             <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl">
               <img 
-                src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1740" 
+                src={technova6Base64} 
                 alt="Highlight 1" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                <span className="text-white font-bold">The Hackathon Floor</span>
+                <span className="text-white font-bold">The Innovation Arena</span>
               </div>
             </div>
             <div className="relative group overflow-hidden rounded-3xl">
               <img 
-                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740" 
+                src={technova2Base64} 
                 alt="Highlight 2" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
@@ -384,7 +390,7 @@ export default function Home() {
             </div>
             <div className="relative group overflow-hidden rounded-3xl">
               <img 
-                src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1740" 
+                src={technova7Base64} 
                 alt="Highlight 3" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
@@ -392,7 +398,7 @@ export default function Home() {
             </div>
             <div className="col-span-1 relative group overflow-hidden rounded-3xl">
               <img 
-                src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1740" 
+                src={technova8Base64} 
                 alt="Highlight 4" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
@@ -400,7 +406,7 @@ export default function Home() {
             </div>
             <div className="col-span-1 relative group overflow-hidden rounded-3xl">
               <img 
-                src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=1712" 
+                src={technova9Base64} 
                 alt="Highlight 5" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
@@ -424,7 +430,7 @@ export default function Home() {
             <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10 pointer-events-none" />
 
             <div className="overflow-hidden py-10">
-              <div className="flex gap-12 w-max animate-[slide_40s_linear_infinite] hover:[animation-play-state:paused]">
+              <div className="flex gap-12 w-max animate-[slide_20s_linear_infinite] hover:[animation-play-state:paused]">
                 {[
                   { name: 'B Braun', logo: bBraunLogo },
                   { name: 'Telec', logo: telecLogo },
@@ -497,7 +503,22 @@ export default function Home() {
           <div className="relative w-full overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             <div className="flex gap-6 w-max px-4">
               {[
-                { name: 'Muhammad Anas', role: 'Lead Developer', dept: 'AI Automation Engineer', img: anasProfileBase64 },
+                { 
+                  name: 'Muhammad Anas', 
+                  role: 'Lead Developer', 
+                  dept: 'AI Automation Engineer', 
+                  img: anasProfileBase64,
+                  github: 'https://github.com/anasmobin',
+                  linkedin: 'https://linkedin.com/in/anasmobin'
+                },
+                { 
+                  name: 'Talha Ahmed', 
+                  role: 'Backend Developer', 
+                  dept: 'AI Development Engineer', 
+                  img: talhaAhmedBase64,
+                  github: 'https://github.com/Talhaahmad9',
+                  linkedin: 'https://linkedin.com/in/talha-ahmad9'
+                },
                 { name: 'Muhammad Abrar', role: 'UI/UX Designer', dept: 'VISUAL STRATEGY & INTERACTION', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Muheb Khawer', role: 'Backend Engineer', dept: 'BACKEND & LOGIC', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop' },
                 { name: 'Alex Rivera', role: 'Event Director', dept: 'OPERATIONS', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop' },
@@ -519,10 +540,10 @@ export default function Home() {
                     
                     {/* Social links that fade in on hover */}
                     <div className="absolute bottom-8 left-8 flex items-center gap-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
-                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+                      <a href={member.github || "https://github.com"} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
                         <Github className="w-5 h-5" />
                       </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+                      <a href={member.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
                         <Linkedin className="w-5 h-5" />
                       </a>
                       <a href="https://technova.iobm.edu.pk" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
@@ -548,21 +569,18 @@ export default function Home() {
           </div>
 
           <div className="relative group">
-            <div className="flex gap-8 animate-[slide_30s_linear_infinite] hover:[animation-play-state:paused] w-max">
+            <div className="flex gap-8 animate-[slide_15s_linear_infinite] hover:[animation-play-state:paused] w-max">
               {[
-                { name: "Ahmed Raza", role: "Past Participant", text: "Technova'25 was a game-changer for me. The networking opportunities were insane, and the modules were actually challenging!", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200" },
-                { name: "Dr. Maria Khan", role: "Industry Judge", text: "The quality of projects at Technova is truly impressive. These students aren't just coding; they are solving real-world problems.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" },
-                { name: "Zainab Ali", role: "Module Evaluator", text: "Evaluating the UI/UX battles was a highlight of my year. The creativity and attention to detail were world-class.", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200" },
-                { name: "Hamza Sheik", role: "Winning Team Lead", text: "The competition was fierce but the environment was supportive. Technova is where legends are truly forged.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+                { name: "Ahmed Raza", role: "Discoverer & Past Participant", text: "Technova'25 was an incredible journey of discovery. I met so many amazing people and explored ideas I never thought possible!" },
+                { name: "Dr. Maria Khan", role: "Industry Mentor & Judge", text: "It was inspiring to see so much curiosity and innovative thinking in one place. These students are truly building the future!" },
+                { name: "Zainab Ali", role: "Creative Strategist & Evaluator", text: "The creative energy was infectious! I loved seeing how participants combined their unique perspectives with technical skill." },
+                { name: "Hamza Sheik", role: "Visionary & Project Lead", text: "More than just a competition, it was a community. I loved the supportive vibe and the chance to learn alongside everyone." },
                 // Duplicate for loop
-                { name: "Ahmed Raza", role: "Past Participant", text: "Technova'25 was a game-changer for me. The networking opportunities were insane, and the modules were actually challenging!", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200" },
-                { name: "Dr. Maria Khan", role: "Industry Judge", text: "The quality of projects at Technova is truly impressive. These students aren't just coding; they are solving real-world problems.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" }
+                { name: "Ahmed Raza", role: "Discoverer & Past Participant", text: "Technova'25 was an incredible journey of discovery. I met so many amazing people and explored ideas I never thought possible!" },
+                { name: "Dr. Maria Khan", role: "Industry Mentor & Judge", text: "It was inspiring to see so much curiosity and innovative thinking in one place. These students are truly building the future!" }
               ].map((t, idx) => (
                 <div key={idx} className="w-[400px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 p-10 rounded-[2.5rem] relative group shadow-sm hover:shadow-2xl transition-all hover:border-blue-500/30">
                   <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white dark:border-white/10 shadow-lg group-hover:scale-110 transition-transform">
-                      <img src={t.img} alt={t.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    </div>
                     <div>
                       <h4 className="font-bold text-gray-900 dark:text-white tracking-tight">{t.name}</h4>
                       <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{t.role}</p>

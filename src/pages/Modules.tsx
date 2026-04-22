@@ -37,7 +37,7 @@ export default function Modules() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl sm:text-4xl md:text-6xl font-display font-bold mb-6 text-gray-900 dark:text-white"
           >
-            Pick Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Poison</span>
+            Discover Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Challenge</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export default function Modules() {
             transition={{ delay: 0.1 }}
             className="text-gray-600 dark:text-gray-400 text-lg md:text-xl"
           >
-            Whether you're a lone wolf coder, a dynamic duo, or a full-blown squad, we've got a challenge that has your name written all over it.
+            Whether you are working solo, teaming up as a duo, or bringing your whole squad, dive in and find the perfect challenge to showcase your skills and satisfy your curiosity.
           </motion.p>
         </div>
 

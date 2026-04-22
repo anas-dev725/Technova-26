@@ -18,27 +18,17 @@ const registerSchema = z.object({
   subGameId: z.string().optional(),
   email: z.string().email('Invalid contact email address'),
   university: z.string().min(2, 'Please enter your university name'),
-  paymentMethod: z.enum(['jazzcash', 'easypaisa', 'bank_transfer']),
+  paymentMethod: z.literal('bank_transfer'),
   members: z.array(memberSchema),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const PAYMENT_DETAILS = {
-  jazzcash: {
-    name: 'JazzCash',
-    accountTitle: 'Technova Event Fund',
-    accountNumber: '0300 1234567',
-  },
-  easypaisa: {
-    name: 'EasyPaisa',
-    accountTitle: 'Technova Event Fund',
-    accountNumber: '0345 7654321',
-  },
   bank_transfer: {
-    name: 'Bank Transfer (HBL)',
-    accountTitle: 'Technova 26 Society',
-    accountNumber: '1234 5678 9012 3456',
+    name: 'Standard Chartered Bank',
+    accountTitle: 'Institute of Business Management',
+    accountNumber: '5501309900055576',
   }
 };
 
@@ -70,7 +60,8 @@ export default function Register() {
       email: '',
       university: '',
       members: [],
-      subGameId: gameParam || ''
+      subGameId: gameParam || '',
+      paymentMethod: 'bank_transfer'
     }
   });
 
@@ -79,7 +70,6 @@ export default function Register() {
     name: "members"
   });
 
-  const selectedPaymentType = watch('paymentMethod');
   const selectedSubGameId = watch('subGameId');
 
   useEffect(() => {
@@ -404,30 +394,28 @@ export default function Register() {
                       Payment Verification
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {(['easypaisa', 'jazzcash', 'bank_transfer'] as const).map((method) => (
-                        <label 
-                          key={method}
-                          className={`relative flex flex-col items-center justify-center py-6 px-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedPaymentType === method ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/10 shadow-lg' : 'border-gray-200 dark:border-white/5 hover:border-blue-200'}`}
-                        >
-                          <input {...register('paymentMethod')} type="radio" value={method} className="sr-only" />
-                          <span className="text-sm font-bold capitalize">{method.replace('_', ' ')}</span>
-                        </label>
-                      ))}
+                    <div className="grid grid-cols-1 gap-6">
+                      <div className="p-8 rounded-[2.5rem] bg-blue-600/5 dark:bg-blue-600/20 border border-blue-600/20 shadow-sm relative overflow-hidden group">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                          <div>
+                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Bank Name</p>
+                            <p className="text-lg font-bold text-gray-900 dark:text-white">{PAYMENT_DETAILS.bank_transfer.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Account Title</p>
+                            <p className="text-lg font-bold text-gray-900 dark:text-white">{PAYMENT_DETAILS.bank_transfer.accountTitle}</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Account Number</p>
+                            <p className="text-lg font-mono font-bold text-blue-600 dark:text-blue-400">
+                              {PAYMENT_DETAILS.bank_transfer.accountNumber}
+                            </p>
+                          </div>
+                        </div>
+                        <input type="hidden" value="bank_transfer" {...register('paymentMethod')} />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                      </div>
                     </div>
-                    
-                    {selectedPaymentType && (
-                      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-8 rounded-[2rem] bg-blue-600/5 dark:bg-blue-600/20 border border-blue-600/20 flex flex-col sm:flex-row justify-between gap-6">
-                        <div>
-                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Pay to Title</p>
-                          <p className="text-xl font-bold">{PAYMENT_DETAILS[selectedPaymentType].accountTitle}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Account Number</p>
-                          <p className="text-xl font-mono font-bold text-blue-600 dark:text-blue-400">{PAYMENT_DETAILS[selectedPaymentType].accountNumber}</p>
-                        </div>
-                      </motion.div>
-                    )}
 
                     {/* Receipt Upload */}
                     <div className="space-y-6">

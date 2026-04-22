@@ -87,9 +87,9 @@ export default function ModuleDetail() {
                         <div className="space-y-2">
                           <h3 className="text-4xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-3">
                             <Gamepad2 className="w-10 h-10 text-blue-600" />
-                            Pick Your Stage
+                            Explore the Games
                           </h3>
-                          <p className="text-gray-500 font-medium">Choose one (or all) of these titles to dominate!</p>
+                          <p className="text-gray-500 font-medium">Choose a title to showcase your skills and have some fun!</p>
                         </div>
                       </div>
 
@@ -142,7 +142,7 @@ export default function ModuleDetail() {
                     </h3>
                   <ul className="space-y-4 list-none p-0">
                     {[
-                      'High-stakes competitive environment',
+                      'Innovative and collaborative environment',
                       'Networking with industry professionals',
                       'Official Technova\'26 Certificate of Participation',
                       'Exclusive event merchandise for top performers'

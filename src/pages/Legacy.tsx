@@ -7,26 +7,36 @@ import { technova4Base64 } from '../assets/technova4Base64';
 
 export default function Legacy() {
   const stats = [
-    { label: 'Participants', value: '1,200+', icon: Users },
-    { label: 'Universities', value: '30+', icon: Globe },
-    { label: 'Competitions', value: '12+', icon: Zap },
-    { label: 'Prize Pool', value: 'PKR 400K', icon: Trophy }
+    { label: 'Total Footfall', value: '3,000+', icon: Users },
+    { label: 'Universities', value: '25+', icon: Globe },
+    { label: 'Modules', value: '5+', icon: Zap },
+    { label: 'Prize Awards', value: 'Upto PKR 200K', icon: Trophy }
   ];
 
   const highlights = [
     {
-      title: "Opening Ceremony",
-      desc: "A breathtaking commencement that ignited the spark of innovation. Industry pioneers and visionary keynotes shared their journeys, bridging the gap between classroom theory and real-world impact. The atmosphere was charged with high-octane energy as 1,200 participants prepared for an unforgettable technological odyssey.",
+      title: "A Historic First for IoBM",
+      desc: "Organized under the College of Computer Science and Information Systems and the IEEE student branch, Technova'25 marked IoBM's very first technology-centric competition. It launched with a special AI symposium featuring IoBM Rector Prof. Dr. Tariq Rahim Soomro, alongside industry leaders from Microsoft Pakistan and Telec Group, exploring the future of artificial intelligence.",
+      quote: {
+        text: "This was the first tech-centric event in the history of IoBM... Around 500+ participants and visitors, excluding university students and staff who made up a footfall of around 2500 to 3000 people.",
+        author: "Muhammad Anas",
+        role: "Vice President, Technova"
+      },
       img: technova1Base64
     },
     {
-      title: "The Battle Grounds",
-      desc: "This wasn't just a competition; it was a digital arena. From the relentless pressure of Speed Programming to the intricate creative wars of UI/UX battles, every module was meticulously designed to push cognitive boundaries. We saw code that didn't just run—it sang—and designs that redefined user experiences for a new generation.",
+      title: "A Fusion of Tech and Creativity",
+      desc: "Challenging minds from over 25 universities, the event featured a unique blend of technical and non-technical modules. Participants demonstrated accurate coding under pressure in Speed Programming, while others showcased creative flair in Web and Logo Designing, Prompt Engineering, and Maths Mania. During the Final Year Project showcase, teams presented innovative ideas that even received instant investment offers.",
       img: technova5Base64
     },
     {
-      title: "Grand Finale",
-      desc: "The culmination of grit, sweat, and thousands of lines of code. The closing ceremony was a celebration of resilience where champions were crowned and new alliances were forged. As the prize pool of PKR 400K was distributed, the true victory was clear: a stronger, more connected community of builders ready to take on the world.",
+      title: "Igniting Startups & Innovation",
+      desc: "The Startup Launchpad provided a platform for the youth to pitch impactful business ideas. The top spot was claimed by mechanical engineering student Ayaan Amir with his startup 'GreenBite'. The judges were so impressed by the health-conscious solution that they explicitly encouraged his team to reach out to them for further development and backing.",
+      quote: {
+        text: "There is a demand for a service for health-conscious individuals who want a reliable, daily meal solution without compromising on flavour or budget.",
+        author: "Ayaan Amir",
+        role: "Winner, Startup Launchpad"
+      },
       img: technova4Base64
     }
   ];
@@ -134,9 +144,18 @@ export default function Legacy() {
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6 tracking-tight underline decoration-blue-500/30 underline-offset-8">
                   {item.title}
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-medium mb-6">
                   {item.desc}
                 </p>
+                {item.quote && (
+                  <div className="pl-6 border-l-4 border-blue-500 space-y-3">
+                    <p className="text-gray-800 dark:text-gray-200 italic font-medium leading-relaxed">"{item.quote.text}"</p>
+                    <div>
+                      <p className="font-bold text-gray-900 dark:text-white">{item.quote.author}</p>
+                      <p className="text-xs font-bold text-blue-500 uppercase tracking-widest mt-1">{item.quote.role}</p>
+                    </div>
+                  </div>
+                )}
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
