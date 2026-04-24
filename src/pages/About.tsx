@@ -23,7 +23,6 @@ import { ieeeLogoBase64 } from '../assets/ieeeLogoBase64';
 
 import { technova10Base64 } from '../assets/technova10Base64';
 import { technova4Base64 } from '../assets/technova4Base64';
-import { technova4Base64 } from '../assets/technova4Base64';
 
 export default function About() {
   const sections = [
