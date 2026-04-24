@@ -71,9 +71,9 @@ service cloud.firestore {
                       incoming().status == 'pending';
 
       allow update: if isAdmin() && 
-                      isValidSubmission(incoming()) && 
-                      // Only let admins change status or specific fields
-                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'totalFee']);
+                      incoming().status in ['pending', 'approved', 'rejected'] &&
+                      incoming().updatedAt == request.time &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
 
       allow delete: if isAdmin();
     }

@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { modules, getFees } from '../data/modules';
 import { submissionService } from '../services/submissionService';
+import { emailService } from '../services/emailService';
 
 import { auth } from '../lib/firebase';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
@@ -166,6 +167,15 @@ export default function Register() {
         receiptBase64: receiptPreview,
         totalFee: currentModuleFee
       });
+
+      /* 
+      // Send initial confirmation email
+      await emailService.sendSubmissionConfirmation(
+        data.email, 
+        data.members[0].fullName, 
+        subGame?.title || selectedModule.title
+      );
+      */
       
       setIsSubmitted(true);
     } catch (err: any) {

@@ -107,7 +107,10 @@ export const submissionService = {
   async updateStatus(submissionId: string, status: Submission['status']) {
     try {
       const docRef = doc(db, 'submissions', submissionId);
-      await updateDoc(docRef, { status });
+      await updateDoc(docRef, { 
+        status,
+        updatedAt: serverTimestamp()
+      });
     } catch (error) {
       handleFirestoreError(error, 'update', `submissions/${submissionId}`);
     }

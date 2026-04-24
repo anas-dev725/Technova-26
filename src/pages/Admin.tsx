@@ -11,6 +11,7 @@ import {
   ChevronRight, 
   ExternalLink,
   Shield,
+  CreditCard,
   LogOut,
   ArrowUpDown,
   AlertCircle,
@@ -23,6 +24,7 @@ import {
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
 import { submissionService, Submission } from '../services/submissionService';
+import { emailService } from '../services/emailService';
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -96,10 +98,23 @@ export default function Admin() {
 
   const handleStatusUpdate = async (id: string, status: Submission['status']) => {
     try {
+      const sub = submissions.find(s => s.id === id);
       await submissionService.updateStatus(id, status);
+      
       if (selectedSubmission?.id === id) {
         setSelectedSubmission({ ...selectedSubmission, status });
       }
+
+      /*
+      // Send email notification based on status
+      if (sub && sub.email && sub.members?.[0]) {
+        if (status === 'approved') {
+          await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+        } else if (status === 'rejected') {
+          await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+        }
+      }
+      */
     } catch (error) {
       console.error('Status update error:', error);
     }
@@ -249,71 +264,71 @@ export default function Admin() {
       <div className="max-w-7xl mx-auto space-y-10">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-3 text-blue-500 font-bold tracking-widest text-sm uppercase mb-3">
-              <span className="w-8 h-[2px] bg-blue-500"></span>
+            <div className="flex items-center gap-2 text-blue-500 font-bold tracking-widest text-[10px] uppercase mb-1">
+              <span className="w-6 h-[1px] bg-blue-500"></span>
               Control Panel
             </div>
-            <h1 className="text-5xl md:text-6xl font-display font-black text-gray-900 dark:text-white tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-display font-black text-gray-900 dark:text-white tracking-tight">
               Submissions <span className="text-blue-500">Live</span>
             </h1>
           </div>
-          <div className="flex items-center gap-4 bg-white dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 backdrop-blur-md">
-            <div className="px-4">
-              <div className="text-xs text-gray-500 font-medium uppercase">Admin User</div>
-              <div className="text-sm font-bold text-gray-900 dark:text-white">{user.email}</div>
+          <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-1.5 rounded-xl border border-gray-200 dark:border-white/10 backdrop-blur-md">
+            <div className="px-3">
+              <div className="text-[10px] text-gray-500 font-medium uppercase">Admin</div>
+              <div className="text-xs font-bold text-gray-900 dark:text-white">{user.email}</div>
             </div>
             <button 
               onClick={handleLogout}
-              className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
+              className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Submissions', value: stats.total, color: 'blue', icon: Users },
-            { label: 'Pending Review', value: stats.pending, color: 'amber', icon: Clock },
-            { label: 'Approved Teams', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
-            { label: 'Rejected Entries', value: stats.rejected, color: 'rose', icon: XCircle },
+            { label: 'Total', value: stats.total, color: 'blue', icon: Users },
+            { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
+            { label: 'Approved', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
+            { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
           ].map((stat, i) => (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.1 }}
               key={stat.label}
-              className={`p-8 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden relative group`}
+              className={`p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden relative group`}
             >
-              <div className={`absolute top-0 right-0 w-32 h-32 bg-${stat.color}-500/10 rounded-bl-full translate-x-12 -translate-y-12 transition-transform group-hover:scale-110`}></div>
-              <div className={`w-14 h-14 rounded-2xl bg-${stat.color}-500/10 flex items-center justify-center mb-6 border border-${stat.color}-500/20`}>
-                <stat.icon className={`w-7 h-7 text-${stat.color}-500`} />
+              <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 rounded-bl-full translate-x-12 -translate-y-12`}></div>
+              <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
+                <stat.icon className={`w-5 h-5 text-${stat.color}-500`} />
               </div>
-              <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">{stat.value}</div>
-              <div className="text-sm font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
+              <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
+              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
             </motion.div>
           ))}
         </div>
 
         {/* Filters & Actions */}
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-4 border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden">
-          <div className="p-6 md:p-10 border-b border-gray-100 dark:border-white/5 flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="relative w-full lg:max-w-md group">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors group-focus-within:text-blue-500" />
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-2xl p-2 border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden">
+          <div className="p-4 md:p-6 border-b border-gray-100 dark:border-white/5 flex flex-col lg:flex-row items-center justify-between gap-4">
+            <div className="relative w-full lg:max-w-xs group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-colors group-focus-within:text-blue-500" />
               <input 
                 type="text" 
-                placeholder="Search by team, uni or email..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-8 py-5 bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white font-medium"
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border-2 border-transparent focus:border-blue-500 outline-none transition-all text-sm text-gray-900 dark:text-white font-medium"
               />
             </div>
             
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5">
                 {[
                   { id: 'all', label: 'All' },
                   { id: 'pending', label: 'Pending' },
@@ -323,9 +338,9 @@ export default function Admin() {
                   <button
                     key={status.id}
                     onClick={() => setFilterStatus(status.id)}
-                    className={`px-6 py-3 rounded-xl text-sm font-bold transition-all ${
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                       filterStatus === status.id 
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
                         : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                     }`}
                   >
@@ -334,21 +349,70 @@ export default function Admin() {
                 ))}
               </div>
               <button 
-                className="px-6 py-5 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold flex items-center gap-3 hover:scale-105 transition-transform"
+                className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
                 onClick={() => {
-                  const csvContent = filteredSubmissions.map(s => 
-                    `${s.email},${s.moduleTitle},${s.university},${s.status}`
-                  ).join('\n');
-                  const blob = new Blob([csvContent], { type: 'text/csv' });
+                  const maxMembers = Math.max(...filteredSubmissions.map(s => s.members.length), 5);
+                  const headers = [
+                    'Submission ID',
+                    'Date',
+                    'Lead Name',
+                    'Lead Email',
+                    'Module',
+                    'Sub-Game',
+                    'University',
+                    'Total Fee (PKR)',
+                    'Status'
+                  ];
+
+                  for (let i = 1; i <= maxMembers; i++) {
+                    headers.push(`Member ${i} Name`, `Member ${i} CNIC`, `Member ${i} Contact`);
+                  }
+
+                  const escapeCSV = (val: any) => {
+                    if (val === undefined || val === null) return '""';
+                    const str = String(val).replace(/"/g, '""');
+                    return `"${str}"`;
+                  };
+
+                  const csvRows = [headers.join(',')];
+
+                  filteredSubmissions.forEach(s => {
+                    const date = s.submittedAt?.toDate ? s.submittedAt.toDate().toLocaleString() : 'N/A';
+                    const row = [
+                      escapeCSV(s.id),
+                      escapeCSV(date),
+                      escapeCSV(s.members[0]?.fullName),
+                      escapeCSV(s.email),
+                      escapeCSV(s.moduleTitle),
+                      escapeCSV(s.subGameTitle || 'N/A'),
+                      escapeCSV(s.university),
+                      escapeCSV(s.totalFee),
+                      escapeCSV(s.status.toUpperCase())
+                    ];
+
+                    for (let i = 0; i < maxMembers; i++) {
+                      const member = s.members[i];
+                      if (member) {
+                        row.push(escapeCSV(member.fullName), escapeCSV(member.cnic), escapeCSV(member.contactNumber));
+                      } else {
+                        row.push('""', '""', '""');
+                      }
+                    }
+
+                    csvRows.push(row.join(','));
+                  });
+
+                  const csvContent = csvRows.join('\n');
+                  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                   const url = window.URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.href = url;
-                  a.download = 'submissions.csv';
+                  a.download = `technova_submissions_${new Date().toISOString().slice(0,10)}.csv`;
                   a.click();
                 }}
               >
-                <Download className="w-5 h-5" />
-                Export CSV
+                <Download className="w-4 h-4" />
+                Export
               </button>
             </div>
           </div>
@@ -357,12 +421,12 @@ export default function Admin() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-white/5">
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Team Leader / Email</th>
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Module</th>
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">University</th>
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Date</th>
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Status</th>
-                  <th className="px-10 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Leader</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">University</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -374,73 +438,73 @@ export default function Admin() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       key={sub.id} 
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      onClick={() => setSelectedSubmission(sub)}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:scale-[0.998]"
                     >
-                      <td className="px-10 py-8">
-                        <div className="font-bold text-gray-900 dark:text-white text-lg">{sub.members[0].fullName}</div>
-                        <div className="text-gray-500 text-sm">{sub.email}</div>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-blue-500 transition-colors uppercase tracking-tight">{sub.members[0].fullName}</div>
+                        <div className="text-gray-500 text-[10px] font-medium">{sub.email}</div>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 text-blue-500 font-bold text-sm">
-                          {sub.moduleTitle}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 font-bold text-[10px] w-fit">
+                            {sub.moduleTitle}
+                          </div>
                         </div>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="font-medium text-gray-700 dark:text-gray-300">{sub.university}</div>
+                      <td className="px-6 py-4">
+                        <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[150px]">{sub.university}</div>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="text-gray-500 dark:text-gray-400 font-mono text-sm">
-                          {sub.submittedAt?.toDate().toLocaleDateString()}
+                      <td className="px-6 py-4">
+                        <div className="text-gray-500 dark:text-gray-400 font-bold text-[10px]">
+                          {sub.submittedAt?.toDate().toLocaleDateString('en-GB')}
                         </div>
                       </td>
-                      <td className="px-10 py-8">
-                        <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black uppercase tracking-tight
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider
                           ${sub.status === 'approved' ? 'bg-emerald-500/10 text-emerald-500' : 
                             sub.status === 'rejected' ? 'bg-rose-500/10 text-rose-500' : 
                             'bg-amber-500/10 text-amber-500'}
                         `}>
-                          <span className={`w-2 h-2 rounded-full animate-pulse
+                          <span className={`w-1.5 h-1.5 rounded-full
                             ${sub.status === 'approved' ? 'bg-emerald-500' : 
                               sub.status === 'rejected' ? 'bg-rose-500' : 
-                              'bg-amber-500'}
+                              'bg-amber-500 animate-pulse'}
                           `}></span>
                           {sub.status}
                         </span>
                       </td>
-                      <td className="px-10 py-8 space-x-3">
-                        <button 
-                          onClick={() => setSelectedSubmission(sub)}
-                          className="p-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-blue-600 hover:text-white transition-all"
-                        >
-                          <Eye className="w-5 h-5" />
-                        </button>
-                        <button 
-                          onClick={() => handleStatusUpdate(sub.id!, 'approved')}
-                          disabled={sub.status === 'approved'}
-                          className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all"
-                        >
-                          <CheckCircle2 className="w-5 h-5" />
-                        </button>
-                        <button 
-                          onClick={() => handleStatusUpdate(sub.id!, 'rejected')}
-                          disabled={sub.status === 'rejected'}
-                          className="p-3 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white disabled:opacity-30 transition-all"
-                        >
-                          <XCircle className="w-5 h-5" />
-                        </button>
+                      <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button 
+                            onClick={() => setSelectedSubmission(sub)}
+                            className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+                          <button 
+                            onClick={() => handleStatusUpdate(sub.id!, 'approved')}
+                            disabled={sub.status === 'approved'}
+                            className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button 
+                            onClick={() => handleStatusUpdate(sub.id!, 'rejected')}
+                            disabled={sub.status === 'rejected'}
+                            className="p-2 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                          >
+                            <XCircle className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
                 {filteredSubmissions.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-10 py-20 text-center">
-                      <div className="flex flex-col items-center gap-4 text-gray-500">
-                        <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
-                          <Search className="w-10 h-10" />
-                        </div>
-                        <p className="text-xl font-bold">No submissions match your criteria.</p>
-                      </div>
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 italic text-sm">
+                      No matching records found.
                     </td>
                   </tr>
                 )}
@@ -462,141 +526,188 @@ export default function Admin() {
               className="fixed inset-0 bg-black/80 backdrop-blur-md z-[60]"
             />
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-4 md:inset-x-auto md:inset-y-10 md:w-full md:max-w-4xl left-1/2 -translate-x-1/2 bg-white dark:bg-[#0f0f0f] rounded-[3rem] z-[70] overflow-hidden border border-gray-200 dark:border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] flex flex-col"
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              className="fixed left-4 right-4 top-4 bottom-4 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[90%] md:max-w-4xl md:h-[85vh] bg-white dark:bg-[#0c0c0c] rounded-2xl md:rounded-[2rem] z-[70] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl flex flex-col"
             >
-              <div className="p-8 md:p-12 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50 dark:bg-white/5">
-                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 rounded-[1.5rem] bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                    <FileText className="w-8 h-8 text-blue-500" />
+              {/* Modal Header */}
+              <div className="shrink-0 p-5 md:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                    <FileText className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-black text-gray-900 dark:text-white leading-tight">Registration Detail</h2>
-                    <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Ref ID: {selectedSubmission.id}</p>
+                    <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white leading-tight uppercase tracking-tight">Submission Detail</h2>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[9px] font-black text-blue-500/60 uppercase tracking-widest">Ref: {selectedSubmission.id?.slice(-8)}</span>
+                    </div>
                   </div>
                 </div>
                 <button 
                   onClick={() => setSelectedSubmission(null)}
-                  className="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-500"
+                  className="p-2 md:p-3 rounded-xl border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 >
-                  <XCircle className="w-8 h-8" />
+                  <XCircle className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
 
-              <div className="flex-grow overflow-y-auto p-8 md:p-12 space-y-12">
-                
-                <div className="grid md:grid-cols-2 gap-10">
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Module Details</h3>
-                      <div className="bg-gray-50 dark:bg-white/5 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
-                        <div className="text-2xl font-black text-blue-500 mb-1">{selectedSubmission.moduleTitle}</div>
-                        {selectedSubmission.subGameTitle && (
-                          <div className="text-gray-900 dark:text-white font-bold text-lg mb-2">Game: {selectedSubmission.subGameTitle}</div>
-                        )}
-                        <div className="text-gray-500">Registered on {selectedSubmission.submittedAt?.toDate().toLocaleString()}</div>
-                      </div>
-                    </div>
+              {/* Modal Content Scrollable */}
+              <div className="flex-grow overflow-y-auto custom-scrollbar">
+                <div className="p-5 md:p-8 space-y-8 md:space-y-12">
+                  
+                  {/* Top Info Grid */}
+                  <div className="grid lg:grid-cols-2 gap-8 md:gap-10">
+                    
+                    {/* Primary Info */}
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <section>
+                          <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Lead</h3>
+                          <div className="flex flex-col">
+                            <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-tight">{selectedSubmission.members[0].fullName}</span>
+                            <span className="text-xs text-blue-500 font-bold mt-1 break-all">{selectedSubmission.email}</span>
+                          </div>
+                        </section>
 
-                    <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Primary Contact</h3>
-                      <div className="space-y-2">
-                        <div className="text-sm font-bold text-gray-500">Email Address</div>
-                        <div className="text-xl font-bold dark:text-white group flex items-center gap-2">
-                          {selectedSubmission.email}
-                          <a href={`mailto:${selectedSubmission.email}`} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500">
-                            <ExternalLink className="w-5 h-5" />
-                          </a>
+                        <section>
+                          <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Institution</h3>
+                          <div className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight leading-tight">
+                            {selectedSubmission.university}
+                          </div>
+                        </section>
+                      </div>
+
+                      <div className="p-5 rounded-2xl bg-blue-500/[0.03] border border-blue-500/10">
+                        <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Module Details</h3>
+                        <div className="space-y-1">
+                          <div className="text-xl font-black text-blue-500 uppercase tracking-tight">
+                            {selectedSubmission.moduleTitle}
+                          </div>
+                          {selectedSubmission.subGameTitle && (
+                            <div className="text-xs font-bold text-gray-900 dark:text-white/80 uppercase tracking-widest">
+                              — {selectedSubmission.subGameTitle}
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-blue-500/10 flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Fee</span>
+                          <span className="text-xl font-black text-emerald-500 tracking-tight">PKR {selectedSubmission.totalFee}</span>
                         </div>
                       </div>
                     </div>
 
+                    {/* Receipt Preview */}
                     <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">University</h3>
-                      <div className="text-xl font-bold dark:text-white">{selectedSubmission.university}</div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Payment Receipt</h3>
-                      <div className="relative group rounded-3xl overflow-hidden border-2 border-gray-200 dark:border-white/10 aspect-[4/3] bg-black">
+                      <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
+                        <CreditCard className="w-3 h-3" />
+                        Receipt
+                      </h3>
+                      <div className="relative group rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 aspect-video bg-gray-50 dark:bg-black/20">
                         <img 
                           src={selectedSubmission.receiptBase64} 
                           alt="Receipt" 
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain p-2"
                         />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                        <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-3 backdrop-blur-sm px-4">
                           <button 
                             onClick={() => {
                               const link = document.createElement('a');
                               link.href = selectedSubmission.receiptBase64;
-                              link.download = `receipt_${selectedSubmission.id}.png`;
+                              link.download = `receipt_${selectedSubmission.members[0].fullName.replace(/\s+/g, '_')}.png`;
                               link.click();
                             }}
-                            className="px-6 py-3 rounded-xl bg-white text-black font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                            className="p-3 rounded-lg bg-white text-black font-black hover:scale-110 active:scale-95 transition-all"
+                            title="Download"
                           >
-                            <Download className="w-5 h-5" />
-                            Download
+                            <Download className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => window.open(selectedSubmission.receiptBase64)}
+                            className="p-3 rounded-lg bg-blue-600 text-white font-black hover:scale-110 active:scale-95 transition-all"
+                            title="Open in New Tab"
+                          >
+                            <ExternalLink className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Team Members</h3>
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    {selectedSubmission.members.map((member, i) => (
-                      <div key={i} className="p-6 rounded-3xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center font-bold text-blue-500">
-                          {i + 1}
-                        </div>
-                        <div>
-                          <div className="font-bold text-gray-900 dark:text-white text-lg">{member.fullName}</div>
-                          <div className="text-sm text-gray-500 space-y-1 mt-1">
-                            <div>CNIC: {member.cnic}</div>
-                            <div>Contact: {member.contactNumber}</div>
+                  {/* Team Members Section */}
+                  <div>
+                    <div className="flex items-center gap-4 mb-6">
+                      <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] shrink-0">Team Portfolio ({selectedSubmission.members.length})</h3>
+                      <div className="h-px flex-1 bg-gray-100 dark:bg-white/5"></div>
+                    </div>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedSubmission.members.map((member, i) => (
+                        <div key={i} className="p-5 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-4 relative group">
+                          <div className="absolute top-4 right-4 text-3xl font-black text-gray-200/40 dark:text-white/[0.02] select-none italic">
+                            #{i + 1}
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                              <UserIcon className="w-4 h-4 text-blue-500" />
+                            </div>
+                            <div className="font-black text-gray-900 dark:text-white text-sm uppercase truncate pr-8">
+                              {member.fullName}
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex flex-col p-2 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5">
+                              <span className="text-[8px] font-black text-gray-400 uppercase leading-none mb-1">CNIC</span>
+                              <span className="font-mono text-xs text-blue-500 font-bold">{member.cnic}</span>
+                            </div>
+                            <div className="flex flex-col p-2 bg-white dark:bg-black/20 rounded-lg border border-gray-100 dark:border-white/5">
+                              <span className="text-[8px] font-black text-gray-400 uppercase leading-none mb-1">PHONE</span>
+                              <span className="font-mono text-xs text-emerald-500 font-bold">{member.contactNumber}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
+                </div>
               </div>
 
-              <div className="p-10 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 flex items-center justify-end gap-6">
+              {/* Modal Footer */}
+              <div className="shrink-0 p-5 md:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row items-center gap-4">
                 <div className="mr-auto">
-                  <div className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Current Status</div>
-                  <div className={`text-xl font-black uppercase ${selectedSubmission.status === 'approved' ? 'text-emerald-500' : selectedSubmission.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}`}>
+                  <div className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Application Status</div>
+                  <div className={`text-lg font-black uppercase tracking-tight ${
+                    selectedSubmission.status === 'approved' ? 'text-emerald-500' : 
+                    selectedSubmission.status === 'rejected' ? 'text-rose-500' : 
+                    'text-amber-500'
+                  }`}>
                     {selectedSubmission.status}
                   </div>
                 </div>
                 
-                <button 
-                  onClick={() => handleStatusUpdate(selectedSubmission.id!, 'rejected')}
-                  className={`px-10 py-5 rounded-2xl font-bold transition-all border ${
-                    selectedSubmission.status === 'rejected' 
-                      ? 'bg-rose-500 text-white border-rose-600' 
-                      : 'border-rose-500 text-rose-500 hover:bg-rose-500 hover:text-white'
-                  }`}
-                >
-                  Reject Submission
-                </button>
-                <button 
-                  onClick={() => handleStatusUpdate(selectedSubmission.id!, 'approved')}
-                  className={`px-10 py-5 rounded-2xl font-bold transition-all ${
-                    selectedSubmission.status === 'approved' 
-                      ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-500/20' 
-                      : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                  }`}
-                >
-                  Approve Entry
-                </button>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button 
+                    onClick={() => handleStatusUpdate(selectedSubmission.id!, 'rejected')}
+                    className={`flex-1 sm:flex-none px-6 py-3 rounded-xl font-black transition-all border-2 text-[10px] uppercase tracking-widest ${
+                      selectedSubmission.status === 'rejected' 
+                        ? 'bg-rose-500 text-white border-rose-500' 
+                        : 'border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white'
+                    }`}
+                  >
+                    Reject
+                  </button>
+                  <button 
+                    onClick={() => handleStatusUpdate(selectedSubmission.id!, 'approved')}
+                    className={`flex-1 sm:flex-none px-6 py-3 rounded-xl font-black transition-all text-[10px] uppercase tracking-widest ${
+                      selectedSubmission.status === 'approved' 
+                        ? 'bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-500/10' 
+                        : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                    }`}
+                  >
+                    Approve
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>
