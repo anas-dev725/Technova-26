@@ -45,7 +45,7 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     const ai = getGenAI();
     
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-1.5-flash",
       contents: [
         ...history.map(h => ({ role: h.role, parts: h.parts })),
         { role: 'user', parts: [{ text: message }] }
@@ -58,9 +58,16 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     return response.text || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
-    if (error instanceof Error && error.message.includes("GEMINI_API_KEY")) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    
+    if (errorMsg.includes("GEMINI_API_KEY")) {
       return "The AI is currently unavailable because the API key is not configured. Please contact the administrator.";
     }
+    
+    if (errorMsg.includes("429") || errorMsg.includes("quota")) {
+      return "I've hit my daily chat limit! Please try again in a bit or email us at contact@technova26.edu.";
+    }
+
     return "I'm experiencing some technical difficulties. Please check back in a moment or email us at contact@technova26.edu.";
   }
 }
