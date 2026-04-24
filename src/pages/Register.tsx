@@ -158,8 +158,8 @@ export default function Register() {
       await submissionService.createSubmission({
         moduleId: selectedModule.id,
         moduleTitle: selectedModule.title,
-        subGameId: data.subGameId,
-        subGameTitle: subGame?.title,
+        subGameId: data.subGameId || null,
+        subGameTitle: subGame?.title || null,
         email: data.email,
         university: data.university,
         members: data.members,

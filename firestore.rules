@@ -46,6 +46,7 @@ service cloud.firestore {
              data.university is string && data.university.size() <= 200 &&
              data.status in ['pending', 'approved', 'rejected'] &&
              data.totalFee is number && data.totalFee >= 0 &&
+             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 &&
              data.members is list && data.members.size() >= 1 && data.members.size() <= 10 &&
              data.members[0].fullName is string && data.members[0].fullName.size() <= 100 &&
              data.submittedAt == request.time;

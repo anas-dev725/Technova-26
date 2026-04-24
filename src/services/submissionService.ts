@@ -65,8 +65,13 @@ function handleFirestoreError(error: any, operationType: FirestoreErrorInfo['ope
 export const submissionService = {
   async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt'>) {
     try {
+      // Filter out undefined values to satisfy Firestore
+      const cleanData = Object.fromEntries(
+        Object.entries(submission).filter(([_, v]) => v !== undefined)
+      );
+
       const docRef = await addDoc(collection(db, 'submissions'), {
-        ...submission,
+        ...cleanData,
         status: 'pending',
         submittedAt: serverTimestamp(),
       });
