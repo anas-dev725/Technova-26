@@ -1,7 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { modules } from "../data/modules";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+let genAI: GoogleGenerativeAI | null = null;
+
+function getGenAI() {
+  if (!genAI) {
+    // In Vite/Client-side, process.env.GEMINI_API_KEY might be defined by Vite
+    const apiKey = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || (import.meta.env.VITE_GEMINI_API_KEY as string);
+
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is missing");
+    }
+    genAI = new GoogleGenerativeAI(apiKey);
+  }
+  return genAI;
+}
 
 const SYSTEM_INSTRUCTION = `
 You are the official AI assistant for Technova '26, a 48-hour non-stop tech marathon at IoBM, Karachi.
@@ -29,20 +42,25 @@ Highlights: Check out the Legacy page for Technova '25 vibes.
 
 export async function chatWithAI(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const ai = getGenAI();
+    const model = ai.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_INSTRUCTION,
+    });
+
+    const result = await model.generateContent({
       contents: [
         ...history.map(h => ({ role: h.role, parts: h.parts })),
         { role: 'user', parts: [{ text: message }] }
       ],
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-      },
     });
 
-    return response.text || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
+    return result.response.text() || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
+    if (error instanceof Error && error.message.includes("GEMINI_API_KEY")) {
+      return "The AI is currently unavailable because the API key is not configured. Please contact the administrator.";
+    }
     return "I'm experiencing some technical difficulties. Please check back in a moment or email us at contact@technova26.edu.";
   }
 }
