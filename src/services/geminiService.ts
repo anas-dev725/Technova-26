@@ -1,22 +1,22 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { modules } from "../data/modules";
 
-let genAI: GoogleGenerativeAI | null = null;
+let genAI: GoogleGenAI | null = null;
 
 function getGenAI() {
   if (!genAI) {
-    // In Vite (SPA), we must use import.meta.env for variables prefixed with VITE_
-    const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
+    // In Vite (SPA), we must use process.env.GEMINI_API_KEY as per skill guidance
+    const apiKey = (process.env.GEMINI_API_KEY as string) || (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is missing");
     }
-    genAI = new GoogleGenerativeAI(apiKey);
+    genAI = new GoogleGenAI({ apiKey });
   }
   return genAI;
 }
 
-console.log("KEY:", import.meta.env.VITE_GEMINI_API_KEY?.slice(0, 6) || "missing");
+// No longer logging key for production
 
 const SYSTEM_INSTRUCTION = `
 You are the official AI assistant for Technova '26, a 48-hour non-stop tech marathon at IoBM, Karachi.
@@ -45,19 +45,19 @@ Highlights: Check out the Legacy page for Technova '25 vibes.
 export async function chatWithAI(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
   try {
     const ai = getGenAI();
-    const model = ai.getGenerativeModel({
-      model: "gemini-2.5-flash-preview-04-17",
-      systemInstruction: SYSTEM_INSTRUCTION,
-    });
-
-    const result = await model.generateContent({
+    
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-preview",
       contents: [
         ...history.map(h => ({ role: h.role, parts: h.parts })),
         { role: 'user', parts: [{ text: message }] }
       ],
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+      },
     });
 
-    return result.response.text() || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
+    return response.text || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
     if (error instanceof Error && error.message.includes("GEMINI_API_KEY")) {
