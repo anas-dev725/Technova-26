@@ -46,7 +46,7 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
   try {
     const ai = getGenAI();
     const model = ai.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash-preview-05-20",
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
