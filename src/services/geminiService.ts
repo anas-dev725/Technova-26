@@ -16,6 +16,8 @@ function getGenAI() {
   return genAI;
 }
 
+console.log("KEY:", import.meta.env.VITE_GEMINI_API_KEY?.slice(0, 6) || "missing");
+
 const SYSTEM_INSTRUCTION = `
 You are the official AI assistant for Technova '26, a 48-hour non-stop tech marathon at IoBM, Karachi.
 Your vibe is hyped, fun, and super conversational—like a tech-savvy friend.
