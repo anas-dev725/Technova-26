@@ -12,7 +12,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   id: 'init',
-  text: "Hey! I'm your Technova AI buddy. Feel free to ask any queries you have.",
+  text: "hey i'm your technova ai buddy feel free to ask any queries you have",
   sender: 'bot',
   timestamp: new Date()
 };

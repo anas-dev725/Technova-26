@@ -5,8 +5,8 @@ let genAI: GoogleGenerativeAI | null = null;
 
 function getGenAI() {
   if (!genAI) {
-    // In Vite/Client-side, process.env.GEMINI_API_KEY might be defined by Vite
-    const apiKey = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || (import.meta.env.VITE_GEMINI_API_KEY as string);
+    // In Vite (SPA), we must use import.meta.env for variables prefixed with VITE_
+    const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is missing");
