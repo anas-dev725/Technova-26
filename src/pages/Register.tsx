@@ -8,11 +8,14 @@ import * as z from 'zod';
 import { modules, getFees } from '../data/modules';
 import { submissionService } from '../services/submissionService';
 
+import { auth } from '../lib/firebase';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+
 // Validation Schema
 const memberSchema = z.object({
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
   cnic: z.string().regex(/^\d{5}-\d{7}-\d{1}$/, 'CNIC must be 12345-1234567-1'),
-  contactNumber: z.string().regex(/^((\+92)|(0092)|(0))3\d{9}$/, 'Enter valid mobile number (03XXXXXXXXX)'),
+  contactNumber: z.string().regex(/^((\+92)|(0092)|(92)|(0))3\d{9}$/, 'Enter valid mobile number (03XXXXXXXXX)'),
 });
 
 const registerSchema = z.object({
@@ -101,11 +104,23 @@ export default function Register() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setServerError('File size exceeds 5MB limit.');
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setReceiptPreview(reader.result as string);
+        setServerError(null);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const clearReceipt = () => {
+    setReceiptPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -125,6 +140,16 @@ export default function Register() {
     
     try {
       if (!selectedModule) throw new Error('Module not found');
+
+      // Ensure user is signed in (anonymously if not already signed in)
+      if (!auth.currentUser) {
+        try {
+          await signInAnonymously(auth);
+        } catch (authErr) {
+          console.error('Auth Error:', authErr);
+          throw new Error('Authentication failed. Please try again.');
+        }
+      }
       
       const subGame = data.subGameId && selectedModule.subGames 
         ? selectedModule.subGames.find(g => g.id === data.subGameId)
@@ -186,22 +211,45 @@ export default function Register() {
           className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-[3rem] overflow-hidden shadow-2xl"
         >
           {isSubmitted ? (
-            <div className="text-center py-20 px-8">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-20 px-8 relative overflow-hidden"
+            >
+              {/* Background Success Juice */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-green-500/10 rounded-full blur-3xl -z-10" />
+              
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1, type: "spring" }}
-                className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-8"
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="w-28 h-28 bg-green-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-green-500/20"
               >
-                <CheckCircle2 className="w-12 h-12 text-green-600 dark:text-green-400" />
+                <CheckCircle2 className="w-14 h-14 text-white" />
               </motion.div>
-              <h2 className="text-4xl font-display font-bold text-gray-900 dark:text-white mb-6">Application Under Review</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-lg mx-auto">
-                We've received your registration for <strong>{currentModuleTitle}</strong>. Our team will verify the <strong>Payment Receipt</strong> and email you at <span className="text-blue-600 font-bold">{watch('email')}</span> shortly.
+              
+              <h2 className="text-4xl font-display font-black text-gray-900 dark:text-white mb-6">Submission Received!</h2>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-lg mx-auto font-medium leading-relaxed">
+                Your registration for <span className="text-blue-600 dark:text-blue-400 font-bold">{currentModuleTitle}</span> has been successfully logged. 
+                <br /><br />
+                Our team will now verify your <span className="underline decoration-blue-500/30">Payment Receipt</span>. You will receive a confirmation email at <strong>{watch('email')}</strong> shortly.
               </p>
-              <button onClick={() => navigate('/')} className="px-12 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20">
-                Return to Dashboard
-              </button>
-            </div>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button 
+                  onClick={() => navigate('/')} 
+                  className="w-full sm:w-auto px-12 py-5 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30 uppercase tracking-widest text-sm"
+                >
+                  Return to Home
+                </button>
+                <button 
+                  onClick={() => navigate('/modules')} 
+                  className="w-full sm:w-auto px-12 py-5 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl font-black hover:bg-gray-200 dark:hover:bg-white/10 transition-all uppercase tracking-widest text-sm"
+                >
+                  Browse Modules
+                </button>
+              </div>
+            </motion.div>
           ) : (
             <div className="flex flex-col">
               {/* TOP HEADER: Summary Banner */}
@@ -459,7 +507,7 @@ export default function Register() {
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/receipt:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                             <button 
                               type="button" 
-                              onClick={() => setReceiptPreview(null)} 
+                              onClick={clearReceipt} 
                               className="p-5 bg-white text-red-600 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all transform hover:rotate-90"
                             >
                               <X className="w-8 h-8" />
@@ -500,7 +548,33 @@ export default function Register() {
                     </div>
                   </div>
 
-                  <div className="pt-10">
+                  <div className="pt-10 space-y-6">
+                    <AnimatePresence>
+                      {(serverError || Object.keys(errors).length > 0) && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="p-5 md:p-6 rounded-2xl bg-red-500/10 border-2 border-red-500/20 flex items-start gap-4"
+                        >
+                          <AlertCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
+                          <div className="flex-1">
+                            <h4 className="text-sm font-black text-red-500 uppercase tracking-widest mb-1">Incomplete Information</h4>
+                            <p className="text-sm font-bold text-red-500/80 leading-relaxed">
+                              {serverError || "Please check all fields marked in red. Ensure CNIC and Phone numbers match the required formats."}
+                            </p>
+                            {Object.keys(errors).length > 0 && (
+                              <ul className="mt-3 space-y-1">
+                                {errors.email && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.email.message}</li>}
+                                {errors.university && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.university.message}</li>}
+                                {errors.members && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• Please fill all participant details correctly</li>}
+                              </ul>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     <button
                       type="submit"
                       disabled={isSubmitting}
