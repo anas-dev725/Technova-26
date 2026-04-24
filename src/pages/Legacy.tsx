@@ -101,37 +101,6 @@ export default function Legacy() {
           ))}
         </div>
 
-        {/* Video Highlights Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-32"
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-4 tracking-tighter">
-              Relive the <span className="text-blue-500">Intensity</span>
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">Experience the raw energy of Technova'25 in 4K.</p>
-          </div>
-
-          <div className="relative group aspect-video max-w-5xl mx-auto rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl border-8 border-white dark:border-white/5 bg-gray-900">
-            {/* Placeholder for when video is actually uploaded */}
-            <video 
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls 
-              className="w-full h-full object-cover"
-              poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1740"
-            >
-              <source src="/technova-showcase-final.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </motion.div>
-
         {/* Section 1: The Glimpses */}
         <div className="space-y-32 mb-32">
           {highlights.map((item, i) => (

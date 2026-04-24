@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { chatWithAI } from '../services/geminiService';
 
 interface Message {
   id: string;
@@ -11,7 +12,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   id: 'init',
-  text: "Hi there! 👋 I'm the Technova'26 assistant. How can I help you today? You can ask me about modules, schedule, location, or registration.",
+  text: "Hey! I'm your Technova AI buddy. Feel free to ask any queries you have.",
   sender: 'bot',
   timestamp: new Date()
 };
@@ -31,8 +32,8 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const handleSend = async () => {
+    if (!inputValue.trim() || isTyping) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -45,33 +46,30 @@ export default function Chatbot() {
     setInputValue('');
     setIsTyping(true);
 
-    // Simple bot logic
-    setTimeout(() => {
-      let botResponse = "I'm not sure about that. Please reach out to contact@technova26.edu for more specific questions!";
-      const lowerInput = userMsg.text.toLowerCase();
+    // Prepare history for Gemini
+    const history = messages
+      .filter(m => m.id !== 'init') // Skip initial message for cleaner history if needed, but usually good to keep context
+      .map(m => ({
+        role: (m.sender === 'bot' ? 'model' : 'user') as 'user' | 'model',
+        parts: [{ text: m.text }]
+      }));
 
-      if (lowerInput.includes('hello') || lowerInput.includes('hi')) {
-        botResponse = "Hello! How can I help you with Technova'26?";
-      } else if (lowerInput.includes('module') || lowerInput.includes('competition')) {
-        botResponse = "We have 10+ exciting modules including Speed Programming, CTF, Web Design, and Esports! Check out the 'Modules' page for the full list.";
-      } else if (lowerInput.includes('location') || lowerInput.includes('where')) {
-        botResponse = "Technova'26 is happening at IOBM, Korangi Creek Road, Karachi, Sindh, Pakistan.";
-      } else if (lowerInput.includes('when') || lowerInput.includes('date') || lowerInput.includes('schedule')) {
-        botResponse = "The event is scheduled for July 11-12, 2026. It's a 48-hour non-stop tech festival!";
-      } else if (lowerInput.includes('register') || lowerInput.includes('apply') || lowerInput.includes('fee')) {
-        botResponse = "You can register for specific modules from the 'Modules' page. There is a small registration fee per module.";
-      }
-
+    try {
+      const response = await chatWithAI(userMsg.text, history);
+      
       const botMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        text: botResponse,
+        id: Date.now().toString(),
+        text: response,
         sender: 'bot',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMsg]);
+    } catch (error) {
+      console.error("Chat Error:", error);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   return (

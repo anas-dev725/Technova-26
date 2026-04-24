@@ -24,7 +24,7 @@ import {
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
 import { submissionService, Submission } from '../services/submissionService';
-import { emailService } from '../services/emailService';
+// import { emailService } from '../services/emailService';
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);

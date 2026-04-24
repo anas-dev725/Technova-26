@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { modules, getFees } from '../data/modules';
 import { submissionService } from '../services/submissionService';
-import { emailService } from '../services/emailService';
+// import { emailService } from '../services/emailService';
 
 import { auth } from '../lib/firebase';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';

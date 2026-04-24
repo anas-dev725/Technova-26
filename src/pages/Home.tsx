@@ -352,71 +352,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Legacy Highlights Section */}
-      <section id="highlights" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">LAST YEAR'S ECHOES</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6">Legacy of <span className="text-blue-500">Technova'25</span></h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed font-medium">
-              We brought together 1,200+ participants from over 30 universities to compete in 12+ competition modules. Relive the moments that made Technova'25 legendary.
-            </p>
-            <Link 
-              to="/legacy"
-              className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 font-black text-sm uppercase tracking-widest group"
-            >
-              Explore Full Legacy Highlights <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[400px] md:h-[600px]">
-            <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl">
-              <img 
-                src={technova6Base64} 
-                alt="Highlight 1" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                <span className="text-white font-bold">The Innovation Arena</span>
-              </div>
-            </div>
-            <div className="relative group overflow-hidden rounded-3xl">
-              <img 
-                src={technova2Base64} 
-                alt="Highlight 2" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="relative group overflow-hidden rounded-3xl">
-              <img 
-                src={technova7Base64} 
-                alt="Highlight 3" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
-              <img 
-                src={technova8Base64} 
-                alt="Highlight 4" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
-              <img 
-                src={technova9Base64} 
-                alt="Highlight 5" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Sponsors */}
       <section id="sponsors" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -489,6 +424,71 @@ export default function Home() {
             >
               Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Legacy Highlights Section */}
+      <section id="highlights" className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">LAST YEAR'S ECHOES</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6">Legacy of <span className="text-blue-500">Technova'25</span></h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed font-medium">
+              We brought together 1,200+ participants from over 30 universities to compete in 12+ competition modules. Relive the moments that made Technova'25 legendary.
+            </p>
+            <Link 
+              to="/legacy"
+              className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 font-black text-sm uppercase tracking-widest group"
+            >
+              Explore Full Legacy Highlights <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[400px] md:h-[600px]">
+            <div className="col-span-2 row-span-2 relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova6Base64} 
+                alt="Highlight 1" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                <span className="text-white font-bold">The Innovation Arena</span>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova2Base64} 
+                alt="Highlight 2" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova7Base64} 
+                alt="Highlight 3" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova8Base64} 
+                alt="Highlight 4" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
+              <img 
+                src={technova9Base64} 
+                alt="Highlight 5" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
           </div>
         </div>
       </section>
