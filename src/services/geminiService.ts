@@ -16,8 +16,6 @@ function getGenAI() {
   return genAI;
 }
 
-// No longer logging key for production
-
 const SYSTEM_INSTRUCTION = `
 You are the official AI assistant for Technova '26, a 48-hour non-stop tech marathon at IoBM, Karachi.
 Your vibe is hyped, fun, and super conversational—like a tech-savvy friend.
@@ -47,7 +45,7 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     const ai = getGenAI();
     
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview",
+      model: "gemini-1.5-flash",
       contents: [
         ...history.map(h => ({ role: h.role, parts: h.parts })),
         { role: 'user', parts: [{ text: message }] }
