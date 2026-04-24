@@ -3,13 +3,23 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from './ThemeContext';
+import { auth } from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { logoBase64 } from '../assets/logoBase64';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAdmin(user?.email === 'anasmobin0@gmail.com' || user?.email === 'technova26@technova.com');
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,6 +88,14 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors"
+              >
+                Admin
+              </Link>
+            )}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
@@ -146,6 +164,15 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="text-lg font-bold text-blue-600 dark:text-blue-400 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Admin Dash
+                </Link>
+              )}
               <Link
                 to="/modules"
                 className="mt-4 px-5 py-3 rounded-xl bg-blue-600 text-white text-center font-semibold hover:bg-blue-500 transition-colors"

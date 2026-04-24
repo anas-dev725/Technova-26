@@ -6,6 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { modules, getFees } from '../data/modules';
+import { submissionService } from '../services/submissionService';
 
 // Validation Schema
 const memberSchema = z.object({
@@ -123,11 +124,33 @@ export default function Register() {
     setServerError(null);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('Final Registration Data:', { ...data, module: selectedModule?.title });
+      if (!selectedModule) throw new Error('Module not found');
+      
+      const subGame = data.subGameId && selectedModule.subGames 
+        ? selectedModule.subGames.find(g => g.id === data.subGameId)
+        : null;
+
+      await submissionService.createSubmission({
+        moduleId: selectedModule.id,
+        moduleTitle: selectedModule.title,
+        subGameId: data.subGameId,
+        subGameTitle: subGame?.title,
+        email: data.email,
+        university: data.university,
+        members: data.members,
+        receiptBase64: receiptPreview,
+        totalFee: currentModuleFee
+      });
+      
       setIsSubmitted(true);
-    } catch (err) {
-      setServerError('Registration failed. Server is currently under high load.');
+    } catch (err: any) {
+      console.error('Registration Error:', err);
+      try {
+        const errorData = JSON.parse(err.message);
+        setServerError(`Submission failed: ${errorData.error}`);
+      } catch {
+        setServerError('Registration failed. Please check your internet connection and try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }

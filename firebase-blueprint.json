@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "submission": {
+      "title": "Submission",
+      "description": "A registration submission for a Technova module",
+      "type": "object",
+      "properties": {
+        "moduleId": { "type": "string", "description": "The ID of the module registered for" },
+        "moduleTitle": { "type": "string", "description": "The title of the module" },
+        "subGameId": { "type": "string", "description": "The ID of the sub-game (for Esports)" },
+        "subGameTitle": { "type": "string", "description": "The title of the sub-game" },
+        "email": { "type": "string", "format": "email", "description": "Primary contact email" },
+        "university": { "type": "string", "description": "Participant's university" },
+        "members": {
+          "type": "array",
+          "description": "List of team members",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fullName": { "type": "string" },
+              "cnic": { "type": "string" },
+              "contactNumber": { "type": "string" }
+            }
+          }
+        },
+        "receiptBase64": { "type": "string", "description": "Base64 encoded payment receipt" },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Current status of the submission"
+        },
+        "submittedAt": { "type": "string", "format": "date-time", "description": "Time of submission" },
+        "totalFee": { "type": "number", "description": "Total fee amount" }
+      },
+      "required": ["moduleId", "moduleTitle", "email", "university", "members", "status", "submittedAt", "totalFee"]
+    },
+    "admin": {
+      "title": "Admin",
+      "description": "An administrator of the system",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/submissions/{submissionId}": {
+      "schema": "submission",
+      "description": "Collection of registration submissions"
+    },
+    "/admins/{adminId}": {
+      "schema": "admin",
+      "description": "Authorized administrators"
+    }
+  }
+}
