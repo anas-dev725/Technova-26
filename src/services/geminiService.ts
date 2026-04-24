@@ -45,7 +45,7 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     const ai = getGenAI();
     
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: [
         ...history.map(h => ({ role: h.role, parts: h.parts })),
         { role: 'user', parts: [{ text: message }] }
