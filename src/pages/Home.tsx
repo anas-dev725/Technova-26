@@ -12,6 +12,7 @@ import { technova8Base64 } from '../assets/technova8Base64';
 import { technova9Base64 } from '../assets/technova9Base64';
 import { technova10Base64 } from '../assets/technova10Base64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
+import { modules } from '../data/modules';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
@@ -308,22 +309,12 @@ export default function Home() {
           </div>
 
           <div className="relative w-full overflow-hidden">
-            <div className="flex gap-6 w-max animate-[slide_15s_linear_infinite]">
-              {[
-                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Put your logic to the test. Work through engaging algorithmic puzzles in a supportive atmosphere.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
-                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Explore the world of cybersecurity. Discover vulnerabilities and learn to secure digital environments.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Unleash your creativity! Craft stunning, responsive, and buttery-smooth web experiences.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Celebrate your strategy and skills in a community-focused arena with fellow enthusiasts.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
-                // Duplicate for seamless loop
-                { title: 'Speed Programming', id: 'speed-programming', icon: Zap, desc: 'Put your logic to the test. Work through engaging algorithmic puzzles in a supportive atmosphere.', team: 'Individual', teamIcon: User, prize: 'PKR 65K' },
-                { title: 'Capture The Flag', id: 'capture-the-flag', icon: Shield, desc: 'Explore the world of cybersecurity. Discover vulnerabilities and learn to secure digital environments.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 75K' },
-                { title: 'Website Designing', id: 'website-designing', icon: Code, desc: 'Unleash your creativity! Craft stunning, responsive, and buttery-smooth web experiences.', team: 'Duo', teamIcon: Users, prize: 'PKR 60K' },
-                { title: 'Esports Tournament', id: 'esports-competition', icon: Trophy, desc: 'Celebrate your strategy and skills in a community-focused arena with fellow enthusiasts.', team: 'Squad', teamIcon: UsersRound, prize: 'PKR 70K' },
-              ].map((mod, i) => {
+            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite]">
+              {[...modules, ...modules].map((mod, i) => {
                 const Icon = mod.icon;
-                const TeamIcon = mod.teamIcon;
+                const TeamIcon = mod.mode === 'Individual' ? User : mod.mode === 'Duo' ? Users : UsersRound;
                 return (
-                  <div key={i} className="w-[350px] shrink-0 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
+                  <div key={`${mod.id}-${i}`} className="w-[350px] shrink-0 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -331,16 +322,16 @@ export default function Home() {
                       <div className="flex flex-col items-end gap-2">
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-medium border border-gray-200 dark:border-white/10">
                           <TeamIcon className="w-3 h-3" />
-                          {mod.team}
+                          {mod.mode}
                         </div>
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-200 dark:border-blue-500/20">
                           <Trophy className="w-3 h-3" />
-                          {mod.prize}
+                          {mod.prize === 'TBD' ? 'Prize: TBD' : mod.prize}
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{mod.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">{mod.desc}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors uppercase tracking-tight">{mod.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 line-clamp-2">{mod.description}</p>
                     <Link to={`/modules/${mod.id}`} className="text-sm font-medium text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-1">
                       Check it out <ChevronRight className="w-4 h-4" />
                     </Link>
