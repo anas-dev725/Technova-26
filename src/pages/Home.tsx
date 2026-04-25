@@ -11,6 +11,9 @@ import { technova7Base64 } from '../assets/technova7Base64';
 import { technova8Base64 } from '../assets/technova8Base64';
 import { technova9Base64 } from '../assets/technova9Base64';
 import { technova10Base64 } from '../assets/technova10Base64';
+import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
+import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
+import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { modules } from '../data/modules';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
@@ -105,23 +108,51 @@ export default function Home() {
               Registrations Are Live! Grab Your Squad.
             </motion.div>
 
+            {/* Logos Group */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center justify-center mb-6"
+            >
+              <div className="flex items-center justify-center gap-6 sm:gap-12 mb-4">
+                {/* IoBM Logo */}
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
+                  <img src={iobmLogo} alt="IoBM Logo" className="w-full h-full object-cover pointer-events-none" />
+                </div>
+                
+                {/* CCSIS Logo */}
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
+                  <img src={ccsisLogo} alt="CCSIS Logo" className="w-full h-full object-cover pointer-events-none scale-105" />
+                </div>
+
+                {/* IEEE Logo */}
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
+                  <img src={ieeeLogo} alt="IEEE Logo" className="w-full h-full object-cover pointer-events-none" />
+                </div>
+              </div>
+              <p className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-gray-500 dark:text-gray-400 mt-2">
+                Presents
+              </p>
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter mb-2 text-gray-900 dark:text-white"
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter mb-8 text-gray-900 dark:text-white"
             >
               TECHNOVA'26
             </motion.h1>
 
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8"
             >
               Dream It & Ship It
-            </motion.div>
+            </motion.div> */}
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
