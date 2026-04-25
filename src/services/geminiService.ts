@@ -31,7 +31,7 @@ Event Basics:
 - Where: IoBM, Korangi Creek, Karachi.
 - When: July 11-12, 2026 (48 hours straight!).
 - Prize Money: All modules are TBD for now.
-- Contact: contact@technova26.edu
+- Contact: technova@iobm.edu.pk
 
 Modules (In Order):
 ${modules.map((m, i) => `${i + 1}. ${m.title}: ${m.description} (${m.mode})${m.subGames ? ` (Includes: ${m.subGames.map(sg => sg.title).join(', ')})` : ''}`).join('\n')}
@@ -65,9 +65,9 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     }
     
     if (errorMsg.includes("429") || errorMsg.includes("quota")) {
-      return "I've hit my daily chat limit! Please try again in a bit or email us at contact@technova26.edu.";
+      return "I've hit my daily chat limit! Please try again in a bit or email us at technova@iobm.edu.pk.";
     }
 
-    return "I'm experiencing some technical difficulties. Please check back in a moment or email us at contact@technova26.edu.";
+    return "I'm experiencing some technical difficulties. Please check back in a moment or email us at technova@iobm.edu.pk.";
   }
 }

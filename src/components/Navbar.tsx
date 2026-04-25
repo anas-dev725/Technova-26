@@ -50,7 +50,7 @@ export default function Navbar() {
               }
             }}
           >
-            <img src={logoBase64} alt="Technova'26" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full transition-transform group-hover:scale-110 shadow-sm" referrerPolicy="no-referrer" />
+            <img src={logoBase64} alt="Technova'26" className="w-16 h-16 sm:w-20 sm:h-20 rounded-full transition-transform group-hover:scale-110 shadow-sm" referrerPolicy="no-referrer" />
           </Link>
 
           {/* Desktop Navigation */}
