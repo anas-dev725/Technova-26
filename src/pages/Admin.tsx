@@ -24,6 +24,9 @@ import {
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
 import { submissionService, Submission } from '../services/submissionService';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 // import { emailService } from '../services/emailService';
 
 export default function Admin() {
@@ -351,7 +354,7 @@ export default function Admin() {
               <button 
                 className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
                 onClick={() => {
-                  const maxMembers = Math.max(...filteredSubmissions.map(s => s.members.length), 5);
+                  const maxMembers = Math.max(1, ...filteredSubmissions.map(s => s.members?.length || 0));
                   const headers = [
                     'Submission ID',
                     'Date',
@@ -365,54 +368,107 @@ export default function Admin() {
                   ];
 
                   for (let i = 1; i <= maxMembers; i++) {
-                    headers.push(`Member ${i} Name`, `Member ${i} CNIC`, `Member ${i} Contact`);
+                    headers.push(`Name (M${i})`, `CNIC (M${i})`, `Contact (M${i})`);
                   }
 
-                  const escapeCSV = (val: any) => {
-                    if (val === undefined || val === null) return '""';
-                    const str = String(val).replace(/"/g, '""');
-                    return `"${str}"`;
-                  };
-
-                  const csvRows = [headers.join(',')];
+                  const aoaData = [headers];
 
                   filteredSubmissions.forEach(s => {
                     const date = s.submittedAt?.toDate ? s.submittedAt.toDate().toLocaleString() : 'N/A';
-                    const row = [
-                      escapeCSV(s.id),
-                      escapeCSV(date),
-                      escapeCSV(s.members[0]?.fullName),
-                      escapeCSV(s.email),
-                      escapeCSV(s.moduleTitle),
-                      escapeCSV(s.subGameTitle || 'N/A'),
-                      escapeCSV(s.university),
-                      escapeCSV(s.totalFee),
-                      escapeCSV(s.status.toUpperCase())
+                    const row: any[] = [
+                      s.id,
+                      date,
+                      s.members[0]?.fullName || '',
+                      s.email || '',
+                      s.moduleTitle || '',
+                      s.subGameTitle || 'N/A',
+                      s.university || '',
+                      s.totalFee || 0,
+                      s.status.toUpperCase()
                     ];
 
                     for (let i = 0; i < maxMembers; i++) {
                       const member = s.members[i];
                       if (member) {
-                        row.push(escapeCSV(member.fullName), escapeCSV(member.cnic), escapeCSV(member.contactNumber));
+                        row.push(
+                          member.fullName || '', 
+                          member.cnic || '', 
+                          member.contactNumber || ''
+                        );
                       } else {
-                        row.push('""', '""', '""');
+                        row.push('', '', '');
                       }
                     }
 
-                    csvRows.push(row.join(','));
+                    aoaData.push(row);
                   });
 
-                  const csvContent = csvRows.join('\n');
-                  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                  const url = window.URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `technova_submissions_${new Date().toISOString().slice(0,10)}.csv`;
-                  a.click();
+                  const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
+                  
+                  // Configure column widths
+                  const wscols = [
+                    {wch: 25}, // Submission ID
+                    {wch: 20}, // Date
+                    {wch: 25}, // Lead Name
+                    {wch: 30}, // Lead Email
+                    {wch: 25}, // Module
+                    {wch: 20}, // Sub-Game
+                    {wch: 30}, // University
+                    {wch: 15}, // Total Fee
+                    {wch: 15}, // Status
+                  ];
+                  for (let i = 0; i < maxMembers; i++) {
+                    wscols.push({wch: 25}, {wch: 20}, {wch: 15});
+                  }
+                  worksheet['!cols'] = wscols;
+
+                  const workbook = XLSX.utils.book_new();
+                  XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
+                  XLSX.writeFile(workbook, `technova_submissions_${new Date().toISOString().slice(0,10)}.xlsx`);
                 }}
               >
+                <FileText className="w-4 h-4" />
+                Export Excel
+              </button>
+              <button 
+                onClick={async () => {
+                  try {
+                    const zip = new JSZip();
+                    const folder = zip.folder("receipts");
+                    if (!folder) return;
+                    
+                    for (const s of filteredSubmissions) {
+                      if (s.receiptBase64) {
+                        // Extract base64 payload
+                        const parts = s.receiptBase64.split(',');
+                        if (parts.length === 2) {
+                          const base64Data = parts[1];
+                          // Guess extension from mime type
+                          const mimeMatch = parts[0].match(/:(.*?);/);
+                          let ext = 'png';
+                          if (mimeMatch && mimeMatch[1]) {
+                            const mime = mimeMatch[1];
+                            if (mime === 'image/jpeg') ext = 'jpg';
+                            else if (mime === 'application/pdf') ext = 'pdf';
+                          }
+                          const safeName = s.members[0]?.fullName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                          const filename = `${safeName}_${s.id.slice(0, 6)}.${ext}`;
+                          folder.file(filename, base64Data, { base64: true });
+                        }
+                      }
+                    }
+                    
+                    const content = await zip.generateAsync({ type: 'blob' });
+                    saveAs(content, `technova_receipts_${new Date().toISOString().slice(0, 10)}.zip`);
+                  } catch (e) {
+                    console.error('Failed to export receipts:', e);
+                    alert("Failed to export receipts.");
+                  }
+                }}
+                className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+              >
                 <Download className="w-4 h-4" />
-                Export
+                Export Receipts
               </button>
             </div>
           </div>
@@ -624,7 +680,36 @@ export default function Admin() {
                             <Download className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => window.open(selectedSubmission.receiptBase64)}
+                            onClick={() => {
+                              try {
+                                if (selectedSubmission.receiptBase64.startsWith('data:')) {
+                                  const newTab = window.open();
+                                  if (newTab) {
+                                    newTab.document.write(`
+                                      <!DOCTYPE html>
+                                      <html>
+                                        <head>
+                                          <title>Receipt</title>
+                                          <style>
+                                            body { margin: 0; background: #0e0e0e; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                                            img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                                          </style>
+                                        </head>
+                                        <body>
+                                          <img src="${selectedSubmission.receiptBase64}" />
+                                        </body>
+                                      </html>
+                                    `);
+                                    newTab.document.close();
+                                  }
+                                } else {
+                                  window.open(selectedSubmission.receiptBase64, '_blank');
+                                }
+                              } catch (e) {
+                                console.error('Failed to open receipt:', e);
+                                window.open(selectedSubmission.receiptBase64, '_blank');
+                              }
+                            }}
                             className="p-3 rounded-lg bg-blue-600 text-white font-black hover:scale-110 active:scale-95 transition-all"
                             title="Open in New Tab"
                           >
