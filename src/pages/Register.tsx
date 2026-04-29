@@ -178,6 +178,7 @@ export default function Register() {
       */
       
       setIsSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       console.error('Registration Error:', err);
       try {

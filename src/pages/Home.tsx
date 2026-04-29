@@ -11,9 +11,9 @@ import { technova7Base64 } from '../assets/technova7Base64';
 import { technova8Base64 } from '../assets/technova8Base64';
 import { technova9Base64 } from '../assets/technova9Base64';
 import { technova10Base64 } from '../assets/technova10Base64';
-import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
-import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
-import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
+import iobmLogo from '../assets/iobm-logo.png';
+import ccsisLogo from '../assets/ccsis-logo.png';
+import ieeeLogo from '../assets/ieee_logo.jpeg';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { modules } from '../data/modules';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
@@ -115,20 +115,20 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center mb-6"
             >
-              <div className="flex items-center justify-center gap-3 sm:gap-8 md:gap-12 mb-4 w-full px-2 max-w-full overflow-hidden">
+              <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 mb-4 w-full px-2 max-w-full overflow-hidden">
                 {/* IoBM Logo */}
-                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
-                  <img src={iobmLogo} alt="IoBM Logo" className="w-full h-full object-cover pointer-events-none" />
+                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
+                  <img src={iobmLogo} alt="IoBM Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
                 
                 {/* CCSIS Logo */}
-                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
-                  <img src={ccsisLogo} alt="CCSIS Logo" className="w-full h-full object-cover pointer-events-none scale-105" />
+                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
+                  <img src={ccsisLogo} alt="CCSIS Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
 
                 {/* IEEE Logo */}
-                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-white shadow-lg">
-                  <img src={ieeeLogo} alt="IEEE Logo" className="w-full h-full object-cover pointer-events-none" />
+                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
+                  <img src={ieeeLogo} alt="IEEE Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
               </div>
               <p className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-gray-500 dark:text-gray-400 mt-2">
