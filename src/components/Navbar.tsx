@@ -38,11 +38,11 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center group ml-4"
+            className="flex items-center group ml-4 lg:w-48"
             onClick={(e) => {
               if (location.pathname === '/') {
                 e.preventDefault();
@@ -53,13 +53,13 @@ export default function Navbar() {
             <img src={logoBase64} alt="Technova'26" className="w-16 h-16 sm:w-20 sm:h-20 rounded-full transition-transform group-hover:scale-110 shadow-sm" referrerPolicy="no-referrer" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation (Centered) */}
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 lg:gap-12">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+                className="text-base lg:text-lg font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
                 onClick={(e) => {
                   if (link.path.startsWith('/#')) {
                     e.preventDefault();
@@ -78,20 +78,24 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+          </nav>
+
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 lg:w-48 justify-end">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+              className="p-2.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <Link
               to="/modules"
-              className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+              className="px-6 py-3 rounded-full bg-blue-600 text-white text-base lg:text-lg font-bold hover:bg-blue-500 transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] whitespace-nowrap"
             >
               Register Now
             </Link>
-          </nav>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-4 md:hidden">

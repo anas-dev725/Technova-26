@@ -60,8 +60,54 @@ export default function Sponsors() {
     <div className="min-h-screen pt-24 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        {/* Sponsorship Tiers */}
+        <div className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-4">Support the <span className="text-blue-500">Movement</span></h2>
+            <p className="text-gray-600 dark:text-gray-400">Choose a tier that aligns with your brand's goals and vision.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {tiers.map((tier, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="relative bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 p-8 rounded-[2rem] md:rounded-[3rem] shadow-sm hover:shadow-2xl transition-all group"
+              >
+                <div className={`w-14 h-14 ${tier.bgColor} rounded-2xl flex items-center justify-center mb-6`}>
+                  <tier.icon className={`w-8 h-8 ${tier.color}`} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{tier.name} Tier</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{tier.description}</p>
+                
+                <div className="space-y-4 mb-10">
+                  {tier.benefits.map((benefit, i) => (
+                    <div key={i} className="flex gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0" />
+                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-gray-100 dark:border-white/5">
+                  <div className="text-sm font-bold text-blue-500 mb-4">{tier.price}</div>
+                  <button 
+                    onClick={() => setIsFormOpen(true)}
+                    className="w-full py-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all"
+                  >
+                    Select Plan
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Header (Our Strategic Partners) */}
+        <div className="text-center max-w-3xl mx-auto mb-20 mt-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -144,52 +190,6 @@ export default function Sponsors() {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Sponsorship Tiers */}
-        <div className="mb-32">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-4">Support the <span className="text-blue-500">Movement</span></h2>
-            <p className="text-gray-600 dark:text-gray-400">Choose a tier that aligns with your brand's goals and vision.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {tiers.map((tier, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="relative bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 p-8 rounded-[2rem] md:rounded-[3rem] shadow-sm hover:shadow-2xl transition-all group"
-              >
-                <div className={`w-14 h-14 ${tier.bgColor} rounded-2xl flex items-center justify-center mb-6`}>
-                  <tier.icon className={`w-8 h-8 ${tier.color}`} />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{tier.name} Tier</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{tier.description}</p>
-                
-                <div className="space-y-4 mb-10">
-                  {tier.benefits.map((benefit, i) => (
-                    <div key={i} className="flex gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0" />
-                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-auto pt-6 border-t border-gray-100 dark:border-white/5">
-                  <div className="text-sm font-bold text-blue-500 mb-4">{tier.price}</div>
-                  <button 
-                    onClick={() => setIsFormOpen(true)}
-                    className="w-full py-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all"
-                  >
-                    Select Plan
-                  </button>
-                </div>
-              </motion.div>
-            ))}
           </div>
         </div>
 

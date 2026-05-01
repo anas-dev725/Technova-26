@@ -84,7 +84,7 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-28 sm:pt-32 pb-16">
+      <section className="relative min-h-[90vh] flex items-center pt-24 sm:pt-28 pb-12">
         {/* Background Effects */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -99,7 +99,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-[10px] sm:text-sm font-medium mb-8"
+              className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-[10px] sm:text-sm font-medium mb-6"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -108,25 +108,22 @@ export default function Home() {
               Registrations Are Live! Grab Your Squad.
             </motion.div>
 
-            {/* Logos Group */}
-            <motion.div 
+            {/* Logos Group (Hidden as requested) */}
+            {/* <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center mb-6"
             >
               <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 mb-4 w-full px-2 max-w-full overflow-hidden">
-                {/* IoBM Logo */}
                 <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
                   <img src={iobmLogo} alt="IoBM Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
                 
-                {/* CCSIS Logo */}
                 <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
                   <img src={ccsisLogo} alt="CCSIS Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
 
-                {/* IEEE Logo */}
                 <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-44 md:h-44 shrink-0 flex items-center justify-center drop-shadow-lg p-2 sm:p-4">
                   <img src={ieeeLogo} alt="IEEE Logo" className="w-full h-full object-contain pointer-events-none" />
                 </div>
@@ -134,31 +131,46 @@ export default function Home() {
               <p className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-gray-500 dark:text-gray-400 mt-2">
                 Presents
               </p>
-            </motion.div>
+            </motion.div> */}
 
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter mb-8 text-gray-900 dark:text-white"
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter mb-4 text-gray-900 dark:text-white"
             >
               TECHNOVA'26
             </motion.h1>
 
-            {/* <motion.div
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8"
+              className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-6"
             >
               Dream It & Ship It
-            </motion.div> */}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="inline-flex items-center justify-center mb-6 relative group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-500 dark:opacity-40 dark:group-hover:opacity-60"></div>
+              <div className="relative px-6 py-2.5 bg-white dark:bg-black border border-blue-100 dark:border-blue-900/50 rounded-full flex items-center gap-3 shadow-sm">
+                <Trophy className="w-5 h-5 text-blue-500 animate-pulse" />
+                <span className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 bg-clip-text text-transparent">
+                  Win Exciting Cash Prizes up to 100K!
+                </span>
+              </div>
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-12 leading-relaxed"
+              className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-10 leading-relaxed"
             >
               Grab your energy drinks and assemble your squad! The 2nd edition of Technova is back and it's bigger, bolder, and more mind-blowing than ever.
             </motion.p>
@@ -339,8 +351,8 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="relative w-full overflow-hidden">
-            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite]">
+          <div className="relative w-full overflow-hidden group/slider">
+            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite] hover:[animation-play-state:paused]">
               {[...modules, ...modules].map((mod, i) => {
                 const Icon = mod.icon;
                 const TeamIcon = mod.mode === 'Individual' ? User : mod.mode === 'Duo' ? Users : UsersRound;

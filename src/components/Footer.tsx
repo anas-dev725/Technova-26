@@ -61,19 +61,19 @@ export default function Footer() {
             <h3 className="font-display font-semibold text-white mb-4">Popular Modules</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/modules" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Speed Programming</Link>
+                <Link to="/modules/webforces" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Webforces</Link>
               </li>
               <li>
-                <Link to="/modules" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Capture The Flag</Link>
+                <Link to="/modules/capture-the-flag" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Capture The Flag</Link>
               </li>
               <li>
-                <Link to="/modules" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Website Designing</Link>
+                <Link to="/modules/digital-dash" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Digital Dash (UI/UX)</Link>
               </li>
               <li>
-                <Link to="/modules" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Startup Launchpad</Link>
+                <Link to="/modules/startup-launchpad" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Startup Launchpad</Link>
               </li>
               <li>
-                <Link to="/modules" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Esports</Link>
+                <Link to="/modules/esports-competition" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Esports</Link>
               </li>
             </ul>
           </div>
