@@ -1,57 +1,55 @@
 {
   "entities": {
-    "submission": {
+    "Submission": {
       "title": "Submission",
-      "description": "A registration submission for a Technova module",
+      "description": "Registration submission for a module",
       "type": "object",
       "properties": {
-        "moduleId": { "type": "string", "description": "The ID of the module registered for" },
-        "moduleTitle": { "type": "string", "description": "The title of the module" },
-        "subGameId": { "type": "string", "description": "The ID of the sub-game (for Esports)" },
-        "subGameTitle": { "type": "string", "description": "The title of the sub-game" },
-        "email": { "type": "string", "format": "email", "description": "Primary contact email" },
-        "university": { "type": "string", "description": "Participant's university" },
+        "moduleId": { "type": "string" },
+        "moduleTitle": { "type": "string" },
+        "subGameId": { "type": "string" },
+        "subGameTitle": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "university": { "type": "string" },
         "members": {
           "type": "array",
-          "description": "List of team members",
           "items": {
             "type": "object",
             "properties": {
               "fullName": { "type": "string" },
               "cnic": { "type": "string" },
               "contactNumber": { "type": "string" }
-            }
+            },
+            "required": ["fullName", "cnic", "contactNumber"]
           }
         },
-        "receiptBase64": { "type": "string", "description": "Base64 encoded payment receipt" },
-        "status": {
-          "type": "string",
-          "enum": ["pending", "approved", "rejected"],
-          "description": "Current status of the submission"
-        },
-        "submittedAt": { "type": "string", "format": "date-time", "description": "Time of submission" },
-        "totalFee": { "type": "number", "description": "Total fee amount" }
+        "receiptBase64": { "type": "string" },
+        "totalFee": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["moduleId", "moduleTitle", "email", "university", "members", "status", "submittedAt", "totalFee"]
+      "required": ["moduleId", "moduleTitle", "email", "university", "members", "receiptBase64", "totalFee", "status", "createdAt", "updatedAt"]
     },
-    "admin": {
+    "Admin": {
       "title": "Admin",
-      "description": "An administrator of the system",
+      "description": "Admin user profile",
       "type": "object",
       "properties": {
-        "email": { "type": "string", "format": "email" }
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] }
       },
-      "required": ["email"]
+      "required": ["email", "role"]
     }
   },
   "firestore": {
-    "/submissions/{submissionId}": {
-      "schema": "submission",
-      "description": "Collection of registration submissions"
+    "submissions/{submissionId}": {
+      "schema": "Submission",
+      "description": "Collection of event registration submissions"
     },
-    "/admins/{adminId}": {
-      "schema": "admin",
-      "description": "Authorized administrators"
+    "admins/{userId}": {
+      "schema": "Admin",
+      "description": "Collection of authorized admin users"
     }
   }
 }

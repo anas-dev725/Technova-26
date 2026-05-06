@@ -1,28 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 0. Global Safety Net
+    // Default Deny
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // --- Helper Functions ---
-    
+    // Helper Functions
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function isEmailVerified() {
-      return request.auth.token.email_verified == true;
-    }
-
     function isAdmin() {
-      // Bootstrapped admins
-      return isSignedIn() && (
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        request.auth.token.email == 'anasmobin0@gmail.com' ||
-        request.auth.token.email == 'technova26@technova.com'
-      );
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     function isValidId(id) {
@@ -37,45 +27,47 @@ service cloud.firestore {
       return resource.data;
     }
 
-    // --- Validation Helpers ---
-
-    function isValidSubmission(data) {
-      return data.moduleId is string && data.moduleId.size() <= 64 &&
-             data.moduleTitle is string && data.moduleTitle.size() <= 128 &&
-             data.email is string && data.email.size() <= 128 && data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
-             data.university is string && data.university.size() <= 200 &&
-             data.status in ['pending', 'approved', 'rejected'] &&
-             data.totalFee is number && data.totalFee >= 0 &&
-             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 &&
-             data.members is list && data.members.size() >= 1 && data.members.size() <= 10 &&
-             data.members[0].fullName is string && data.members[0].fullName.size() <= 100 &&
-             data.submittedAt == request.time;
+    function isServerTimestamp(field) {
+      return incoming()[field] == request.time;
     }
 
-    // --- Collection Routes ---
-
-    match /admins/{adminId} {
-      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
-      // Only the first bootstrapped admin can add others or system internal
-      allow write: if isAdmin();
+    // Submission Validation
+    function isValidSubmission(data) {
+      return data.moduleId is string && data.moduleId.size() <= 100 &&
+             data.moduleTitle is string && data.moduleTitle.size() <= 200 &&
+             data.email is string && data.email.size() <= 255 &&
+             data.university is string && data.university.size() <= 255 &&
+             data.members is list && data.members.size() >= 1 && data.members.size() <= 5 &&
+             data.totalFee is number && data.totalFee >= 0 &&
+             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 && // 1MB limit for safety
+             data.status in ['pending', 'approved', 'rejected'];
     }
 
     match /submissions/{submissionId} {
-      // Pillar 8: Secure List Queries & PII Isolation
+      allow create: if (
+        isValidId(submissionId) &&
+        isValidSubmission(incoming()) &&
+        incoming().status == 'pending' &&
+        isServerTimestamp('createdAt') &&
+        isServerTimestamp('updatedAt')
+      );
+
+      allow get: if isAdmin();
       allow list: if isAdmin();
-      allow get: if isAdmin() || (isSignedIn() && existing().email == request.auth.token.email);
 
-      allow create: if isSignedIn() && 
-                      isValidId(submissionId) && 
-                      isValidSubmission(incoming()) && 
-                      incoming().status == 'pending';
-
-      allow update: if isAdmin() && 
-                      incoming().status in ['pending', 'approved', 'rejected'] &&
-                      incoming().updatedAt == request.time &&
-                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+      allow update: if (
+        isAdmin() &&
+        isValidSubmission(incoming()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        isServerTimestamp('updatedAt')
+      );
 
       allow delete: if isAdmin();
+    }
+
+    match /admins/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false; // Only manageable via Firebase Console or Admin SDK
     }
   }
 }

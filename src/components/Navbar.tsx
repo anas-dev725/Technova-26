@@ -34,7 +34,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 py-1.5' : 'bg-transparent py-3'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,7 +91,7 @@ export default function Navbar() {
             </button>
             <Link
               to="/modules"
-              className="px-6 py-3 rounded-full bg-blue-600 text-white text-base lg:text-lg font-bold hover:bg-blue-500 transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] whitespace-nowrap"
+              className="px-6 py-2.5 rounded-full bg-blue-600 text-white text-sm lg:text-base font-bold hover:bg-blue-500 transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] whitespace-nowrap"
             >
               Register Now
             </Link>

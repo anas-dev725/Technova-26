@@ -33,6 +33,7 @@ export default function Chatbot() {
   }, [messages, isTyping]);
 
   const handleSend = async () => {
+    console.log("Chatbot: Sending message...", inputValue);
     if (!inputValue.trim() || isTyping) return;
 
     const userMsg: Message = {
@@ -48,14 +49,16 @@ export default function Chatbot() {
 
     // Prepare history for Gemini
     const history = messages
-      .filter(m => m.id !== 'init') // Skip initial message for cleaner history if needed, but usually good to keep context
+      .filter(m => m.id !== 'init') 
       .map(m => ({
         role: (m.sender === 'bot' ? 'model' : 'user') as 'user' | 'model',
         parts: [{ text: m.text }]
       }));
 
     try {
+      console.log("Chatbot: Calling chatWithAI...");
       const response = await chatWithAI(userMsg.text, history);
+      console.log("Chatbot: Received response", response);
       
       const botMsg: Message = {
         id: Date.now().toString(),

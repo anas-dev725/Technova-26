@@ -45,6 +45,7 @@ export default function Register() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -78,6 +79,10 @@ export default function Register() {
   const selectedSubGameId = watch('subGameId');
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      signInAnonymously(auth).catch(err => console.error("Initial auth failed:", err));
+    }
+    
     if (!selectedModule && moduleId) {
       navigate('/modules');
       return;
@@ -102,17 +107,53 @@ export default function Register() {
     }
   }, [selectedModule, moduleId, navigate, replace, selectedSubGameId]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (base64Str: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7)); // Compress to JPEG with 70% quality
+      };
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setServerError('File size exceeds 5MB limit.');
+      if (file.size > 10 * 1024 * 1024) { // Allow up to 10MB input before compression
+        setServerError('File size exceeds 10MB limit.');
         return;
       }
+      
+      setIsProcessingImage(true);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setReceiptPreview(reader.result as string);
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setReceiptPreview(compressed);
         setServerError(null);
+        setIsProcessingImage(false);
       };
       reader.readAsDataURL(file);
     }
@@ -205,7 +246,7 @@ export default function Register() {
   const currentModuleFee = getFees(currentModuleMode, selectedModule.id);
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
+    <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <button 
@@ -536,19 +577,24 @@ export default function Register() {
                       ) : (
                         <button 
                           type="button" 
+                          disabled={isProcessingImage}
                           onClick={() => fileInputRef.current?.click()} 
-                          className="w-full group relative overflow-hidden h-64 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-blue-500/50 transition-all flex flex-col items-center justify-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]"
+                          className={`w-full group relative overflow-hidden h-64 rounded-[2.5rem] border-2 border-dashed ${isProcessingImage ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/10' : 'border-gray-200 dark:border-white/10 hover:border-blue-500/50'} transition-all flex flex-col items-center justify-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]`}
                         >
                           {/* Animated Background Juice */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className={`absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent ${isProcessingImage ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`} />
                           
-                          <div className="relative w-20 h-20 rounded-3xl bg-white dark:bg-[#111] border border-gray-100 dark:border-white/10 shadow-lg flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500">
-                            <Camera className="w-10 h-10 text-blue-600" />
+                          <div className={`relative w-20 h-20 rounded-3xl bg-white dark:bg-[#111] border border-gray-100 dark:border-white/10 shadow-lg flex items-center justify-center ${isProcessingImage ? 'animate-pulse scale-110' : 'group-hover:scale-110 group-hover:-rotate-3'} transition-all duration-500`}>
+                            {isProcessingImage ? <Loader2 className="w-10 h-10 text-blue-600 animate-spin" /> : <Camera className="w-10 h-10 text-blue-600" />}
                           </div>
                           
                           <div className="relative text-center">
-                            <p className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 transition-colors">Tap to Upload Receipt</p>
-                            <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">JPG, PNG or PDF up to 5MB</p>
+                            <p className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 transition-colors">
+                              {isProcessingImage ? 'Optimizing Image...' : 'Tap to Upload Receipt'}
+                            </p>
+                            <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">
+                              {isProcessingImage ? 'Just a moment...' : 'JPG, PNG or PDF up to 10MB'}
+                            </p>
                           </div>
                           
                           {/* Animated Corner Ornaments */}

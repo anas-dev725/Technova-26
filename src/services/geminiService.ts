@@ -5,8 +5,8 @@ let genAI: GoogleGenAI | null = null;
 
 function getGenAI() {
   if (!genAI) {
-    // In Vite (SPA), we must use process.env.GEMINI_API_KEY as per skill guidance
-    const apiKey = (process.env.GEMINI_API_KEY as string) || (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    console.log("geminiService: API Key exists?", !!apiKey);
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is missing");
@@ -41,20 +41,29 @@ Highlights: Check out the Legacy page for Technova '25 vibes.
 `;
 
 export async function chatWithAI(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
+  console.log("geminiService: chatWithAI called with:", { message, historyCount: history.length });
   try {
     const ai = getGenAI();
     
+    // Use gemini-flash-latest as per skill for general flash model
+    const modelName = "gemini-flash-latest";
+    console.log("geminiService: Calling generateContent with model:", modelName);
+    
+    // Ensure contents are correctly structured Content objects
+    const contents = [
+      ...history.map(h => ({ role: h.role as string, parts: h.parts })),
+      { role: 'user', parts: [{ text: message }] }
+    ];
+
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: [
-        ...history.map(h => ({ role: h.role, parts: h.parts })),
-        { role: 'user', parts: [{ text: message }] }
-      ],
+      model: modelName,
+      contents,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
       },
     });
 
+    console.log("geminiService: API Success, characters received:", response.text?.length || 0);
     return response.text || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
