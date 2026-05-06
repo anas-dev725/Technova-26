@@ -12,7 +12,11 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'anasmobin0@gmail.com' ||
+        request.auth.token.email == 'technova26@technova.com'
+      );
     }
 
     function isValidId(id) {
@@ -39,7 +43,7 @@ service cloud.firestore {
              data.university is string && data.university.size() <= 255 &&
              data.members is list && data.members.size() >= 1 && data.members.size() <= 5 &&
              data.totalFee is number && data.totalFee >= 0 &&
-             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 && // 1MB limit for safety
+             data.receiptBase64 is string && (data.receiptBase64.size() <= 2000000 || data.receiptBase64.size() == 0) && // Allow up to 2MB as I added compression but base64 is large
              data.status in ['pending', 'approved', 'rejected'];
     }
 
@@ -48,6 +52,7 @@ service cloud.firestore {
         isValidId(submissionId) &&
         isValidSubmission(incoming()) &&
         incoming().status == 'pending' &&
+        isServerTimestamp('submittedAt') &&
         isServerTimestamp('createdAt') &&
         isServerTimestamp('updatedAt')
       );

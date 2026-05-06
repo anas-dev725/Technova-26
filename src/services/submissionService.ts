@@ -74,6 +74,8 @@ export const submissionService = {
         ...cleanData,
         status: 'pending',
         submittedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       });
       return docRef.id;
     } catch (error) {
@@ -97,10 +99,14 @@ export const submissionService = {
   subscribeToSubmissions(callback: (submissions: Submission[]) => void) {
     const q = query(collection(db, 'submissions'), orderBy('submittedAt', 'desc'));
     return onSnapshot(q, (snapshot) => {
-      const submissions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Submission[];
+      const submissions = snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      })) as Submission[];
       callback(submissions);
     }, (error) => {
-      handleFirestoreError(error, 'list', 'submissions');
+      console.error("Firestore Subscribe Error:", error);
+      // Don't throw inside onSnapshot callback as it might not be caught well
     });
   },
 
@@ -117,13 +123,16 @@ export const submissionService = {
   },
 
   async checkIsAdmin(email: string): Promise<boolean> {
-    if (email === 'anasmobin0@gmail.com' || email === 'technova26@technova.com') return true;
+    const adminEmails = ['anasmobin0@gmail.com', 'technova26@technova.com'];
+    if (adminEmails.includes(email.toLowerCase())) return true;
+    
     try {
-      const q = query(collection(db, 'admins'), where('email', '==', email));
+      const q = query(collection(db, 'admins'), where('email', '==', email.toLowerCase()));
       const snapshot = await getDocs(q);
       return !snapshot.empty;
     } catch (error) {
+      console.error("Admin check failed:", error);
       return false;
     }
   }
-};
+}

@@ -6,7 +6,6 @@ let genAI: GoogleGenAI | null = null;
 function getGenAI() {
   if (!genAI) {
     const apiKey = process.env.GEMINI_API_KEY || '';
-    console.log("geminiService: API Key exists?", !!apiKey);
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is missing");
@@ -41,29 +40,20 @@ Highlights: Check out the Legacy page for Technova '25 vibes.
 `;
 
 export async function chatWithAI(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
-  console.log("geminiService: chatWithAI called with:", { message, historyCount: history.length });
   try {
     const ai = getGenAI();
     
-    // Use gemini-flash-latest as per skill for general flash model
-    const modelName = "gemini-flash-latest";
-    console.log("geminiService: Calling generateContent with model:", modelName);
-    
-    // Ensure contents are correctly structured Content objects
-    const contents = [
-      ...history.map(h => ({ role: h.role as string, parts: h.parts })),
-      { role: 'user', parts: [{ text: message }] }
-    ];
-
     const response = await ai.models.generateContent({
-      model: modelName,
-      contents,
+      model: "gemini-3-flash-preview",
+      contents: [
+        ...history.map(h => ({ role: h.role, parts: h.parts })),
+        { role: 'user', parts: [{ text: message }] }
+      ],
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
       },
     });
 
-    console.log("geminiService: API Success, characters received:", response.text?.length || 0);
     return response.text || "I'm sorry, I couldn't generate a response. Please try again or contact support.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
@@ -74,7 +64,7 @@ export async function chatWithAI(message: string, history: { role: 'user' | 'mod
     }
     
     if (errorMsg.includes("429") || errorMsg.includes("quota")) {
-      return "I've hit my daily chat limit! Please try again in a bit or email us at technova@iobm.edu.pk.";
+      return "The AI is a bit busy right now! Please try again in a moment or email us at technova@iobm.edu.pk.";
     }
 
     return "I'm experiencing some technical difficulties. Please check back in a moment or email us at technova@iobm.edu.pk.";

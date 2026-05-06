@@ -33,7 +33,6 @@ export default function Chatbot() {
   }, [messages, isTyping]);
 
   const handleSend = async () => {
-    console.log("Chatbot: Sending message...", inputValue);
     if (!inputValue.trim() || isTyping) return;
 
     const userMsg: Message = {
@@ -56,9 +55,7 @@ export default function Chatbot() {
       }));
 
     try {
-      console.log("Chatbot: Calling chatWithAI...");
       const response = await chatWithAI(userMsg.text, history);
-      console.log("Chatbot: Received response", response);
       
       const botMsg: Message = {
         id: Date.now().toString(),
