@@ -12,6 +12,8 @@ import { technova8Base64 } from '../assets/technova8Base64';
 import { technova9Base64 } from '../assets/technova9Base64';
 import { technova10Base64 } from '../assets/technova10Base64';
 import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
+import hamnaPfp from '../assets/hamna pfp.jpeg';
+import moizPfp from '../assets/moiz pfp.jpeg';
 import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
@@ -204,17 +206,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+              className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
             >
               <Link
                 to="/modules"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-500 transition-all hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-blue-600 text-white text-sm sm:text-base font-semibold hover:bg-blue-500 transition-all hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] flex items-center justify-center gap-2"
               >
                 Explore Modules <ChevronRight className="w-5 h-5" />
               </Link>
               <Link
                 to="/legacy"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm sm:text-base font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2"
               >
                 Last Year's Highlights
               </Link>
@@ -454,7 +456,7 @@ export default function Home() {
             </div>
             <Link 
               to="/sponsors"
-              className="relative z-10 shrink-0 px-10 py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
+              className="relative z-10 shrink-0 px-6 py-3 sm:px-10 sm:py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-base sm:text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
             >
               Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -539,12 +541,26 @@ export default function Home() {
             <div className="flex gap-6 w-max px-4">
               {[
                 { 
+                  name: 'Hamna Saleem', 
+                  role: 'Chairperson', 
+                  dept: 'Data Analyst', 
+                  img: hamnaPfp,
+                  linkedin: 'https://linkedin.com/in/hamnasaleem'
+                },
+                { 
                   name: 'Muhammad Anas', 
-                  role: 'Lead Developer', 
+                  role: 'Vice Chairperson & Lead Developer', 
                   dept: 'AI Automation Engineer', 
                   img: anasProfileBase64,
                   github: 'https://github.com/anasmobin',
                   linkedin: 'https://linkedin.com/in/anasmobin'
+                },
+                { 
+                  name: 'Moiz Ali Siddiqui', 
+                  role: 'General Secretary', 
+                  dept: 'Full Stack Developer', 
+                  img: moizPfp,
+                  linkedin: 'https://linkedin.com/in/moizalisiddiqui'
                 },
                 { 
                   name: 'Talha Ahmed', 
@@ -561,15 +577,15 @@ export default function Home() {
                 { name: 'Priya Patel', role: 'Marketing Lead', dept: 'GROWTH', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop' },
                 { name: 'David Kim', role: 'Operations Head', dept: 'LOGISTICS', img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop' },
               ].map((member, i) => (
-                <div key={i} className="relative group rounded-3xl overflow-hidden w-[300px] md:w-[350px] aspect-[3/4] bg-gray-900 shadow-xl shrink-0 snap-center">
+                <div key={i} className="relative group rounded-2xl overflow-hidden w-[260px] md:w-[300px] aspect-[4/5] bg-gray-900 shadow-xl shrink-0 snap-center">
                   <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" />
                   
                   {/* Always visible gradient and name */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
-                    <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-14">
-                      <h3 className="text-2xl font-bold text-white mb-1">{member.name}</h3>
-                      <p className="text-gray-300 text-sm mb-2">{member.role}</p>
-                      <p className="text-blue-400 text-xs font-bold uppercase tracking-wider">{member.dept}</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-12">
+                      <h3 className="text-xl font-bold text-white mb-0.5">{member.name}</h3>
+                      <p className="text-gray-300 text-xs mb-1.5">{member.role}</p>
+                      <p className="text-blue-400 text-[10px] font-bold uppercase tracking-wider">{member.dept}</p>
                     </div>
                     
                     {/* Social links that fade in on hover */}
@@ -709,7 +725,7 @@ export default function Home() {
               </p>
               <Link 
                 to="/modules"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-blue-600 font-bold text-lg hover:bg-gray-50 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] hover:-translate-y-1"
+                className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white text-blue-600 font-bold text-base sm:text-lg hover:bg-gray-50 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] hover:-translate-y-1"
               >
                 Lock In Your Spot Now <ArrowRight className="w-5 h-5" />
               </Link>

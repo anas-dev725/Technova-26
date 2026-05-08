@@ -85,28 +85,49 @@ export const submissionService = {
 
   async getSubmissionsByStatus(status?: Submission['status']) {
     try {
-      let q = collection(db, 'submissions');
+      let q = query(collection(db, 'submissions')) as any;
       if (status) {
-        q = query(q, where('status', '==', status)) as any;
+        q = query(q, where('status', '==', status));
       }
-      const snapshot = await getDocs(query(q, orderBy('submittedAt', 'desc')));
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Submission[];
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        return { 
+          id: doc.id, 
+          ...data,
+          submittedAt: data.submittedAt || data.createdAt 
+        } as Submission;
+      }).sort((a, b) => {
+        const timeA = a.submittedAt?.toMillis?.() || 0;
+        const timeB = b.submittedAt?.toMillis?.() || 0;
+        return timeB - timeA;
+      });
     } catch (error) {
       handleFirestoreError(error, 'list', 'submissions');
     }
   },
 
   subscribeToSubmissions(callback: (submissions: Submission[]) => void) {
-    const q = query(collection(db, 'submissions'), orderBy('submittedAt', 'desc'));
+    const q = query(collection(db, 'submissions')); // Remove orderBy from query to avoid missing documents
     return onSnapshot(q, (snapshot) => {
-      const submissions = snapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      })) as Submission[];
+      const submissions = snapshot.docs.map(doc => {
+        const data = doc.data() as any;
+        return { 
+          id: doc.id, 
+          ...data,
+          // Robust compatibility mapping
+          submittedAt: data.submittedAt || data.createdAt 
+        } as Submission;
+      })
+      // Sort in memory to include all docs even if they lack one of the timestamp fields
+      .sort((a, b) => {
+        const timeA = a.submittedAt?.toMillis?.() || 0;
+        const timeB = b.submittedAt?.toMillis?.() || 0;
+        return timeB - timeA;
+      });
       callback(submissions);
     }, (error) => {
       console.error("Firestore Subscribe Error:", error);
-      // Don't throw inside onSnapshot callback as it might not be caught well
     });
   },
 
