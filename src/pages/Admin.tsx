@@ -35,6 +35,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterModule, setFilterModule] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
@@ -128,12 +129,13 @@ export default function Admin() {
   const filteredSubmissions = submissions
     .filter(sub => {
       const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
+      const matchesModule = filterModule === 'all' || sub.moduleTitle === filterModule;
       const matchesSearch = 
         sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesStatus && matchesSearch;
+      return matchesStatus && matchesModule && matchesSearch;
     })
     .sort((a, b) => {
       if (!sortConfig) return 0;
@@ -144,6 +146,13 @@ export default function Admin() {
       if (valA > valB) return direction === 'asc' ? 1 : -1;
       return 0;
     });
+
+  const uniqueModules = Array.from(new Set(submissions.map(s => s.moduleTitle))).sort();
+
+  const moduleStats = uniqueModules.map(m => ({
+    name: m,
+    count: submissions.filter(s => s.moduleTitle === m).length
+  }));
 
   const stats = {
     total: submissions.length,
@@ -294,28 +303,61 @@ export default function Admin() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: 'Total', value: stats.total, color: 'blue', icon: Users },
-            { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
-            { label: 'Approved', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
-            { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
-          ].map((stat, i) => (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              key={stat.label}
-              className={`p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden relative group`}
-            >
-              <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 rounded-bl-full translate-x-12 -translate-y-12`}></div>
-              <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-500`} />
-              </div>
-              <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
-              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
-            </motion.div>
-          ))}
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: 'Total', value: stats.total, color: 'blue', icon: Users },
+              { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
+              { label: 'Approved', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
+              { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
+            ].map((stat, i) => (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                key={stat.label}
+                className={`p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden relative group`}
+              >
+                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 rounded-bl-full translate-x-12 -translate-y-12`}></div>
+                <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
+                  <stat.icon className={`w-5 h-5 text-${stat.color}-500`} />
+                </div>
+                <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="p-6 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+              <div className="w-4 h-[1px] bg-blue-500"></div>
+              Module Distribution
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {moduleStats.map((m, i) => (
+                <div key={m.name} 
+                  onClick={() => setFilterModule(m.name)}
+                  className={`p-3 rounded-xl border transition-all cursor-pointer group ${
+                    filterModule === m.name 
+                      ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-600/20' 
+                      : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5 hover:border-blue-500/30'
+                  }`}
+                >
+                  <div className={`text-sm font-black truncate transition-colors ${
+                    filterModule === m.name ? 'text-white' : 'text-gray-900 dark:text-white'
+                  }`} title={m.name}>{m.name}</div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className={`text-[10px] font-bold uppercase transition-colors ${
+                      filterModule === m.name ? 'text-blue-100' : 'text-gray-400'
+                    }`}>Entries</span>
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black transition-colors ${
+                      filterModule === m.name ? 'bg-white text-blue-600' : 'bg-blue-500/10 text-blue-500'
+                    }`}>{m.count}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Filters & Actions */}
@@ -333,7 +375,25 @@ export default function Admin() {
             </div>
             
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  <select 
+                    value={filterModule}
+                    onChange={(e) => setFilterModule(e.target.value)}
+                    className="pl-9 pr-10 py-2.5 bg-gray-900 dark:bg-black/40 text-white rounded-xl border-2 border-transparent focus:border-blue-500 text-xs font-black uppercase tracking-wider outline-none transition-all cursor-pointer appearance-none shadow-xl"
+                  >
+                    <option value="all" className="bg-gray-900 text-white font-bold">MODULE: ALL</option>
+                    {uniqueModules.map(m => (
+                      <option key={m} value={m} className="bg-gray-900 text-white font-bold">{m.toUpperCase()}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-white/30"></div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5">
                 {[
                   { id: 'all', label: 'All' },
                   { id: 'pending', label: 'Pending' },
@@ -353,7 +413,8 @@ export default function Admin() {
                   </button>
                 ))}
               </div>
-              <button 
+            </div>
+            <button 
                 className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
                 onClick={() => {
                   const maxMembers = Math.max(1, ...filteredSubmissions.map(s => s.members?.length || 0));
@@ -404,6 +465,16 @@ export default function Admin() {
 
                     aoaData.push(row);
                   });
+
+                  // Add Total Row for Finance
+                  const totalSum = filteredSubmissions.reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const totalRow = new Array(headers.length).fill('');
+                  totalRow[0] = 'TOTAL SUMMARY';
+                  totalRow[headers.indexOf('Total Fee (PKR)')] = `PKR ${totalSum.toLocaleString()}`;
+                  totalRow[headers.indexOf('Status')] = `COUNT: ${filteredSubmissions.length}`;
+                  
+                  aoaData.push([]); // Spacer row
+                  aoaData.push(totalRow);
 
                   const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
                   
@@ -479,6 +550,7 @@ export default function Admin() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-white/5">
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-16">Sr#</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Leader</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">University</th>
@@ -500,6 +572,11 @@ export default function Admin() {
                       className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:scale-[0.998]"
                     >
                       <td className="px-6 py-4">
+                        <div className="text-[10px] font-mono font-black text-gray-400 group-hover:text-blue-500/50 transition-colors">
+                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-blue-500 transition-colors uppercase tracking-tight">{sub.members[0].fullName}</div>
                         <div className="text-gray-500 text-[10px] font-medium">{sub.email}</div>
                       </td>
@@ -514,8 +591,9 @@ export default function Admin() {
                         <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[150px]">{sub.university}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-gray-500 dark:text-gray-400 font-bold text-[10px]">
-                          {sub.submittedAt?.toDate().toLocaleDateString('en-GB')}
+                        <div className="text-gray-500 dark:text-gray-400 font-bold text-[10px] flex flex-col">
+                          <span>{sub.submittedAt?.toDate().toLocaleDateString('en-GB')}</span>
+                          <span className="text-[9px] opacity-60 mt-0.5">{sub.submittedAt?.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
