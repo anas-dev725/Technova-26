@@ -108,12 +108,16 @@ export default function Admin() {
         setSelectedSubmission({ ...selectedSubmission, status });
       }
 
-      // Send email notification based on status
+      // Send email notification based on status (NON-BLOCKING)
       if (sub && sub.email && sub.members?.[0]) {
-        if (status === 'approved') {
-          await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
-        } else if (status === 'rejected') {
-          await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+        try {
+          if (status === 'approved') {
+            await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+          } else if (status === 'rejected') {
+            await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+          }
+        } catch (emailErr) {
+          console.warn('Status update notification email failed to send:', emailErr);
         }
       }
     } catch (error) {

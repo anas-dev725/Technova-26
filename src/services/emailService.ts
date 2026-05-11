@@ -17,7 +17,12 @@ export const emailService = {
   /**
    * Sends a confirmation email to the user after registration.
    */
-  async sendSubmissionConfirmation(userEmail: string, userName: string, moduleTitle: string) {
+  async sendSubmissionConfirmation(userEmail: string, userName: string, moduleTitle: string, extraData?: {
+    moduleType?: string;
+    feeAmount?: string;
+    university?: string;
+    membersList?: string;
+  }) {
     if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
       console.warn('EmailJS not configured. Skipping email confirmation.');
       return;
@@ -25,17 +30,31 @@ export const emailService = {
 
     try {
       const templateParams = {
+        // We provide multiple common aliases to be safe
         to_email: userEmail,
-        to_name: userName,
+        user_email: userEmail,
+        email: userEmail, 
+        
+        participant_name: userName,
         module_name: moduleTitle,
-        reply_to: 'technova@iobm.edu.pk', // Add your official contact email here
+        module_type: extraData?.moduleType || 'Competition',
+        fee_amount: extraData?.feeAmount || 'Verified via Receipt',
+        university: extraData?.university || 'N/A',
+        members_list: extraData?.membersList || userName,
+        reply_to: 'technova@iobm.edu.pk',
       };
 
+      console.group('📧 EmailJS Submission');
+      console.log('Target Email:', userEmail);
+      console.log('Template ID:', TEMPLATE_ID);
+      console.log('Params:', templateParams);
+      console.groupEnd();
+
       const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
-      console.log('Email sent successfully:', response.status, response.text);
+      console.log('✅ Email sent successfully:', response.status, response.text);
       return response;
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error('❌ Failed to send email:', error);
       throw error;
     }
   },

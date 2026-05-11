@@ -79,8 +79,11 @@ export default function Register() {
   const selectedSubGameId = watch('subGameId');
 
   useEffect(() => {
+    // Initialize services
+    emailService.init();
+
     if (!auth.currentUser) {
-      signInAnonymously(auth).catch(err => console.error("Initial auth failed:", err));
+      signInAnonymously(auth).catch(err => console.warn("Initial anonymous sign-in failed:", err));
     }
     
     if (!selectedModule && moduleId) {
@@ -188,8 +191,7 @@ export default function Register() {
         try {
           await signInAnonymously(auth);
         } catch (authErr) {
-          console.error('Auth Error:', authErr);
-          throw new Error('Authentication failed. Please try again.');
+          console.warn('Registration: Anonymous sign-in attempt failed, proceeding to let Firestore handle permission:', authErr);
         }
       }
       
@@ -197,6 +199,7 @@ export default function Register() {
         ? selectedModule.subGames.find(g => g.id === data.subGameId)
         : null;
 
+      // STEP 1: Save to Database (THE ONLY BLOCKING STEP)
       await submissionService.createSubmission({
         moduleId: selectedModule.id,
         moduleTitle: selectedModule.title,
@@ -209,15 +212,27 @@ export default function Register() {
         totalFee: currentModuleFee
       });
 
-      // Send initial confirmation email
-      await emailService.sendSubmissionConfirmation(
-        data.email, 
-        data.members[0].fullName, 
-        subGame?.title || selectedModule.title
-      );
-      
+      // STEP 2: Show Success Immediately
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // STEP 3: Fire-and-forget Email (completely detached from UI success)
+      const membersListStr = data.members.map((m, i) => `${i + 1}. ${m.fullName}${m.cnic ? ` (CNIC: ${m.cnic})` : ''}`).join('\n');
+      
+      emailService.sendSubmissionConfirmation(
+        data.email, 
+        data.members[0].fullName, 
+        subGame?.title || selectedModule.title,
+        {
+          moduleType: selectedModule.category || 'Competition',
+          feeAmount: `Rs. ${currentModuleFee}`,
+          university: data.university,
+          membersList: membersListStr
+        }
+      ).catch(emailErr => {
+        console.warn('Background Confirmation Email failed:', emailErr);
+      });
+      
     } catch (err: any) {
       console.error('Registration Error:', err);
       
@@ -227,7 +242,7 @@ export default function Register() {
         // Try to parse if it's our wrapped Firestore error
         const errorData = JSON.parse(err.message);
         if (errorData && errorData.error) {
-          errorMessage = `Submission failed: ${errorData.error}`;
+          errorMessage = errorData.error;
         }
       } catch {
         // If not JSON, use the error message directly if it exists
@@ -295,7 +310,7 @@ export default function Register() {
               <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-lg mx-auto font-medium leading-relaxed">
                 Your registration for <span className="text-blue-600 dark:text-blue-400 font-bold">{currentModuleTitle}</span> has been successfully logged. 
                 <br /><br />
-                Our team will now verify your <span className="underline decoration-blue-500/30">Payment Receipt</span>. You will receive a confirmation email at <strong>{watch('email')}</strong> shortly.
+                Our team will now verify your <span className="underline decoration-blue-500/30">Payment Receipt</span>. You will receive a confirmation email at <strong>{watch('email')}</strong> shortly once verified.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -315,6 +330,7 @@ export default function Register() {
             </motion.div>
           ) : (
             <div className="flex flex-col">
+              {/* ... (rest of the form UI) */}
               {/* TOP HEADER: Summary Banner */}
               <div className="bg-blue-600 p-8 md:p-12 text-white relative overflow-hidden">
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
@@ -627,11 +643,13 @@ export default function Register() {
                         >
                           <AlertCircle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
                           <div className="flex-1">
-                            <h4 className="text-sm font-black text-red-500 uppercase tracking-widest mb-1">Incomplete Information</h4>
+                            <h4 className="text-sm font-black text-red-500 uppercase tracking-widest mb-1">
+                              {serverError ? 'Registration Issue' : 'Incomplete Information'}
+                            </h4>
                             <p className="text-sm font-bold text-red-500/80 leading-relaxed">
                               {serverError || "Please check all fields marked in red. Ensure CNIC and Phone numbers match the required formats."}
                             </p>
-                            {Object.keys(errors).length > 0 && (
+                            {Object.keys(errors).length > 0 && !serverError && (
                               <ul className="mt-3 space-y-1">
                                 {errors.email && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.email.message}</li>}
                                 {errors.university && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.university.message}</li>}
