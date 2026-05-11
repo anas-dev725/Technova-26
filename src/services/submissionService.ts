@@ -48,8 +48,18 @@ export interface FirestoreErrorInfo {
 
 function handleFirestoreError(error: any, operationType: FirestoreErrorInfo['operationType'], path: string | null): never {
   const user = auth.currentUser;
+  
+  let errorMessage = error.message || 'Unknown Firestore error';
+  
+  // Specific handling for common errors
+  if (errorMessage.includes('too large') || errorMessage.includes('1,048,576 bytes')) {
+    errorMessage = 'The payment receipt image is too large. Please try a smaller or lower resolution image.';
+  } else if (errorMessage.includes('permission-denied') || errorMessage.includes('insufficient permissions')) {
+    errorMessage = 'Permission denied. Please ensure you are logged in and following all registration rules.';
+  }
+
   const errorInfo: FirestoreErrorInfo = {
-    error: error.message || 'Unknown Firestore error',
+    error: errorMessage,
     operationType,
     path,
     authInfo: {

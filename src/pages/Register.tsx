@@ -113,8 +113,8 @@ export default function Register() {
       img.src = base64Str;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
         let width = img.width;
         let height = img.height;
 
@@ -134,7 +134,7 @@ export default function Register() {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7)); // Compress to JPEG with 70% quality
+        resolve(canvas.toDataURL('image/jpeg', 0.6)); // Compress to JPEG with 60% quality
       };
     });
   };
@@ -220,12 +220,25 @@ export default function Register() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       console.error('Registration Error:', err);
+      
+      let errorMessage = 'Registration failed. Please check your internet connection and try again.';
+      
       try {
+        // Try to parse if it's our wrapped Firestore error
         const errorData = JSON.parse(err.message);
-        setServerError(`Submission failed: ${errorData.error}`);
+        if (errorData && errorData.error) {
+          errorMessage = `Submission failed: ${errorData.error}`;
+        }
       } catch {
-        setServerError('Registration failed. Please check your internet connection and try again.');
+        // If not JSON, use the error message directly if it exists
+        if (err.message && typeof err.message === 'string' && err.message !== '[object Object]') {
+          errorMessage = err.message;
+        } else if (typeof err === 'string') {
+          errorMessage = err;
+        }
       }
+
+      setServerError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
