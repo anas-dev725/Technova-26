@@ -1,98 +1,89 @@
+import emailjs from '@emailjs/browser';
 
-export interface EmailData {
-  to: string | string[];
-  subject: string;
-  html: string;
-}
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export const emailService = {
   /**
-   * Sends an email via the backend API using Resend.
+   * Initializes EmailJS with the public key.
    */
-  async queueEmail(data: EmailData) {
-    try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send email');
-      }
-
-      console.log('Email sent successfully via Resend');
-    } catch (error) {
-      console.error('Error sending email:', error);
+  init() {
+    if (PUBLIC_KEY) {
+      emailjs.init(PUBLIC_KEY);
     }
   },
 
   /**
-   * Send a confirmation email when a user submits their registration form.
+   * Sends a confirmation email to the user after registration.
    */
-  async sendSubmissionConfirmation(email: string, teamLead: string, moduleTitle: string) {
-    await this.queueEmail({
-      to: email,
-      subject: "Technova '26 - Submission Received 🚀",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #fafafa; padding: 20px; border-radius: 10px;">
-          <h1 style="color: #3b82f6;">Submission Received!</h1>
-          <p>Hi <b>${teamLead}</b>,</p>
-          <p>Thank you for registering for <b>${moduleTitle}</b> at Technova '26.</p>
-          <p>We have received your application and payment receipt. Our team is currently verifying the details. You will receive another email once your registration is <b>approved</b>.</p>
-          <div style="margin: 20px 0; padding: 15px; background: #eff6ff; border-left: 4px solid #3b82f6;">
-            <b>Status:</b> Pending Review
-          </div>
-          <p>Best regards,<br>The Technova Team</p>
-        </div>
-      `
-    });
+  async sendSubmissionConfirmation(userEmail: string, userName: string, moduleTitle: string) {
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      console.warn('EmailJS not configured. Skipping email confirmation.');
+      return;
+    }
+
+    try {
+      const templateParams = {
+        to_email: userEmail,
+        to_name: userName,
+        module_name: moduleTitle,
+        reply_to: 'technova@iobm.edu.pk', // Add your official contact email here
+      };
+
+      const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      console.log('Email sent successfully:', response.status, response.text);
+      return response;
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      throw error;
+    }
   },
 
   /**
-   * Send an approval email when an admin approves the submission.
+   * Sends an approval email to the user.
    */
-  async sendApprovalNotification(email: string, teamLead: string, moduleTitle: string) {
-    await this.queueEmail({
-      to: email,
-      subject: "Technova '26 - Registration Approved! ✅",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #fafafa; padding: 20px; border-radius: 10px;">
-          <h1 style="color: #10b981;">Congratulations!</h1>
-          <p>Hi <b>${teamLead}</b>,</p>
-          <p>Your registration for <b>${moduleTitle}</b> at Technova '26 has been <b>Approved</b>.</p>
-          <p>Your participation is now confirmed. We look forward to seeing you at the event!</p>
-          <div style="margin: 20px 0; padding: 15px; background: #ecfdf5; border-left: 4px solid #10b981;">
-            <b>Status:</b> Confirmed Participant
-          </div>
-          <p>If you have any further questions, feel free to contact us.</p>
-          <p>Best regards,<br>The Technova Team</p>
-        </div>
-      `
-    });
+  async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string) {
+    if (!SERVICE_ID || !PUBLIC_KEY) return;
+    
+    // You should create a separate template for approval or use logic in your EmailJS template
+    // For now, we'll assume there's a template for this. 
+    // In actual use, user might need multiple templates.
+    try {
+      const templateParams = {
+        to_email: userEmail,
+        to_name: userName,
+        module_name: moduleTitle,
+        status: 'Approved',
+        message: 'Your registration has been verified and approved. Welcome to Technova \'26!',
+      };
+      
+      // If you have a specific template ID for approvals, use it here. 
+      // Otherwise we can use the same one if it handles status.
+      return await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+    } catch (error) {
+      console.error('Failed to send approval email:', error);
+    }
   },
 
   /**
-   * Send a rejection email when an admin rejects the submission.
+   * Sends a rejection email to the user.
    */
-  async sendRejectionNotification(email: string, teamLead: string, moduleTitle: string, reason?: string) {
-    await this.queueEmail({
-      to: email,
-      subject: "Technova '26 - Registration Update ⚠️",
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #fafafa; padding: 20px; border-radius: 10px;">
-          <h1 style="color: #ef4444;">Registration Update</h1>
-          <p>Hi <b>${teamLead}</b>,</p>
-          <p>We are writing to inform you that your registration for <b>${moduleTitle}</b> at Technova '26 has been <b>Rejected</b>.</p>
-          <p>This usually happens due to issues with the payment receipt or incomplete member details.</p>
-          ${reason ? `<p><b>Reason:</b> ${reason}</p>` : ''}
-          <p>If you believe this is a mistake, please reach out to us with your reference ID.</p>
-          <p>Best regards,<br>The Technova Team</p>
-        </div>
-      `
-    });
+  async sendRejectionNotification(userEmail: string, userName: string, moduleTitle: string) {
+    if (!SERVICE_ID || !PUBLIC_KEY) return;
+
+    try {
+      const templateParams = {
+        to_email: userEmail,
+        to_name: userName,
+        module_name: moduleTitle,
+        status: 'Rejected',
+        message: 'Unfortunately, your registration could not be verified. This usually happens if the payment receipt is invalid or unclear. Please contact our support team for more details.',
+      };
+      
+      return await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+    } catch (error) {
+      console.error('Failed to send rejection email:', error);
+    }
   }
 };
-

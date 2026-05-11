@@ -21,7 +21,7 @@ import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { modules } from '../data/modules';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake } from 'lucide-react';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -70,15 +70,24 @@ function MemberCard({ member }: { member: any, key?: string | number }) {
         </div>
         
         {/* Social links that fade in on hover (desktop) or in-view (mobile) */}
-        <div className={`absolute bottom-8 left-8 flex items-center gap-3 transition-all duration-500 ease-out ${isInView ? 'opacity-100 translate-y-0 md:opacity-0 md:translate-y-4 md:group-hover:opacity-100 md:group-hover:translate-y-0' : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'}`}>
-          <a href={member.github || "https://github.com"} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
-            <Github className="w-5 h-5" />
-          </a>
-          <a href={member.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
-            <Linkedin className="w-5 h-5" />
-          </a>
-          <a href="https://technova.iobm.edu.pk" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
-            <Globe className="w-5 h-5" />
+        <div className={`absolute bottom-8 left-8 flex items-center gap-2 transition-all duration-500 ease-out ${isInView ? 'opacity-100 translate-y-0 md:opacity-0 md:translate-y-4 md:group-hover:opacity-100 md:group-hover:translate-y-0' : 'opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0'}`}>
+          {member.github && (
+            <a href={member.github} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+              <Github className="w-4 h-4" />
+            </a>
+          )}
+          {member.linkedin && (
+            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+              <Linkedin className="w-4 h-4" />
+            </a>
+          )}
+          {member.mail && (
+            <a href={`mailto:${member.mail}`} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+              <Mail className="w-4 h-4" />
+            </a>
+          )}
+          <a href="https://technova.iobm.edu.pk" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+            <Globe className="w-4 h-4" />
           </a>
         </div>
       </div>
@@ -436,7 +445,8 @@ export default function Home() {
                   role: 'Chairperson', 
                   dept: 'Data Analyst', 
                   img: hamnaPfp,
-                  linkedin: 'https://linkedin.com/in/hamnasaleem'
+                  linkedin: 'https://www.linkedin.com/in/hamna-saleem-659a5b223/',
+                  mail: 'hamnasaleem23@gmail.com'
                 },
                 { 
                   name: 'Muhammad Anas', 

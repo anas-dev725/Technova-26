@@ -27,7 +27,7 @@ import { submissionService, Submission } from '../services/submissionService';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
-// import { emailService } from '../services/emailService';
+import { emailService } from '../services/emailService';
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -108,7 +108,6 @@ export default function Admin() {
         setSelectedSubmission({ ...selectedSubmission, status });
       }
 
-      /*
       // Send email notification based on status
       if (sub && sub.email && sub.members?.[0]) {
         if (status === 'approved') {
@@ -117,7 +116,6 @@ export default function Admin() {
           await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
         }
       }
-      */
     } catch (error) {
       console.error('Status update error:', error);
     }
