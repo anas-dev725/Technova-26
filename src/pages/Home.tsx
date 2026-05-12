@@ -86,7 +86,7 @@ function MemberCard({ member }: { member: any, key?: string | number }) {
               <Mail className="w-4 h-4" />
             </a>
           )}
-          <a href="https://technova.iobm.edu.pk" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
+          <a href={member.website || "https://technova.iobm.edu.pk"} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
             <Globe className="w-4 h-4" />
           </a>
         </div>
@@ -453,8 +453,9 @@ export default function Home() {
                   role: 'Vice Chairperson & Lead Developer', 
                   dept: 'AI Automation Engineer', 
                   img: anasProfileBase64,
-                  github: 'https://github.com/anasmobin',
-                  linkedin: 'https://linkedin.com/in/anasmobin'
+                  github: 'https://github.com/anas-dev725',
+                  linkedin: 'https://www.linkedin.com/in/muhammad-anas804/',
+                  website: 'https://muhammad-anas-ai-engineer.vercel.app/'
                 },
                 { 
                   name: 'Moiz Ali Siddiqui', 
