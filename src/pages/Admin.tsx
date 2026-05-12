@@ -19,7 +19,8 @@ import {
   FileText,
   Lock,
   User as UserIcon,
-  EyeOff
+  EyeOff,
+  ChevronDown
 } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
@@ -36,6 +37,7 @@ export default function Admin() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterModule, setFilterModule] = useState<string>('all');
+  const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
@@ -376,21 +378,68 @@ export default function Admin() {
             
             <div className="flex flex-wrap items-center justify-center gap-3">
               <div className="flex items-center gap-3">
+                {/* Custom Module Dropdown */}
                 <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                  <select 
-                    value={filterModule}
-                    onChange={(e) => setFilterModule(e.target.value)}
-                    className="pl-9 pr-10 py-2.5 bg-gray-900 dark:bg-black/40 text-white rounded-xl border-2 border-transparent focus:border-blue-500 text-xs font-black uppercase tracking-wider outline-none transition-all cursor-pointer appearance-none shadow-xl"
+                  <button
+                    onClick={() => setIsModuleDropdownOpen(!isModuleDropdownOpen)}
+                    className="flex items-center gap-3 pl-4 pr-10 py-2.5 bg-gray-900 dark:bg-blue-600 text-white rounded-xl border-2 border-transparent hover:border-white/20 text-xs font-black uppercase tracking-wider outline-none transition-all cursor-pointer shadow-xl relative min-w-[180px]"
                   >
-                    <option value="all" className="bg-gray-900 text-white font-bold">MODULE: ALL</option>
-                    {uniqueModules.map(m => (
-                      <option key={m} value={m} className="bg-gray-900 text-white font-bold">{m.toUpperCase()}</option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                    <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-white/30"></div>
-                  </div>
+                    <Filter className="w-3.5 h-3.5 text-blue-100" />
+                    <span>{filterModule === 'all' ? 'MODULE: ALL' : filterModule.toUpperCase()}</span>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isModuleDropdownOpen ? 'rotate-180' : ''}`} />
+                    </div>
+                  </button>
+
+                  <AnimatePresence>
+                    {isModuleDropdownOpen && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setIsModuleDropdownOpen(false)}
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden"
+                        >
+                          <div className="p-2 space-y-1">
+                            <button
+                              onClick={() => {
+                                setFilterModule('all');
+                                setIsModuleDropdownOpen(false);
+                              }}
+                              className={`w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                filterModule === 'all' 
+                                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                                  : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                              }`}
+                            >
+                              All Modules
+                            </button>
+                            <div className="h-[1px] bg-gray-100 dark:bg-white/5 my-1" />
+                            {uniqueModules.map((m: any) => (
+                              <button
+                                key={m}
+                                onClick={() => {
+                                  setFilterModule(m as string);
+                                  setIsModuleDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                  filterModule === m 
+                                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                                }`}
+                              >
+                                {m as string}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5">
@@ -466,16 +515,20 @@ export default function Admin() {
                     aoaData.push(row);
                   });
 
-                  // Add Total Row for Finance
+                  // Add Finance Summary Section
                   const totalSum = filteredSubmissions.reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
-                  const totalRow = new Array(headers.length).fill('');
-                  totalRow[0] = 'TOTAL SUMMARY';
-                  totalRow[headers.indexOf('Total Fee (PKR)')] = `PKR ${totalSum.toLocaleString()}`;
-                  totalRow[headers.indexOf('Status')] = `COUNT: ${filteredSubmissions.length}`;
-                  
-                  aoaData.push([]); // Spacer row
-                  aoaData.push(totalRow);
+                  const approvedSum = submissions.filter(s => s.status === 'approved').reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const pendingSum = submissions.filter(s => s.status === 'pending').reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
 
+                  aoaData.push([]); // Spacer
+                  aoaData.push(['--- FINANCE REPORT SUMMARY ---']);
+                  aoaData.push(['Current View Total (Filtered)', `PKR ${totalSum.toLocaleString()}`]);
+                  aoaData.push(['Approved Submissions Total', `PKR ${approvedSum.toLocaleString()}`]);
+                  aoaData.push(['Pending Submissions Total', `PKR ${pendingSum.toLocaleString()}`]);
+                  aoaData.push(['Total Entries Count', submissions.length.toString()]);
+                  aoaData.push(['Filtered Entries Count', filteredSubmissions.length.toString()]);
+                  aoaData.push(['Generated At', new Date().toLocaleString()]);
+                  
                   const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
                   
                   // Configure column widths

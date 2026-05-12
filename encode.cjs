@@ -3,7 +3,7 @@ const path = require('path');
 
 try {
   // 1. Logo
-  const logoPath = path.join(process.cwd(), 'src/assets/technova-logo.png');
+  const logoPath = path.join(process.cwd(), 'public/technova-logo.png');
   const logoObj = fs.readFileSync(logoPath);
   const logoB64 = `export const logoBase64 = "data:image/png;base64,${logoObj.toString('base64')}";\n`;
   fs.writeFileSync(path.join(process.cwd(), 'src/assets/logoBase64.ts'), logoB64);
