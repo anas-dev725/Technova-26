@@ -22,6 +22,7 @@ export const emailService = {
     feeAmount?: string;
     university?: string;
     membersList?: string;
+    participantId?: string;
   }) {
     if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
       console.warn('EmailJS not configured. Skipping email confirmation.');
@@ -36,6 +37,7 @@ export const emailService = {
         email: userEmail, 
         
         participant_name: userName,
+        participant_id: extraData?.participantId || 'N/A',
         module_name: moduleTitle,
         module_type: extraData?.moduleType || 'Competition',
         fee_amount: extraData?.feeAmount || 'Verified via Receipt',
@@ -62,23 +64,19 @@ export const emailService = {
   /**
    * Sends an approval email to the user.
    */
-  async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string) {
+  async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string) {
     if (!SERVICE_ID || !PUBLIC_KEY) return;
     
-    // You should create a separate template for approval or use logic in your EmailJS template
-    // For now, we'll assume there's a template for this. 
-    // In actual use, user might need multiple templates.
     try {
       const templateParams = {
         to_email: userEmail,
         to_name: userName,
         module_name: moduleTitle,
+        participant_id: participantId || 'N/A',
         status: 'Approved',
         message: 'Your registration has been verified and approved. Welcome to Technova \'26!',
       };
       
-      // If you have a specific template ID for approvals, use it here. 
-      // Otherwise we can use the same one if it handles status.
       return await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
     } catch (error) {
       console.error('Failed to send approval email:', error);
@@ -88,7 +86,7 @@ export const emailService = {
   /**
    * Sends a rejection email to the user.
    */
-  async sendRejectionNotification(userEmail: string, userName: string, moduleTitle: string) {
+  async sendRejectionNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string) {
     if (!SERVICE_ID || !PUBLIC_KEY) return;
 
     try {
@@ -96,6 +94,7 @@ export const emailService = {
         to_email: userEmail,
         to_name: userName,
         module_name: moduleTitle,
+        participant_id: participantId || 'N/A',
         status: 'Rejected',
         message: 'Unfortunately, your registration could not be verified. This usually happens if the payment receipt is invalid or unclear. Please contact our support team for more details.',
       };

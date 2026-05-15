@@ -50,6 +50,7 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
 
   const selectedModule = modules.find(m => m.id === moduleId);
 
@@ -200,7 +201,7 @@ export default function Register() {
         : null;
 
       // STEP 1: Save to Database (THE ONLY BLOCKING STEP)
-      await submissionService.createSubmission({
+      const result = await submissionService.createSubmission({
         moduleId: selectedModule.id,
         moduleTitle: selectedModule.title,
         subGameId: data.subGameId || null,
@@ -211,6 +212,10 @@ export default function Register() {
         receiptBase64: receiptPreview,
         totalFee: currentModuleFee
       });
+
+      if (result?.participantId) {
+        setSubmittedId(result.participantId);
+      }
 
       // STEP 2: Show Success Immediately
       setIsSubmitted(true);
@@ -227,7 +232,8 @@ export default function Register() {
           moduleType: selectedModule.category || 'Competition',
           feeAmount: `Rs. ${currentModuleFee}`,
           university: data.university,
-          membersList: membersListStr
+          membersList: membersListStr,
+          participantId: result?.participantId
         }
       ).catch(emailErr => {
         console.warn('Background Confirmation Email failed:', emailErr);
@@ -307,6 +313,17 @@ export default function Register() {
               </motion.div>
               
               <h2 className="text-4xl font-display font-black text-gray-900 dark:text-white mb-6">Submission Received!</h2>
+              
+              {submittedId && (
+                <div className="mb-8 inline-flex flex-col items-center">
+                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Your Unique Team ID</span>
+                  <div className="px-8 py-4 bg-blue-600/10 border-2 border-dashed border-blue-600/30 rounded-2xl">
+                    <span className="text-3xl font-black text-blue-600 tracking-widest">{submittedId}</span>
+                  </div>
+                  <p className="mt-3 text-[10px] text-gray-500 font-bold uppercase tracking-wider italic">Keep this ID for future reference</p>
+                </div>
+              )}
+
               <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-lg mx-auto font-medium leading-relaxed">
                 Your registration for <span className="text-blue-600 dark:text-blue-400 font-bold">{currentModuleTitle}</span> has been successfully logged. 
                 <br /><br />

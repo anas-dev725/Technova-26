@@ -21,6 +21,7 @@ export interface TeamMember {
 
 export interface Submission {
   id?: string;
+  participantId?: string; // e.g., PE-001
   moduleId: string;
   moduleTitle: string;
   subGameId?: string;
@@ -32,6 +33,23 @@ export interface Submission {
   status: 'pending' | 'approved' | 'rejected';
   submittedAt: any;
   totalFee: number;
+}
+
+const MODULE_PREFIXES: Record<string, string> = {
+  'fyp-warriors': 'FW',
+  'startup-launchpad': 'SL',
+  'capture-the-flag': 'CTF',
+  'agentic-ai-arena': 'AA',
+  'datathon': 'DT',
+  'prompt-engineering': 'PE',
+  'esports-competition': 'ESP',
+  'webforces': 'WF',
+  'digital-dash': 'DD',
+  'maths-mania': 'MM'
+};
+
+function getParticipantPrefix(moduleId: string): string {
+  return MODULE_PREFIXES[moduleId] || 'TX';
 }
 
 export interface FirestoreErrorInfo {
@@ -73,21 +91,33 @@ function handleFirestoreError(error: any, operationType: FirestoreErrorInfo['ope
 }
 
 export const submissionService = {
-  async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt'>) {
+  async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt' | 'participantId'>) {
     try {
-      // Filter out undefined values to satisfy Firestore
+      // 1. Generate Participant ID (Sequential per module)
+      const q = query(
+        collection(db, 'submissions'), 
+        where('moduleId', '==', submission.moduleId)
+      );
+      const snapshot = await getDocs(q);
+      const count = snapshot.size;
+      const prefix = getParticipantPrefix(submission.moduleId);
+      const sequentialNumber = (count + 1).toString().padStart(3, '0');
+      const participantId = `${prefix}-${sequentialNumber}`;
+
+      // 2. Filter out undefined values
       const cleanData = Object.fromEntries(
         Object.entries(submission).filter(([_, v]) => v !== undefined)
       );
 
       const docRef = await addDoc(collection(db, 'submissions'), {
         ...cleanData,
+        participantId,
         status: 'pending',
         submittedAt: serverTimestamp(),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
-      return docRef.id;
+      return { id: docRef.id, participantId };
     } catch (error) {
       handleFirestoreError(error, 'create', 'submissions');
     }
@@ -150,6 +180,46 @@ export const submissionService = {
       });
     } catch (error) {
       handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+    }
+  },
+
+  async migrateMissingIds() {
+    try {
+      // Fetch all submissions sorted by original submission time
+      const q = query(collection(db, 'submissions'), orderBy('submittedAt', 'asc'));
+      const snapshot = await getDocs(q);
+      
+      const moduleCounters: Record<string, number> = {};
+      const batch: { id: string, participantId: string }[] = [];
+
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data() as Submission;
+        const moduleId = data.moduleId;
+        
+        // Track valid module submissions
+        moduleCounters[moduleId] = (moduleCounters[moduleId] || 0) + 1;
+
+        if (!data.participantId) {
+          const prefix = getParticipantPrefix(moduleId);
+          const sequentialNumber = moduleCounters[moduleId].toString().padStart(3, '0');
+          const participantId = `${prefix}-${sequentialNumber}`;
+          
+          batch.push({ id: docSnap.id, participantId });
+        }
+      }
+
+      // Execute updates individually (small counts expected)
+      for (const item of batch) {
+        const docRef = doc(db, 'submissions', item.id);
+        await updateDoc(docRef, { 
+          participantId: item.participantId,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      return batch.length;
+    } catch (error) {
+      handleFirestoreError(error, 'write', 'migration');
     }
   },
 

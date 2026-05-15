@@ -20,7 +20,9 @@ import {
   Lock,
   User as UserIcon,
   EyeOff,
-  ChevronDown
+  ChevronDown,
+  RefreshCw,
+  Settings
 } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
@@ -38,6 +40,7 @@ export default function Admin() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterModule, setFilterModule] = useState<string>('all');
   const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
+  const [isMigrating, setIsMigrating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
@@ -114,10 +117,11 @@ export default function Admin() {
       // Send email notification based on status (NON-BLOCKING)
       if (sub && sub.email && sub.members?.[0]) {
         try {
+          const participantId = sub.participantId || 'N/A';
           if (status === 'approved') {
-            await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+            await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle, participantId);
           } else if (status === 'rejected') {
-            await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle);
+            await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle, participantId);
           }
         } catch (emailErr) {
           console.warn('Status update notification email failed to send:', emailErr);
@@ -125,6 +129,21 @@ export default function Admin() {
       }
     } catch (error) {
       console.error('Status update error:', error);
+    }
+  };
+
+  const handleMigrateIds = async () => {
+    if (!confirm('This will generate unique IDs for all existing entries that don\'t have one based on their submission time. Continue?')) return;
+    
+    setIsMigrating(true);
+    try {
+      const count = await submissionService.migrateMissingIds();
+      alert(`Success! Generated IDs for ${count || 0} entries.`);
+    } catch (error) {
+      alert('Migration failed. Check console for error.');
+      console.error(error);
+    } finally {
+      setIsMigrating(false);
     }
   };
 
@@ -280,33 +299,34 @@ export default function Admin() {
       <div className="max-w-7xl mx-auto space-y-10">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-blue-500 font-bold tracking-widest text-[10px] uppercase mb-1">
-              <span className="w-6 h-[1px] bg-blue-500"></span>
-              Control Panel
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div className="text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 text-blue-500 font-bold tracking-[0.2em] text-[9px] uppercase mb-2">
+              <span className="w-4 h-[1px] bg-blue-500"></span>
+              Admin Dashboard
+              <span className="w-4 h-[1px] bg-blue-500"></span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-display font-black text-gray-900 dark:text-white tracking-tight">
-              Submissions <span className="text-blue-500">Live</span>
+            <h1 className="text-3xl md:text-5xl font-display font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">
+              Submissions <span className="text-blue-500 not-italic">Live</span>
             </h1>
           </div>
-          <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-1.5 rounded-xl border border-gray-200 dark:border-white/10 backdrop-blur-md">
-            <div className="px-3">
-              <div className="text-[10px] text-gray-500 font-medium uppercase">Admin</div>
-              <div className="text-xs font-bold text-gray-900 dark:text-white">{user.email}</div>
+          <div className="flex items-center justify-between sm:justify-end gap-3 bg-white dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 backdrop-blur-md shadow-xl">
+            <div className="px-3 border-r border-gray-100 dark:border-white/5">
+              <div className="text-[8px] text-gray-500 font-black uppercase tracking-widest mb-0.5">Authorized As</div>
+              <div className="text-xs font-black text-gray-900 dark:text-white truncate max-w-[120px] md:max-w-none">{user.email?.split('@')[0]}</div>
             </div>
             <button 
               onClick={handleLogout}
-              className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
+              className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20 group"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             </button>
           </div>
         </div>
 
         {/* Quick Stats */}
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {[
               { label: 'Total', value: stats.total, color: 'blue', icon: Users },
               { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
@@ -314,46 +334,46 @@ export default function Admin() {
               { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
             ].map((stat, i) => (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
                 key={stat.label}
-                className={`p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden relative group`}
+                className="p-4 md:p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative group"
               >
-                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 rounded-bl-full translate-x-12 -translate-y-12`}></div>
-                <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
-                  <stat.icon className={`w-5 h-5 text-${stat.color}-500`} />
+                <div className={`w-8 h-8 md:w-12 md:h-12 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
+                  <stat.icon className={`w-4 h-4 md:w-6 md:h-6 text-${stat.color}-500`} />
                 </div>
-                <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
-                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{stat.label}</div>
+                <div className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-1 tracking-tight">{stat.value}</div>
+                <div className="text-[8px] md:text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">{stat.label}</div>
               </motion.div>
             ))}
           </div>
 
-          <div className="p-6 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <div className="w-4 h-[1px] bg-blue-500"></div>
+          <div className="p-6 md:p-8 bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full translate-x-12 -translate-y-12"></div>
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+              <div className="w-6 h-[1px] bg-blue-500"></div>
               Module Distribution
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {moduleStats.map((m, i) => (
                 <div key={m.name} 
                   onClick={() => setFilterModule(m.name)}
-                  className={`p-3 rounded-xl border transition-all cursor-pointer group ${
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[80px] ${
                     filterModule === m.name 
-                      ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-600/20' 
-                      : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5 hover:border-blue-500/30'
+                      ? 'bg-gray-900 border-gray-900 shadow-xl scale-[1.02]' 
+                      : 'bg-gray-50 dark:bg-black/20 border-gray-100 dark:border-white/5 hover:border-blue-500/30'
                   }`}
                 >
-                  <div className={`text-sm font-black truncate transition-colors ${
+                  <div className={`text-[10px] font-black truncate leading-tight transition-colors pr-4 ${
                     filterModule === m.name ? 'text-white' : 'text-gray-900 dark:text-white'
                   }`} title={m.name}>{m.name}</div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className={`text-[10px] font-bold uppercase transition-colors ${
-                      filterModule === m.name ? 'text-blue-100' : 'text-gray-400'
+                  <div className="flex items-end justify-between mt-2">
+                    <span className={`text-[8px] font-black uppercase tracking-widest ${
+                      filterModule === m.name ? 'text-blue-400' : 'text-gray-400'
                     }`}>Entries</span>
-                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black transition-colors ${
-                      filterModule === m.name ? 'bg-white text-blue-600' : 'bg-blue-500/10 text-blue-500'
+                    <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black ${
+                      filterModule === m.name ? 'bg-blue-500 text-white' : 'bg-blue-500/10 text-blue-500'
                     }`}>{m.count}</span>
                   </div>
                 </div>
@@ -363,32 +383,32 @@ export default function Admin() {
         </div>
 
         {/* Filters & Actions */}
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-2xl p-2 border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden">
-          <div className="p-4 md:p-6 border-b border-gray-100 dark:border-white/5 flex flex-col lg:flex-row items-center justify-between gap-4">
-            <div className="relative w-full lg:max-w-xs group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-colors group-focus-within:text-blue-500" />
-              <input 
-                type="text" 
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/20 rounded-xl border-2 border-transparent focus:border-blue-500 outline-none transition-all text-sm text-gray-900 dark:text-white font-medium"
-              />
-            </div>
-            
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <div className="flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl p-2 border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden">
+          <div className="p-4 md:p-8 space-y-6">
+            <div className="flex flex-col xl:flex-row items-center justify-between gap-6">
+              <div className="relative w-full xl:max-w-md group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-colors group-focus-within:text-blue-500" />
+                <input 
+                  type="text" 
+                  placeholder="Search participants, modules, or universities..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-black/40 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all text-sm text-gray-900 dark:text-white font-bold"
+                />
+              </div>
+              
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full xl:w-auto">
                 {/* Custom Module Dropdown */}
-                <div className="relative">
+                <div className="relative w-full sm:w-auto">
                   <button
                     onClick={() => setIsModuleDropdownOpen(!isModuleDropdownOpen)}
-                    className="flex items-center gap-3 pl-4 pr-10 py-2.5 bg-gray-900 dark:bg-blue-600 text-white rounded-xl border-2 border-transparent hover:border-white/20 text-xs font-black uppercase tracking-wider outline-none transition-all cursor-pointer shadow-xl relative min-w-[180px]"
+                    className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4 px-5 py-3.5 bg-gray-900 dark:bg-blue-600 text-white rounded-2xl border-2 border-transparent hover:border-white/20 text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer shadow-xl relative min-w-[200px]"
                   >
-                    <Filter className="w-3.5 h-3.5 text-blue-100" />
-                    <span>{filterModule === 'all' ? 'MODULE: ALL' : filterModule.toUpperCase()}</span>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <ChevronDown className={`w-4 h-4 transition-transform ${isModuleDropdownOpen ? 'rotate-180' : ''}`} />
+                    <div className="flex items-center gap-3">
+                      <Filter className="w-3.5 h-3.5 text-blue-100" />
+                      <span>{filterModule === 'all' ? 'MODULE: ALL' : filterModule.toUpperCase()}</span>
                     </div>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isModuleDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   <AnimatePresence>
@@ -442,32 +462,53 @@ export default function Admin() {
                   </AnimatePresence>
                 </div>
 
-                <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5">
-                {[
-                  { id: 'all', label: 'All' },
-                  { id: 'pending', label: 'Pending' },
-                  { id: 'approved', label: 'Approved' },
-                  { id: 'rejected', label: 'Rejected' },
-                ].map(status => (
-                  <button
-                    key={status.id}
-                    onClick={() => setFilterStatus(status.id)}
-                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                      filterStatus === status.id 
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {status.label}
-                  </button>
-                ))}
+                <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5">
+                  {[
+                    { id: 'all', label: 'All' },
+                    { id: 'pending', label: 'Pending' },
+                    { id: 'approved', label: 'Approved' },
+                    { id: 'rejected', label: 'Rejected' },
+                  ].map(status => (
+                    <button
+                      key={status.id}
+                      onClick={() => setFilterStatus(status.id)}
+                      className={`flex-1 sm:flex-none px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                        filterStatus === status.id 
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                          : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      {status.label}
+                    </button>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={handleMigrateIds}
+                  disabled={isMigrating}
+                  className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isMigrating ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      Fixing...
+                    </>
+                  ) : (
+                    <>
+                      <Settings className="w-3.5 h-3.5 text-orange-500" />
+                      Fix IDs
+                    </>
+                  )}
+                </button>
               </div>
-            </div>
-            <button 
-                className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
-                onClick={() => {
+
+              <div className="flex items-center gap-3 w-full xl:w-auto">
+                <button 
+                  className="flex-1 xl:flex-none px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                  onClick={() => {
                   const maxMembers = Math.max(1, ...filteredSubmissions.map(s => s.members?.length || 0));
                   const headers = [
+                    'Participant ID',
                     'Submission ID',
                     'Date',
                     'Lead Name',
@@ -488,6 +529,7 @@ export default function Admin() {
                   filteredSubmissions.forEach(s => {
                     const date = s.submittedAt?.toDate ? s.submittedAt.toDate().toLocaleString() : 'N/A';
                     const row: any[] = [
+                      s.participantId || 'N/A',
                       s.id,
                       date,
                       s.members[0]?.fullName || '',
@@ -556,8 +598,8 @@ export default function Admin() {
                 <FileText className="w-4 h-4" />
                 Export Excel
               </button>
-              <button 
-                onClick={async () => {
+                <button 
+                  onClick={async () => {
                   try {
                     const zip = new JSZip();
                     const folder = zip.folder("receipts");
@@ -591,19 +633,96 @@ export default function Admin() {
                     alert("Failed to export receipts.");
                   }
                 }}
-                className="px-5 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold flex items-center gap-2 hover:scale-105 transition-transform"
-              >
+                  className="flex-1 xl:flex-none px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                >
                 <Download className="w-4 h-4" />
                 Export Receipts
               </button>
             </div>
           </div>
+        </div>
 
-          <div className="overflow-x-auto">
+        {/* Mobile Card View (Visible on small screens) */}
+          <div className="md:hidden space-y-4 p-4">
+            <AnimatePresence mode="popLayout">
+              {filteredSubmissions.map((sub, idx) => (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  key={sub.id}
+                  onClick={() => setSelectedSubmission(sub)}
+                  className="p-5 rounded-[2rem] bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 active:scale-[0.98] transition-all shadow-sm flex flex-col gap-4"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-mono font-black text-gray-400">#{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
+                      <div className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight break-all leading-tight">
+                        {sub.members[0].fullName}
+                      </div>
+                      <span className="text-[10px] font-black text-blue-500 font-mono tracking-widest">{sub.participantId || 'N/A'}</span>
+                    </div>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-sm
+                      ${sub.status === 'approved' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
+                        sub.status === 'rejected' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
+                        'bg-amber-500 text-white shadow-amber-500/20'}
+                    `}>
+                      {sub.status}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 py-4 border-y border-gray-100 dark:border-white/5">
+                    <div>
+                      <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Module</div>
+                      <div className="text-[10px] font-bold text-gray-700 dark:text-blue-100 uppercase truncate">{sub.moduleTitle}</div>
+                    </div>
+                    <div>
+                      <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Date</div>
+                      <div className="text-[10px] font-bold text-gray-700 dark:text-gray-300">{sub.submittedAt?.toDate().toLocaleDateString('en-GB')}</div>
+                    </div>
+                    <div className="col-span-2">
+                      <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Institution</div>
+                      <div className="text-[10px] font-bold text-gray-700 dark:text-gray-300 truncate">{sub.university}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3" onClick={e => e.stopPropagation()}>
+                    <button 
+                      onClick={() => setSelectedSubmission(sub)}
+                      className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      View
+                    </button>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleStatusUpdate(sub.id!, 'approved')}
+                        disabled={sub.status === 'approved'}
+                        className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-emerald-500/20"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleStatusUpdate(sub.id!, 'rejected')}
+                        disabled={sub.status === 'rejected'}
+                        className="p-3 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-rose-500/20"
+                      >
+                        <XCircle className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-white/5">
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-16">Sr#</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Leader</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">University</th>
@@ -627,6 +746,11 @@ export default function Admin() {
                       <td className="px-6 py-4">
                         <div className="text-[10px] font-mono font-black text-gray-400 group-hover:text-blue-500/50 transition-colors">
                           {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-xs font-black text-blue-500 font-mono tracking-tighter">
+                          {sub.participantId || 'N/A'}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -730,7 +854,8 @@ export default function Admin() {
                   <div>
                     <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white leading-tight uppercase tracking-tight">Submission Detail</h2>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[9px] font-black text-blue-500/60 uppercase tracking-widest">Ref: {selectedSubmission.id?.slice(-8)}</span>
+                      <span className="text-xs font-black text-blue-500 uppercase tracking-widest pr-2 border-r border-gray-200 dark:border-white/10">{selectedSubmission.participantId || 'N/A'}</span>
+                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Ref: {selectedSubmission.id?.slice(-8)}</span>
                     </div>
                   </div>
                 </div>
@@ -750,39 +875,45 @@ export default function Admin() {
                   <div className="grid lg:grid-cols-2 gap-8 md:gap-10">
                     
                     {/* Primary Info */}
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <section>
-                          <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Lead</h3>
+                          <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 leading-none">TEAM LEAD</h3>
                           <div className="flex flex-col">
-                            <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-tight">{selectedSubmission.members[0].fullName}</span>
-                            <span className="text-xs text-blue-500 font-bold mt-1 break-all">{selectedSubmission.email}</span>
+                            <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">{selectedSubmission.members[0].fullName}</span>
+                            <span className="text-[10px] text-blue-500 font-black mt-2 break-all uppercase tracking-wider">{selectedSubmission.email}</span>
                           </div>
                         </section>
 
                         <section>
-                          <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Institution</h3>
+                          <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 leading-none">INSTITUTION</h3>
                           <div className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight leading-tight">
                             {selectedSubmission.university}
                           </div>
                         </section>
                       </div>
 
-                      <div className="p-5 rounded-2xl bg-blue-500/[0.03] border border-blue-500/10">
-                        <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Module Details</h3>
-                        <div className="space-y-1">
-                          <div className="text-xl font-black text-blue-500 uppercase tracking-tight">
+                      <div className="p-6 rounded-[2rem] bg-gray-50 dark:bg-black/40 border border-gray-100 dark:border-white/5 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full translate-x-12 -translate-y-12"></div>
+                        <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4 leading-none">REGISTRATION DETAIL</h3>
+                        <div className="space-y-2">
+                          <div className="text-2xl font-black text-blue-500 uppercase tracking-tighter leading-none italic">
                             {selectedSubmission.moduleTitle}
                           </div>
                           {selectedSubmission.subGameTitle && (
-                            <div className="text-xs font-bold text-gray-900 dark:text-white/80 uppercase tracking-widest">
+                            <div className="text-[10px] font-black text-gray-900 dark:text-gray-400 uppercase tracking-[0.2em]">
                               — {selectedSubmission.subGameTitle}
                             </div>
                           )}
                         </div>
-                        <div className="mt-6 pt-4 border-t border-blue-500/10 flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Fee</span>
-                          <span className="text-xl font-black text-emerald-500 tracking-tight">PKR {selectedSubmission.totalFee}</span>
+                        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/5 flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Fee Verification</span>
+                            <span className="text-2xl font-black text-emerald-500 tracking-tighter italic uppercase">PKR {selectedSubmission.totalFee}</span>
+                          </div>
+                          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                          </div>
                         </div>
                       </div>
                     </div>
