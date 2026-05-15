@@ -104,6 +104,8 @@ export const submissionService = {
       const sequentialNumber = (count + 1).toString().padStart(3, '0');
       const participantId = `${prefix}-${sequentialNumber}`;
 
+      console.log(`[SubmissionService] Generated Participant ID: ${participantId} for module: ${submission.moduleId}`);
+
       // 2. Filter out undefined values
       const cleanData = Object.fromEntries(
         Object.entries(submission).filter(([_, v]) => v !== undefined)

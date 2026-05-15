@@ -37,7 +37,11 @@ export const emailService = {
         email: userEmail, 
         
         participant_name: userName,
+        to_name: userName, // Alias
+        
         participant_id: extraData?.participantId || 'N/A',
+        id: extraData?.participantId || 'N/A', // Alias
+        
         module_name: moduleTitle,
         module_type: extraData?.moduleType || 'Competition',
         fee_amount: extraData?.feeAmount || 'Verified via Receipt',
@@ -71,6 +75,7 @@ export const emailService = {
       const templateParams = {
         to_email: userEmail,
         to_name: userName,
+        participant_name: userName, // Alias
         module_name: moduleTitle,
         participant_id: participantId || 'N/A',
         status: 'Approved',
@@ -93,6 +98,7 @@ export const emailService = {
       const templateParams = {
         to_email: userEmail,
         to_name: userName,
+        participant_name: userName, // Alias
         module_name: moduleTitle,
         participant_id: participantId || 'N/A',
         status: 'Rejected',
