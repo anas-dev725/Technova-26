@@ -51,7 +51,7 @@ export default function HeroV1({ timeLeft }: HeroProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-6"
           >
-            Dream It & Ship It
+            Connect, Create, & Conquer
           </motion.div>
 
           <motion.div
