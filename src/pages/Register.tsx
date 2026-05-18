@@ -402,11 +402,20 @@ export default function Register() {
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Primary Contact Email</label>
                             <input
                               {...register('email')}
-                              type="email"
-                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border ${errors.email ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg`}
+                              type="text"
+                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${errors.email ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg`}
                               placeholder="you@email.com"
                             />
-                            {errors.email && <p className="mt-2 text-xs text-red-500 font-medium">{errors.email.message}</p>}
+                            {errors.email && (
+                              <motion.p 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5" />
+                                {errors.email.message}
+                              </motion.p>
+                            )}
                           </div>
 
                           <div className="md:col-span-1">
@@ -414,10 +423,19 @@ export default function Register() {
                             <input
                               {...register('university')}
                               type="text"
-                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border ${errors.university ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg`}
+                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${errors.university ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg`}
                               placeholder="Full University Name"
                             />
-                            {errors.university && <p className="mt-2 text-xs text-red-500 font-medium">{errors.university.message}</p>}
+                            {errors.university && (
+                              <motion.p 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5" />
+                                {errors.university.message}
+                              </motion.p>
+                            )}
                           </div>
 
                           {/* Participant Info */}
@@ -430,10 +448,19 @@ export default function Register() {
                             <input
                               {...register('members.0.fullName' as const)}
                               type="text"
-                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border ${errors.members?.[0]?.fullName ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-bold tracking-tight`}
+                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${errors.members?.[0]?.fullName ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-bold tracking-tight`}
                               placeholder="Your Full Name"
                             />
-                            {errors.members?.[0]?.fullName && <p className="mt-2 text-xs text-red-500 font-medium">{errors.members?.[0]?.fullName?.message}</p>}
+                            {errors.members?.[0]?.fullName && (
+                              <motion.p 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5" />
+                                {errors.members?.[0]?.fullName?.message}
+                              </motion.p>
+                            )}
                           </div>
 
                           <div className="md:col-span-1">
@@ -441,10 +468,19 @@ export default function Register() {
                             <input
                               {...register('members.0.cnic' as const)}
                               type="text"
-                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border ${errors.members?.[0]?.cnic ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono`}
+                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${errors.members?.[0]?.cnic ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono`}
                               placeholder="12345-1234567-1"
                             />
-                            {errors.members?.[0]?.cnic && <p className="mt-2 text-xs text-red-500 font-medium">{errors.members?.[0]?.cnic?.message}</p>}
+                            {errors.members?.[0]?.cnic && (
+                              <motion.p 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5" />
+                                {errors.members?.[0]?.cnic?.message}
+                              </motion.p>
+                            )}
                           </div>
 
                           <div className="md:col-span-1">
@@ -452,10 +488,19 @@ export default function Register() {
                             <input
                               {...register('members.0.contactNumber' as const)}
                               type="tel"
-                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border ${errors.members?.[0]?.contactNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono`}
+                              className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${errors.members?.[0]?.contactNumber ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono`}
                               placeholder="03XXXXXXXXX"
                             />
-                            {errors.members?.[0]?.contactNumber && <p className="mt-2 text-xs text-red-500 font-medium">{errors.members?.[0]?.contactNumber?.message}</p>}
+                            {errors.members?.[0]?.contactNumber && (
+                              <motion.p 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                              >
+                                <AlertCircle className="w-3.5 h-3.5" />
+                                {errors.members?.[0]?.contactNumber?.message}
+                              </motion.p>
+                            )}
                           </div>
                         </div>
 
@@ -472,21 +517,39 @@ export default function Register() {
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Primary Contact Email</label>
                           <input
                             {...register('email')}
-                            type="email"
-                            className={`w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
+                            type="text"
+                            className={`w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border-2 ${errors.email ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
                             placeholder="Lead person email for confirmation"
                           />
-                          {errors.email && <p className="mt-1 text-xs text-red-500 font-medium">{errors.email.message}</p>}
+                          {errors.email && (
+                            <motion.p 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                            >
+                              <AlertCircle className="w-3.5 h-3.5" />
+                              {errors.email.message}
+                            </motion.p>
+                          )}
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">University / Institution</label>
                           <input
                             {...register('university')}
                             type="text"
-                            className={`w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border ${errors.university ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
+                            className={`w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border-2 ${errors.university ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
                             placeholder="e.g. FAST, NED, NUST"
                           />
-                          {errors.university && <p className="mt-1 text-xs text-red-500 font-medium">{errors.university.message}</p>}
+                          {errors.university && (
+                            <motion.p 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                            >
+                              <AlertCircle className="w-3.5 h-3.5" />
+                              {errors.university.message}
+                            </motion.p>
+                          )}
                         </div>
                       </div>
 
@@ -520,30 +583,57 @@ export default function Register() {
                                     <input
                                       {...register(`members.${index}.fullName` as const)}
                                       type="text"
-                                      className={`w-full px-5 py-4 rounded-xl border ${errors.members?.[index]?.fullName ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
+                                      className={`w-full px-5 py-4 rounded-xl border-2 ${errors.members?.[index]?.fullName ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
                                       placeholder="Full Name"
                                     />
-                                    {errors.members?.[index]?.fullName && <p className="mt-1 text-xs text-red-500 font-medium">{errors.members?.[index]?.fullName?.message}</p>}
+                                    {errors.members?.[index]?.fullName && (
+                                      <motion.p 
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="mt-2 text-[10px] text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                                      >
+                                        <AlertCircle className="w-3 h-3" />
+                                        {errors.members?.[index]?.fullName?.message}
+                                      </motion.p>
+                                    )}
                                   </div>
                                   <div>
                                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">CNIC Number</label>
                                     <input
                                       {...register(`members.${index}.cnic` as const)}
                                       type="text"
-                                      className={`w-full px-5 py-4 rounded-xl border ${errors.members?.[index]?.cnic ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
+                                      className={`w-full px-5 py-4 rounded-xl border-2 ${errors.members?.[index]?.cnic ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
                                       placeholder="12345-1234567-1"
                                     />
-                                    {errors.members?.[index]?.cnic && <p className="mt-1 text-xs text-red-500 font-medium">{errors.members?.[index]?.cnic?.message}</p>}
+                                    {errors.members?.[index]?.cnic && (
+                                      <motion.p 
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="mt-2 text-[10px] text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                                      >
+                                        <AlertCircle className="w-3 h-3" />
+                                        {errors.members?.[index]?.cnic?.message}
+                                      </motion.p>
+                                    )}
                                   </div>
                                   <div>
                                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">WhatsApp Number</label>
                                     <input
                                       {...register(`members.${index}.contactNumber` as const)}
                                       type="tel"
-                                      className={`w-full px-5 py-4 rounded-xl border ${errors.members?.[index]?.contactNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
+                                      className={`w-full px-5 py-4 rounded-xl border-2 ${errors.members?.[index]?.contactNumber ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} bg-white dark:bg-black/20 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition-all`}
                                       placeholder="03XXXXXXXXX"
                                     />
-                                    {errors.members?.[index]?.contactNumber && <p className="mt-1 text-xs text-red-500 font-medium">{errors.members?.[index]?.contactNumber?.message}</p>}
+                                    {errors.members?.[index]?.contactNumber && (
+                                      <motion.p 
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="mt-2 text-[10px] text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                                      >
+                                        <AlertCircle className="w-3 h-3" />
+                                        {errors.members?.[index]?.contactNumber?.message}
+                                      </motion.p>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -664,14 +754,17 @@ export default function Register() {
                               {serverError ? 'Registration Issue' : 'Incomplete Information'}
                             </h4>
                             <p className="text-sm font-bold text-red-500/80 leading-relaxed">
-                              {serverError || "Please check all fields marked in red. Ensure CNIC and Phone numbers match the required formats."}
+                              {serverError || "Please review the highlighted fields above. All fields must be filled correctly before you can proceed."}
                             </p>
                             {Object.keys(errors).length > 0 && !serverError && (
-                              <ul className="mt-3 space-y-1">
-                                {errors.email && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.email.message}</li>}
-                                {errors.university && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• {errors.university.message}</li>}
-                                {errors.members && <li className="text-[10px] uppercase tracking-wider text-red-500 font-black">• Please fill all participant details correctly</li>}
-                              </ul>
+                              <div className="mt-4 p-4 bg-red-500/5 rounded-xl border border-red-500/10">
+                                <p className="text-[10px] font-black text-red-500/60 uppercase tracking-widest mb-2">Validation Errors:</p>
+                                <ul className="space-y-1.5">
+                                  {errors.email && <li className="text-xs text-red-500 font-black flex items-center gap-2 uppercase tracking-tight"><div className="w-1 h-1 rounded-full bg-red-500" /> EMAIL: {errors.email.message}</li>}
+                                  {errors.university && <li className="text-xs text-red-500 font-black flex items-center gap-2 uppercase tracking-tight"><div className="w-1 h-1 rounded-full bg-red-500" /> UNIVERSITY: {errors.university.message}</li>}
+                                  {errors.members && <li className="text-xs text-red-500 font-black flex items-center gap-2 uppercase tracking-tight"><div className="w-1 h-1 rounded-full bg-red-500" /> PARTICIPANT DETAILS: Ensure all names, CNICs, and phone numbers are valid.</li>}
+                                </ul>
+                              </div>
                             )}
                           </div>
                         </motion.div>

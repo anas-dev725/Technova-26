@@ -37,34 +37,31 @@ service cloud.firestore {
 
     // Submission Validation
     function isValidSubmission(data) {
-      return data.moduleId is string && data.moduleId.size() <= 100 &&
-             data.moduleTitle is string && data.moduleTitle.size() <= 200 &&
+      return data.moduleId is string &&
+             data.moduleTitle is string &&
              (data.get('subGameId', null) == null || data.subGameId is string) &&
              (data.get('subGameTitle', null) == null || data.subGameTitle is string) &&
              data.email is string && data.email.size() <= 255 &&
              data.university is string && data.university.size() <= 255 &&
              data.members is list && data.members.size() >= 1 && data.members.size() <= 10 &&
              data.totalFee is number && data.totalFee >= 0 &&
-             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 && 
+             data.receiptBase64 is string && data.receiptBase64.size() <= 1500000 && 
              (data.get('participantId', null) == null || data.participantId is string) &&
              data.status in ['pending', 'approved', 'rejected'];
     }
 
     match /submissions/{submissionId} {
       allow create: if (
-        isValidId(submissionId) &&
         isValidSubmission(incoming()) &&
         incoming().status == 'pending' &&
-        isServerTimestamp('submittedAt') &&
-        isServerTimestamp('createdAt') &&
-        isServerTimestamp('updatedAt')
+        isServerTimestamp('submittedAt')
       );
 
       allow get: if isAdmin();
       allow list: if isAdmin();
 
       allow update: if (
-        isAdmin() &&
+        isAdmin() && 
         isValidSubmission(incoming()) &&
         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
         isServerTimestamp('updatedAt')
