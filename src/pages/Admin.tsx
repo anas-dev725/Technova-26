@@ -41,6 +41,7 @@ export default function Admin() {
   const [filterModule, setFilterModule] = useState<string>('all');
   const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
   const [isMigrating, setIsMigrating] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
@@ -144,6 +145,21 @@ export default function Admin() {
       console.error(error);
     } finally {
       setIsMigrating(false);
+    }
+  };
+
+  const handleSyncCounters = async () => {
+    if (!confirm('This will synchronize the sequential counters with the current number of submissions for each module. Use this if IDs are starting from #001 again incorrectly. Continue?')) return;
+    
+    setIsSyncing(true);
+    try {
+      const count = await submissionService.syncCounters(submissions);
+      alert(`Success! Synchronized counters for ${count || 0} modules.`);
+    } catch (error) {
+      alert('Sync failed. Check console for error.');
+      console.error(error);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -497,6 +513,24 @@ export default function Admin() {
                     <>
                       <Settings className="w-3.5 h-3.5 text-orange-500" />
                       Fix IDs
+                    </>
+                  )}
+                </button>
+
+                <button 
+                  onClick={handleSyncCounters}
+                  disabled={isSyncing}
+                  className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isSyncing ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      Syncing...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpDown className="w-3.5 h-3.5 text-emerald-500" />
+                      Sync Counters
                     </>
                   )}
                 </button>

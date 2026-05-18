@@ -43,9 +43,10 @@ service cloud.firestore {
              (data.get('subGameTitle', null) == null || data.subGameTitle is string) &&
              data.email is string && data.email.size() <= 255 &&
              data.university is string && data.university.size() <= 255 &&
-             data.members is list && data.members.size() >= 1 && data.members.size() <= 5 &&
+             data.members is list && data.members.size() >= 1 && data.members.size() <= 10 &&
              data.totalFee is number && data.totalFee >= 0 &&
-             data.receiptBase64 is string && data.receiptBase64.size() <= 1048576 && // Strict 1MB limit for document safety
+             data.receiptBase64 is string && data.receiptBase64.size() <= 1000000 && 
+             (data.get('participantId', null) == null || data.participantId is string) &&
              data.status in ['pending', 'approved', 'rejected'];
     }
 
@@ -70,6 +71,15 @@ service cloud.firestore {
       );
 
       allow delete: if isAdmin();
+    }
+
+    match /counters/{moduleId} {
+      allow get: if true;
+      allow create: if true; // Technically anyone can initialize, but it's safe if validated
+      allow update: if (
+        incoming().count == existing().count + 1 &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['count'])
+      );
     }
 
     match /admins/{userId} {

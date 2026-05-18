@@ -9,7 +9,10 @@ import {
   serverTimestamp,
   orderBy,
   onSnapshot,
-  Timestamp
+  Timestamp,
+  runTransaction,
+  getDoc,
+  setDoc
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 
@@ -93,33 +96,45 @@ function handleFirestoreError(error: any, operationType: FirestoreErrorInfo['ope
 export const submissionService = {
   async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt' | 'participantId'>) {
     try {
-      // 1. Generate Participant ID (Sequential per module)
-      const q = query(
-        collection(db, 'submissions'), 
-        where('moduleId', '==', submission.moduleId)
-      );
-      const snapshot = await getDocs(q);
-      const count = snapshot.size;
+      const countersRef = doc(db, 'counters', submission.moduleId);
       const prefix = getParticipantPrefix(submission.moduleId);
-      const sequentialNumber = (count + 1).toString().padStart(3, '0');
-      const participantId = `${prefix}-${sequentialNumber}`;
+      
+      const result = await runTransaction(db, async (transaction) => {
+        // 1. Get or initialize counter
+        const counterDoc = await transaction.get(countersRef);
+        let newCount = 1;
+        
+        if (counterDoc.exists()) {
+          newCount = counterDoc.data().count + 1;
+          transaction.update(countersRef, { count: newCount });
+        } else {
+          transaction.set(countersRef, { count: 1 });
+        }
 
-      console.log(`[SubmissionService] Generated Participant ID: ${participantId} for module: ${submission.moduleId}`);
+        // 2. Generate Participant ID
+        const sequentialNumber = newCount.toString().padStart(3, '0');
+        const participantId = `${prefix}-${sequentialNumber}`;
 
-      // 2. Filter out undefined values
-      const cleanData = Object.fromEntries(
-        Object.entries(submission).filter(([_, v]) => v !== undefined)
-      );
+        // 3. Prepare Submission Data
+        const cleanData = Object.fromEntries(
+          Object.entries(submission).filter(([_, v]) => v !== undefined)
+        );
 
-      const docRef = await addDoc(collection(db, 'submissions'), {
-        ...cleanData,
-        participantId,
-        status: 'pending',
-        submittedAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        const newSubmissionRef = doc(collection(db, 'submissions'));
+        
+        transaction.set(newSubmissionRef, {
+          ...cleanData,
+          participantId,
+          status: 'pending',
+          submittedAt: serverTimestamp(),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        return { id: newSubmissionRef.id, participantId };
       });
-      return { id: docRef.id, participantId };
+
+      return result;
     } catch (error) {
       handleFirestoreError(error, 'create', 'submissions');
     }
@@ -237,5 +252,22 @@ export const submissionService = {
       console.error("Admin check failed:", error);
       return false;
     }
+  },
+
+  async syncCounters(submissions: Submission[]) {
+    const modulesSubmissions: Record<string, number> = {};
+    
+    // Group by moduleId
+    submissions.forEach(s => {
+      modulesSubmissions[s.moduleId] = (modulesSubmissions[s.moduleId] || 0) + 1;
+    });
+
+    for (const moduleId of Object.keys(modulesSubmissions)) {
+      const count = modulesSubmissions[moduleId];
+      const counterRef = doc(db, 'counters', moduleId);
+      await setDoc(counterRef, { count });
+    }
+    
+    return Object.keys(modulesSubmissions).length;
   }
 }

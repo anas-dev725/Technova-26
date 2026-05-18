@@ -40,6 +40,15 @@
         "role": { "type": "string", "enum": ["admin", "superadmin"] }
       },
       "required": ["email", "role"]
+    },
+    "Counter": {
+      "title": "Module Counter",
+      "description": "Sequential counter for module submissions",
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["count"]
     }
   },
   "firestore": {
@@ -50,6 +59,10 @@
     "admins/{userId}": {
       "schema": "Admin",
       "description": "Collection of authorized admin users"
+    },
+    "counters/{moduleId}": {
+      "schema": "Counter",
+      "description": "Collection of sequential counters for each module"
     }
   }
 }
