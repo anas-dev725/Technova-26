@@ -4,6 +4,7 @@ import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from './ThemeContext';
 import { logoBase64 } from '../assets/logoBase64';
+import EarlyBirdBanner from './EarlyBirdBanner';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -115,6 +116,8 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      <EarlyBirdBanner />
 
       {/* Mobile Navigation */}
       <AnimatePresence>

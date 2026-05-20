@@ -326,12 +326,15 @@ export default function Register() {
     : selectedModule.mode;
 
   const currentModuleFee = getFees(currentModuleMode, selectedModule.id);
-  const discountAmount = isPromoApplied ? Math.floor(currentModuleFee * 0.35) : 0;
+  const discountPercentage = promoCode.toUpperCase() === 'TECHNOVA35' ? 0.35 : 0.30;
+  const discountAmount = isPromoApplied ? Math.floor(currentModuleFee * discountPercentage) : 0;
   const finalFee = currentModuleFee - discountAmount;
 
   const handlePromoCheck = (val: string) => {
+    const code = val.toUpperCase();
     setPromoCode(val);
-    if (val.toUpperCase() === 'TECHNOVA35') {
+    
+    if (code === 'TECHNOVA35' || code === 'TECHNOVA30') {
       if (!isPromoApplied) {
         confetti({
           particleCount: 150,
@@ -448,7 +451,7 @@ export default function Register() {
                       </div>
                       {isPromoApplied && (
                         <div className="absolute -top-2 -right-2 bg-yellow-400 text-blue-900 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter animate-bounce">
-                          35% OFF
+                          {promoCode.toUpperCase() === 'TECHNOVA35' ? '35%' : '30%'} OFF
                         </div>
                       )}
                     </div>
@@ -774,7 +777,7 @@ export default function Register() {
                               className="mt-3 text-xs text-green-500 font-bold flex items-center gap-2 bg-green-500/10 py-2 px-4 rounded-full w-fit"
                             >
                               <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              Success! TECHNOVA35 applied. You saved Rs. {discountAmount.toLocaleString()} (35% off)
+                              Success! {promoCode.toUpperCase()} applied. You saved Rs. {discountAmount.toLocaleString()} ({promoCode.toUpperCase() === 'TECHNOVA35' ? '35%' : '30%'} off)
                             </motion.div>
                           )}
 

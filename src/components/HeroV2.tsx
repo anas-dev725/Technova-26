@@ -13,7 +13,7 @@ interface HeroProps {
 
 export default function HeroV2({ timeLeft }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-white dark:bg-[#050505]">
+    <section className="relative min-h-screen flex items-center pt-32 sm:pt-40 overflow-hidden bg-white dark:bg-[#050505]">
       {/* Background Grid & Glows */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -25,16 +25,6 @@ export default function HeroV2({ timeLeft }: HeroProps) {
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
           {/* Left Content */}
           <div className="flex flex-col items-start text-left">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-bold mb-8 backdrop-blur-sm"
-            >
-              <Sparkles className="w-4 h-4 animate-pulse" />
-              REGISTRATIONS ARE LIVE!
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

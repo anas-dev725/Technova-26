@@ -18,10 +18,21 @@
   --color-border: #222222;
 
   --animate-slide: slide 40s linear infinite;
+  --animate-marquee: marquee 20s linear infinite;
 
   @keyframes slide {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-200%) skewX(-12deg); }
+    100% { transform: translateX(200%) skewX(-12deg); }
   }
 }
 

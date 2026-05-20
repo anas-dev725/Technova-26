@@ -6,6 +6,7 @@
 // Technova'26 - Connect, Create, & Conquer
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import EarlyBirdBanner from './components/EarlyBirdBanner';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Modules from './pages/Modules';
