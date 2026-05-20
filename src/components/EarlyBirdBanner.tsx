@@ -11,7 +11,7 @@ const EarlyBirdBanner = () => {
       transition={{ duration: 0.5, ease: 'circOut' }}
       className="relative z-40 overflow-hidden bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 py-1.5 sm:py-2 border-b border-white/10"
     >
-      <div className="flex whitespace-nowrap animate-[marquee_30s_linear_infinite]">
+      <div className="flex whitespace-nowrap animate-[marquee_15s_linear_infinite]">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="flex items-center gap-12 px-8">
             <div className="flex items-center gap-2">
