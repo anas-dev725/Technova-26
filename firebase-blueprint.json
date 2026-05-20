@@ -25,6 +25,8 @@
         },
         "receiptBase64": { "type": "string" },
         "totalFee": { "type": "number" },
+        "promoCode": { "type": "string" },
+        "discountApplied": { "type": "number" },
         "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }

@@ -2,6 +2,8 @@ import emailjs from '@emailjs/browser';
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const APPROVAL_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || TEMPLATE_ID;
+const REJECTION_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_REJECTION_TEMPLATE_ID || TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export const emailService = {
@@ -69,7 +71,7 @@ export const emailService = {
    * Sends an approval email to the user.
    */
   async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string) {
-    if (!SERVICE_ID || !PUBLIC_KEY) return;
+    if (!SERVICE_ID || !PUBLIC_KEY || !APPROVAL_TEMPLATE_ID) return;
     
     try {
       const templateParams = {
@@ -82,7 +84,7 @@ export const emailService = {
         message: 'Your registration has been verified and approved. Welcome to Technova \'26!',
       };
       
-      return await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      return await emailjs.send(SERVICE_ID, APPROVAL_TEMPLATE_ID, templateParams, PUBLIC_KEY);
     } catch (error) {
       console.error('Failed to send approval email:', error);
     }
@@ -92,7 +94,7 @@ export const emailService = {
    * Sends a rejection email to the user.
    */
   async sendRejectionNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string) {
-    if (!SERVICE_ID || !PUBLIC_KEY) return;
+    if (!SERVICE_ID || !PUBLIC_KEY || !REJECTION_TEMPLATE_ID) return;
 
     try {
       const templateParams = {
@@ -105,7 +107,7 @@ export const emailService = {
         message: 'Unfortunately, your registration could not be verified. This usually happens if the payment receipt is invalid or unclear. Please contact our support team for more details.',
       };
       
-      return await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      return await emailjs.send(SERVICE_ID, REJECTION_TEMPLATE_ID, templateParams, PUBLIC_KEY);
     } catch (error) {
       console.error('Failed to send rejection email:', error);
     }

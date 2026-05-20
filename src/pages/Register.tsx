@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldC
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import confetti from 'canvas-confetti';
 import { modules, getFees } from '../data/modules';
 import { submissionService } from '../services/submissionService';
 import { emailService } from '../services/emailService';
@@ -14,9 +15,9 @@ import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
 // Validation Schema
 const memberSchema = z.object({
-  fullName: z.string().min(3, 'Full name must be at least 3 characters'),
-  cnic: z.string().regex(/^\d{5}-\d{7}-\d{1}$/, 'CNIC must be 12345-1234567-1'),
-  contactNumber: z.string().regex(/^((\+92)|(0092)|(92)|(0))3\d{9}$/, 'Enter valid mobile number (03XXXXXXXXX)'),
+  fullName: z.string().default(''),
+  cnic: z.string().default(''),
+  contactNumber: z.string().default(''),
 });
 
 const registerSchema = z.object({
@@ -51,8 +52,48 @@ export default function Register() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState('');
+  const [isPromoApplied, setIsPromoApplied] = useState(false);
 
   const selectedModule = modules.find(m => m.id === moduleId);
+  const INNOVATION_MODULES = ['fyp-warriors', 'startup-launchpad'];
+  const isInnovationModule = selectedModule && INNOVATION_MODULES.includes(selectedModule.id);
+
+  const dynamicSchema = React.useMemo(() => {
+    return registerSchema.superRefine((data, ctx) => {
+      // 3 mandatory for innovation, otherwise all mandatory
+      const minRequired = isInnovationModule ? 3 : data.members.length;
+
+      data.members.forEach((m, idx) => {
+        const isMandatory = idx < minRequired;
+        const hasAnyValue = !!m.fullName || !!m.cnic || !!m.contactNumber;
+
+        if (isMandatory || hasAnyValue) {
+          if (!m.fullName || m.fullName.trim().length < 3) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['members', idx, 'fullName'],
+              message: 'Full name is required'
+            });
+          }
+          if (!m.cnic || !/^\d{5}-\d{7}-\d{1}$/.test(m.cnic)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['members', idx, 'cnic'],
+              message: 'Invalid style (12345-1234567-1)'
+            });
+          }
+          if (!m.contactNumber || !/^((\+92)|(0092)|(92)|(0))3\d{9}$/.test(m.contactNumber)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['members', idx, 'contactNumber'],
+              message: 'Invalid number (03XXXXXXXXX)'
+            });
+          }
+        }
+      });
+    });
+  }, [isInnovationModule]);
 
   const {
     register,
@@ -62,7 +103,7 @@ export default function Register() {
     setValue,
     formState: { errors }
   } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(dynamicSchema),
     defaultValues: {
       email: '',
       university: '',
@@ -72,7 +113,7 @@ export default function Register() {
     }
   });
 
-  const { fields, replace } = useFieldArray({
+  const { fields, replace, append, remove } = useFieldArray({
     control,
     name: "members"
   });
@@ -104,12 +145,15 @@ export default function Register() {
         } else {
           replace([]);
         }
+      } else if (isInnovationModule) {
+        // Startup and FYP: 4 fields total, 3 mandatory
+        replace(Array(4).fill({ fullName: '', cnic: '', contactNumber: '' }));
       } else {
         const count = selectedModule.mode === 'Individual' ? 1 : selectedModule.mode === 'Duo' ? 2 : 4;
         replace(Array(count).fill({ fullName: '', cnic: '', contactNumber: '' }));
       }
     }
-  }, [selectedModule, moduleId, navigate, replace, selectedSubGameId]);
+  }, [selectedModule, moduleId, navigate, replace, selectedSubGameId, isInnovationModule]);
 
   const compressImage = (base64Str: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -200,6 +244,10 @@ export default function Register() {
         ? selectedModule.subGames.find(g => g.id === data.subGameId)
         : null;
 
+      const filteredMembers = data.members.filter(m => 
+        m.fullName.trim() !== '' || m.cnic.trim() !== '' || m.contactNumber.trim() !== ''
+      );
+
       // STEP 1: Save to Database (THE ONLY BLOCKING STEP)
       const result = await submissionService.createSubmission({
         moduleId: selectedModule.id,
@@ -208,9 +256,11 @@ export default function Register() {
         subGameTitle: subGame?.title || null,
         email: data.email,
         university: data.university,
-        members: data.members,
+        members: filteredMembers,
         receiptBase64: receiptPreview,
-        totalFee: currentModuleFee
+        totalFee: finalFee,
+        promoCode: isPromoApplied ? promoCode.toUpperCase() : undefined,
+        discountApplied: isPromoApplied ? discountAmount : undefined
       });
 
       if (result?.participantId) {
@@ -222,7 +272,7 @@ export default function Register() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       // STEP 3: Fire-and-forget Email (completely detached from UI success)
-      const membersListStr = data.members.map((m, i) => `${i + 1}. ${m.fullName}${m.cnic ? ` (CNIC: ${m.cnic})` : ''}`).join('\n');
+      const membersListStr = filteredMembers.map((m, i) => `${i + 1}. ${m.fullName}${m.cnic ? ` (CNIC: ${m.cnic})` : ''}`).join('\n');
       
       emailService.sendSubmissionConfirmation(
         data.email, 
@@ -230,7 +280,7 @@ export default function Register() {
         subGame?.title || selectedModule.title,
         {
           moduleType: selectedModule.category || 'Competition',
-          feeAmount: `Rs. ${currentModuleFee}`,
+          feeAmount: `Rs. ${finalFee}`,
           university: data.university,
           membersList: membersListStr,
           participantId: result?.participantId
@@ -276,6 +326,25 @@ export default function Register() {
     : selectedModule.mode;
 
   const currentModuleFee = getFees(currentModuleMode, selectedModule.id);
+  const discountAmount = isPromoApplied ? Math.floor(currentModuleFee * 0.35) : 0;
+  const finalFee = currentModuleFee - discountAmount;
+
+  const handlePromoCheck = (val: string) => {
+    setPromoCode(val);
+    if (val.toUpperCase() === 'TECHNOVA35') {
+      if (!isPromoApplied) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#2563eb', '#fbbf24', '#10b981', '#ffffff']
+        });
+      }
+      setIsPromoApplied(true);
+    } else {
+      setIsPromoApplied(false);
+    }
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
@@ -361,9 +430,27 @@ export default function Register() {
                   </div>
                   
                   <div className="grid grid-cols-2 md:flex gap-6 md:gap-12">
-                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 min-w-[140px]">
+                    <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 min-w-[140px] relative">
                       <p className="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1">Fee Amount</p>
-                      <p className="text-2xl font-bold">Rs. {currentModuleFee.toLocaleString()}</p>
+                      <div className="flex flex-col">
+                        <p className={`text-2xl font-bold ${isPromoApplied ? 'text-blue-200 text-sm line-through opacity-60' : ''}`}>
+                          Rs. {currentModuleFee.toLocaleString()}
+                        </p>
+                        {isPromoApplied && (
+                          <motion.p 
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-2xl font-black text-white"
+                          >
+                            Rs. {finalFee.toLocaleString()}
+                          </motion.p>
+                        )}
+                      </div>
+                      {isPromoApplied && (
+                        <div className="absolute -top-2 -right-2 bg-yellow-400 text-blue-900 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter animate-bounce">
+                          35% OFF
+                        </div>
+                      )}
                     </div>
                     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 min-w-[140px]">
                       <p className="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1">Team Mode</p>
@@ -561,9 +648,11 @@ export default function Register() {
                               <User className="w-6 h-6 text-blue-600" />
                               Participant Details
                             </h3>
-                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20">
-                              {fields.length} {fields.length === 1 ? 'Person' : 'Members'} Required
-                            </span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20 uppercase tracking-widest">
+                                {isInnovationModule ? '4 Members Limit (3 Mandatory)' : `${fields.length} ${fields.length === 1 ? 'Person' : 'Members'} Required`}
+                              </span>
+                            </div>
                           </div>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -572,10 +661,15 @@ export default function Register() {
                                 <div className="absolute -top-4 -left-4 w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-xl">
                                   {index === 0 ? 'L' : index + 1}
                                 </div>
-                                <div className="mb-6">
+                                <div className="mb-6 flex justify-between items-center">
                                   <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
                                     {index === 0 ? 'Lead Person' : `Team Member ${index + 1}`}
                                   </h4>
+                                  {isInnovationModule && index === 3 && (
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest border border-gray-200 dark:border-white/10 px-2 py-0.5 rounded-md">
+                                      Optional
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="space-y-6">
                                   <div>
@@ -652,6 +746,61 @@ export default function Register() {
                     </h3>
 
                     <div className="grid grid-cols-1 gap-6">
+                      {/* Promo Code Field */}
+                      <div className="p-8 rounded-[2.5rem] bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm relative overflow-hidden group">
+                        <div className="relative z-10">
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Have a Promo Code?</label>
+                          <div className="flex gap-4">
+                            <div className="relative flex-1">
+                              <input
+                                type="text"
+                                value={promoCode}
+                                onChange={(e) => handlePromoCheck(e.target.value)}
+                                className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${isPromoApplied ? 'border-green-500 bg-green-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono uppercase`}
+                                placeholder="ENTER CODE"
+                              />
+                              {isPromoApplied && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                  <CheckCircle2 className="w-6 h-6 text-green-500" />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {isPromoApplied && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              className="mt-3 text-xs text-green-500 font-bold flex items-center gap-2 bg-green-500/10 py-2 px-4 rounded-full w-fit"
+                            >
+                              <CheckCircle2 className="w-4 h-4 text-green-500" />
+                              Success! TECHNOVA35 applied. You saved Rs. {discountAmount.toLocaleString()} (35% off)
+                            </motion.div>
+                          )}
+
+                          {isPromoApplied && (
+                            <motion.div 
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10"
+                            >
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Original Fee</span>
+                                <span className="text-sm text-gray-400 font-bold line-through">Rs. {currentModuleFee.toLocaleString()}</span>
+                              </div>
+                              <div className="flex justify-between items-center mb-4">
+                                <span className="text-xs font-bold text-green-500 uppercase tracking-widest">Promo Discount</span>
+                                <span className="text-sm font-bold text-green-500">- Rs. {discountAmount.toLocaleString()}</span>
+                              </div>
+                              <div className="flex justify-between items-center py-4 px-6 rounded-2xl bg-blue-600/10 border border-blue-600/20">
+                                <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Final Payable</span>
+                                <span className="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">Rs. {finalFee.toLocaleString()}</span>
+                              </div>
+                            </motion.div>
+                          )}
+                        </div>
+                      </div>
+
                       <div className="p-8 rounded-[2.5rem] bg-blue-600/5 dark:bg-blue-600/20 border border-blue-600/20 shadow-sm relative overflow-hidden group">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                           <div>

@@ -551,6 +551,8 @@ export default function Admin() {
                     'Sub-Game',
                     'University',
                     'Total Fee (PKR)',
+                    'Promo Code',
+                    'Discount (PKR)',
                     'Status'
                   ];
 
@@ -572,6 +574,8 @@ export default function Admin() {
                       s.subGameTitle || 'N/A',
                       s.university || '',
                       s.totalFee || 0,
+                      s.promoCode || 'NONE',
+                      s.discountApplied || 0,
                       s.status.toUpperCase()
                     ];
 
@@ -942,8 +946,17 @@ export default function Admin() {
                         </div>
                         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/5 flex items-center justify-between">
                           <div className="flex flex-col">
-                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Fee Verification</span>
-                            <span className="text-2xl font-black text-emerald-500 tracking-tighter italic uppercase">PKR {selectedSubmission.totalFee}</span>
+                            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                              {selectedSubmission.promoCode ? `Fee (Promo: ${selectedSubmission.promoCode})` : 'Fee Verification'}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl font-black text-emerald-500 tracking-tighter italic uppercase">PKR {selectedSubmission.totalFee}</span>
+                              {selectedSubmission.discountApplied && (
+                                <span className="text-[10px] font-black text-gray-400 line-through">
+                                  PKR {selectedSubmission.totalFee + selectedSubmission.discountApplied}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                             <CheckCircle2 className="w-6 h-6 text-emerald-500" />

@@ -469,7 +469,7 @@ export default function Home() {
                   role: 'Treasurer', 
                   dept: 'Asset Manager', 
                   img: ashirPfp,
-                  linkedin: 'https://linkedin.com/in/aashir-ali'
+                  linkedin: 'https://www.linkedin.com/in/aashir-ali-6aa2b233a/'
                 },
                 { 
                   name: 'Talha Ahmed', 
@@ -498,13 +498,23 @@ export default function Home() {
           </div>
 
           <div className="relative group">
-            <div className="flex gap-8 animate-[slide_15s_linear_infinite] hover:[animation-play-state:paused] w-max">
+            <div className="flex gap-8 animate-[slide_20s_linear_infinite] hover:[animation-play-state:paused] w-max">
               {[
+                { 
+                  name: "Dr Khalid Mehboob", 
+                  role: "Director - Technova'25", 
+                  text: "Leading Technova '25 was unforgettable. With 7 dynamic modules and talent packed from 25+ universities, the energy, innovation, and execution were truly next level." 
+                },
                 { name: "Ahmed Raza", role: "Discoverer & Past Participant", text: "Technova'25 was an incredible journey of discovery. I met so many amazing people and explored ideas I never thought possible!" },
                 { name: "Dr. Maria Khan", role: "Industry Mentor & Judge", text: "It was inspiring to see so much curiosity and innovative thinking in one place. These students are truly building the future!" },
                 { name: "Zainab Ali", role: "Creative Strategist & Evaluator", text: "The creative energy was infectious! I loved seeing how participants combined their unique perspectives with technical skill." },
                 { name: "Hamza Sheik", role: "Visionary & Project Lead", text: "More than just a competition, it was a community. I loved the supportive vibe and the chance to learn alongside everyone." },
                 // Duplicate for loop
+                { 
+                  name: "Dr Khalid Mehboob", 
+                  role: "Director - Technova'25", 
+                  text: "Leading Technova '25 was unforgettable. With 7 dynamic modules and talent packed from 25+ universities, the energy, innovation, and execution were truly next level." 
+                },
                 { name: "Ahmed Raza", role: "Discoverer & Past Participant", text: "Technova'25 was an incredible journey of discovery. I met so many amazing people and explored ideas I never thought possible!" },
                 { name: "Dr. Maria Khan", role: "Industry Mentor & Judge", text: "It was inspiring to see so much curiosity and innovative thinking in one place. These students are truly building the future!" }
               ].map((t, idx) => (

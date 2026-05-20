@@ -36,6 +36,8 @@ export interface Submission {
   status: 'pending' | 'approved' | 'rejected';
   submittedAt: any;
   totalFee: number;
+  promoCode?: string;
+  discountApplied?: number;
 }
 
 const MODULE_PREFIXES: Record<string, string> = {
