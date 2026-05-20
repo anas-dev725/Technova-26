@@ -70,20 +70,39 @@ export const emailService = {
   /**
    * Sends an approval email to the user.
    */
-  async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string) {
+  async sendApprovalNotification(userEmail: string, userName: string, moduleTitle: string, participantId?: string, extraData?: {
+    moduleType?: string;
+    feeAmount?: string;
+    membersList?: string;
+  }) {
     if (!SERVICE_ID || !PUBLIC_KEY || !APPROVAL_TEMPLATE_ID) return;
     
     try {
       const templateParams = {
         to_email: userEmail,
         to_name: userName,
-        participant_name: userName, // Alias
-        module_name: moduleTitle,
+        participant_name: userName,
+        
         participant_id: participantId || 'N/A',
+        id: participantId || 'N/A',
+        
+        module_name: moduleTitle,
+        module_type: extraData?.moduleType || 'Competition',
+        
+        fee_amount: extraData?.feeAmount || 'Verified',
+        members_list: extraData?.membersList || userName,
+        
         status: 'Approved',
         message: 'Your registration has been verified and approved. Welcome to Technova \'26!',
+        reply_to: 'technova@iobm.edu.pk',
       };
       
+      console.group('📧 EmailJS Approval');
+      console.log('Target Email:', userEmail);
+      console.log('Template ID:', APPROVAL_TEMPLATE_ID);
+      console.log('Params:', templateParams);
+      console.groupEnd();
+
       return await emailjs.send(SERVICE_ID, APPROVAL_TEMPLATE_ID, templateParams, PUBLIC_KEY);
     } catch (error) {
       console.error('Failed to send approval email:', error);

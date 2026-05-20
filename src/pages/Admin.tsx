@@ -120,7 +120,18 @@ export default function Admin() {
         try {
           const participantId = sub.participantId || 'N/A';
           if (status === 'approved') {
-            await emailService.sendApprovalNotification(sub.email, sub.members[0].fullName, sub.moduleTitle, participantId);
+            const membersList = sub.members.map((m, i) => `${i + 1}. ${m.fullName} (${m.cnic})`).join('\n');
+            await emailService.sendApprovalNotification(
+              sub.email, 
+              sub.members[0].fullName, 
+              sub.moduleTitle, 
+              participantId,
+              {
+                moduleType: sub.subGameTitle || 'Competition',
+                feeAmount: `PKR ${sub.totalFee?.toLocaleString() || '0'}`,
+                membersList: membersList
+              }
+            );
           } else if (status === 'rejected') {
             await emailService.sendRejectionNotification(sub.email, sub.members[0].fullName, sub.moduleTitle, participantId);
           }
