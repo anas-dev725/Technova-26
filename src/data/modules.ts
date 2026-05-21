@@ -160,9 +160,9 @@ export const getFees = (mode: TeamMode, moduleId?: string) => {
     return 3000;
   }
   switch (mode) {
-    case 'Individual': return 1000;
-    case 'Duo': return 2000;
-    case 'Squad': return 3500;
+    case 'Individual': return 1500;
+    case 'Duo': return 2500;
+    case 'Squad': return 4000;
     default: return 0;
   }
 };
