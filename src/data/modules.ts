@@ -99,27 +99,6 @@ export const modules: Module[] = [
         description: 'Squad-based action and strategy. Drop in, explore, and work with your team to navigate the arena in this fan-favorite title.',
         mode: 'Squad',
         prize: 'TBD'
-      },
-      {
-        id: 'counter-strike',
-        title: 'Counter-Strike',
-        description: 'A masterpiece of tactical play. Use your precision and teamwork to navigate challenges in this iconic game.',
-        mode: 'Individual',
-        prize: 'TBD'
-      },
-      {
-        id: 'tekken-8',
-        title: 'Tekken 8',
-        description: 'Master your favorite characters and showcase your timing in friendly 1v1 tactical matches.',
-        mode: 'Individual',
-        prize: 'TBD'
-      },
-      {
-        id: 'fifa-25',
-        title: 'FIFA 25',
-        description: 'Showcase your football knowledge and lead your team with skill in this immersive pro simulation.',
-        mode: 'Individual',
-        prize: 'TBD'
       }
     ]
   },
@@ -156,9 +135,6 @@ export const modules: Module[] = [
 ];
 
 export const getFees = (mode: TeamMode, moduleId?: string) => {
-  if (moduleId === 'esports-competition' && mode === 'Squad') {
-    return 3000;
-  }
   switch (mode) {
     case 'Individual': return 1500;
     case 'Duo': return 2500;
