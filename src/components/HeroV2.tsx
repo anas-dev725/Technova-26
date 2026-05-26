@@ -13,7 +13,7 @@ interface HeroProps {
 
 export default function HeroV2({ timeLeft }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center pt-32 sm:pt-40 overflow-hidden bg-white dark:bg-[#050505]">
+    <section className="relative min-h-screen flex items-center pt-24 sm:pt-28 overflow-hidden bg-white dark:bg-[#050505]">
       {/* Background Grid & Glows */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
