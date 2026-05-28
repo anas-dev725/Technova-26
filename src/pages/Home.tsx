@@ -1,6 +1,6 @@
 // Technova'26 - Connect, Create, & Conquer
 import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
 import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
@@ -21,7 +21,7 @@ import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { modules } from '../data/modules';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail } from 'lucide-react';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -97,11 +97,13 @@ function MemberCard({ member }: { member: any, key?: string | number }) {
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [activeDay, setActiveDay] = useState(0);
   const HERO_VERSION: 'v1' | 'v2' = 'v1'; // Switch this to 'v2' to see the new version
+  const location = useLocation();
 
   // Smooth scroll for anchor links
   useEffect(() => {
-    const hash = window.location.hash;
+    const hash = location.hash;
     if (hash) {
       setTimeout(() => {
         const element = document.getElementById(hash.substring(1));
@@ -110,7 +112,7 @@ export default function Home() {
         }
       }, 100);
     }
-  }, []);
+  }, [location]);
 
   // Countdown Timer Logic
   useEffect(() => {
@@ -424,64 +426,6 @@ export default function Home() {
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 referrerPolicy="no-referrer"
               />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-24 bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-white/5 transition-colors duration-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">THE MINDS BEHIND TECHNOVA</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white">Meet the Team</h2>
-          </div>
-
-          <div className="relative w-full overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
-            <div className="flex gap-6 w-max px-4">
-              {[
-                { 
-                  name: 'Hamna Saleem', 
-                  role: 'Chairperson', 
-                  dept: 'Data Analyst', 
-                  img: hamnaPfp,
-                  linkedin: 'https://www.linkedin.com/in/hamna-saleem-659a5b223/',
-                  mail: 'hamnasaleem23@gmail.com'
-                },
-                { 
-                  name: 'Muhammad Anas', 
-                  role: 'Vice Chairperson & Lead Developer', 
-                  dept: 'AI Automation Engineer', 
-                  img: anasProfileBase64,
-                  github: 'https://github.com/anas-dev725',
-                  linkedin: 'https://www.linkedin.com/in/muhammad-anas804/',
-                  website: 'https://muhammad-anas-ai-engineer.vercel.app/'
-                },
-                { 
-                  name: 'Moiz Ali Siddiqui', 
-                  role: 'General Secretary', 
-                  dept: 'Full Stack Developer', 
-                  img: moizPfp,
-                  linkedin: 'https://linkedin.com/in/moizalisiddiqui'
-                },
-                { 
-                  name: 'Aashir Ali', 
-                  role: 'Treasurer', 
-                  dept: 'Asset Manager', 
-                  img: ashirPfp,
-                  linkedin: 'https://www.linkedin.com/in/aashir-ali-6aa2b233a/'
-                },
-                { 
-                  name: 'Talha Ahmed', 
-                  role: 'Backend Developer', 
-                  dept: 'AI Development Engineer', 
-                  img: talhaAhmedBase64,
-                  github: 'https://github.com/Talhaahmad9',
-                  linkedin: 'Https://linkedin.com/in/talha-ahmad9'
-                },
-              ].map((member, i) => (
-                <MemberCard key={i} member={member} />
-              ))}
             </div>
           </div>
         </div>

@@ -16,6 +16,8 @@ import Sponsors from './pages/Sponsors';
 import About from './pages/About';
 import Legacy from './pages/Legacy';
 import Admin from './pages/Admin';
+import Team from './pages/Team';
+import Timeline from './pages/Timeline';
 import ScrollToTop from './components/ScrollToTop';
 import Chatbot from './components/Chatbot';
 import { ThemeProvider } from './components/ThemeContext';
@@ -35,6 +37,8 @@ export default function App() {
               <Route path="/register/:moduleId" element={<Register />} />
               <Route path="/sponsors" element={<Sponsors />} />
               <Route path="/about" element={<About />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/timeline" element={<Timeline />} />
               <Route path="/legacy" element={<Legacy />} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
