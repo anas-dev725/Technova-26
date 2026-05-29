@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Calendar, MapPin, Users } from 'lucide-react';
@@ -12,6 +13,33 @@ interface HeroProps {
 }
 
 export default function HeroV1({ timeLeft }: HeroProps) {
+  const tagline = "CONNECT, CREATE, & CONQUER";
+
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayText, setDisplayText] = useState("");
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (!isDeleting && charIndex === tagline.length) {
+      timer = setTimeout(() => setIsDeleting(true), 3000); // Wait 3 seconds at full text
+    } else if (isDeleting && charIndex === 0) {
+      timer = setTimeout(() => setIsDeleting(false), 500); // Small pause before typing again
+    } else {
+      const delay = isDeleting ? 40 : 80; // Speed of typing / deleting
+      timer = setTimeout(() => {
+        setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
+      }, delay);
+    }
+
+    return () => clearTimeout(timer);
+  }, [charIndex, isDeleting]);
+
+  useEffect(() => {
+    setDisplayText(tagline.substring(0, charIndex));
+  }, [charIndex]);
+
   return (
     <section className="relative min-h-[90vh] flex items-center pt-28 sm:pt-32 pb-12">
       {/* Background Effects */}
@@ -33,12 +61,19 @@ export default function HeroV1({ timeLeft }: HeroProps) {
           </motion.h1>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-[#2563eb] text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-6"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-black tracking-tight mb-6 min-h-[50px] sm:min-h-[80px] flex items-center justify-center select-none"
           >
-            Connect, Create, & Conquer
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 dark:from-blue-400 dark:via-indigo-400 dark:to-cyan-400 drop-shadow-sm font-black uppercase text-center">
+              {displayText}
+            </span>
+            <motion.span 
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+              className="inline-block ml-1.5 w-[4px] sm:w-[6px] h-[28px] sm:h-[50px] bg-blue-600 dark:bg-blue-400"
+            />
           </motion.div>
 
           <motion.div

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2, Check, Server } from 'lucide-react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -119,6 +119,9 @@ export default function Register() {
   });
 
   const selectedSubGameId = watch('subGameId');
+  const watchedEmail = watch('email');
+  const watchedUniversity = watch('university');
+  const watchedMembers = watch('members');
 
   useEffect(() => {
     // Initialize services
@@ -926,13 +929,13 @@ export default function Register() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-20 relative bg-blue-600 text-white rounded-[2rem] text-xl font-bold shadow-2xl shadow-blue-600/30 hover:bg-blue-500 transition-all disabled:opacity-50 active:scale-[0.98] group overflow-hidden"
+                      className="w-full h-14 relative bg-blue-600 text-white rounded-2xl text-base font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-500 transition-all disabled:opacity-50 active:scale-[0.98] group overflow-hidden"
                     >
-                      <span className={`flex items-center justify-center gap-3 transition-opacity ${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
+                      <span className={`flex items-center justify-center gap-2.5 transition-opacity ${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
                         Submit Registration
-                        <ArrowLeft className="w-6 h-6 rotate-180" />
+                        <ArrowLeft className="w-5 h-5 rotate-180" />
                       </span>
-                      {isSubmitting && <Loader2 className="absolute inset-0 m-auto w-10 h-10 animate-spin" />}
+                      {isSubmitting && <Loader2 className="absolute inset-0 m-auto w-6 h-6 animate-spin" />}
                     </button>
                     <p className="text-center mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] flex items-center justify-center gap-2">
                       <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
@@ -945,6 +948,20 @@ export default function Register() {
           )}
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {isSubmitting && (
+          <SubmitOverlay 
+            key="submit-overlay" 
+            moduleTitle={currentModuleTitle} 
+            email={watchedEmail}
+            university={watchedUniversity}
+            members={watchedMembers}
+            promoCode={promoCode}
+            isPromoApplied={isPromoApplied}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -955,5 +972,266 @@ function CreditCardIcon({ className }: { className?: string }) {
       <rect width="20" height="14" x="2" y="5" rx="2" />
       <line x1="2" x2="22" y1="10" y2="10" />
     </svg>
+  );
+}
+
+interface SubmitOverlayProps {
+  moduleTitle: string;
+  email?: string;
+  university?: string;
+  members?: Array<{ fullName: string; cnic: string; contactNumber: string }>;
+  promoCode?: string;
+  isPromoApplied?: boolean;
+  key?: string;
+}
+
+function SubmitOverlay({ 
+  moduleTitle, 
+  email, 
+  university, 
+  members, 
+  promoCode, 
+  isPromoApplied 
+}: SubmitOverlayProps) {
+  const [progress, setProgress] = useState(0);
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const terminalRef = useRef<HTMLDivElement>(null);
+
+  const steps = [
+    { title: "Roster Credentials", desc: "Parsing & verifying team information", minPercent: 0, maxPercent: 25 },
+    { title: "Promo Verification", desc: "Analyzing promo code & rates calculation", minPercent: 26, maxPercent: 40 },
+    { title: "Receipt Compactor", desc: "Compressing screenshot & proof checks", minPercent: 41, maxPercent: 65 },
+    { title: "Cloud Database Sync", desc: "Writing registration node logs to Firestore", minPercent: 66, maxPercent: 80 },
+    { title: "Slot Hardlock", desc: "Acquiring permanent seed allocation", minPercent: 81, maxPercent: 92 },
+    { title: "Automated Dispatch", desc: "Scheduling registration receipts dispatch", minPercent: 93, maxPercent: 99 }
+  ];
+
+  // Increase progress smoothly
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 99) {
+          clearInterval(timer);
+          return 99;
+        }
+        
+        // Simulating non-linear realistic loading jumps
+        let increment = 1;
+        if (prev < 25) increment = 2.0;
+        else if (prev < 40) increment = 1.0;
+        else if (prev < 65) increment = 0.8;
+        else if (prev < 80) increment = 0.5;
+        else if (prev < 92) increment = 0.3;
+        else increment = 0.1;
+
+        const next = Math.min(prev + increment + (Math.random() * 0.15 - 0.05), 99);
+        return parseFloat(next.toFixed(1));
+      });
+    }, 100);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Tracking current step
+  useEffect(() => {
+    const activeIdx = steps.findIndex(step => progress >= step.minPercent && progress <= step.maxPercent);
+    if (activeIdx !== -1) {
+      setCurrentStepIdx(activeIdx);
+    }
+  }, [progress]);
+
+  // Extract variables safely
+  const leadMember = members && members[0] ? members[0] : null;
+  const leadName = leadMember?.fullName || "Team Representative";
+  const numMembers = members ? members.filter(m => m.fullName.trim() !== '').length : 1;
+
+  // Generate logs matching current progress stage
+  const logTemplates = [
+    { min: 0, text: "ROSTER: Reading and validating form input arrays..." },
+    { min: 4, text: `ROSTER: Active register request for module [${moduleTitle.toUpperCase()}].` },
+    { min: 8, text: `ROSTER: Extracting contact email Address: "${email || 'TBD'}"...` },
+    { min: 12, text: `ROSTER: Initializing credentials check for Team Leader: "${leadName}"...` },
+    { min: 16, text: `ROSTER: CNIC Checksum matched safely for leader: "${leadMember?.cnic || '12345-XXXXXXX-X'}"` },
+    { min: 20, text: `ROSTER: Contact mobile registry index verified: "${leadMember?.contactNumber || '03XXXXXXXXX'}"` },
+    { min: 23, text: `ROSTER: Representing seat cluster: "${university || 'N/A'}"` },
+    { min: 25, text: `ROSTER: Roster count validated with ${numMembers} active participant slot(s).` },
+    { min: 28, text: "PROMO: Validating promotional eligibility markers..." },
+    { min: 32, text: isPromoApplied 
+        ? `PROMO: Coupon Code "${promoCode?.toUpperCase()}" verified successfully! Processing with custom event rate.` 
+        : "PROMO: Running coupon standard check: No custom discount code applied. Defaulting to general event pricing." 
+    },
+    { min: 41, text: "IMAGE: Running CanvasCompactor engine on receipt screenshot..." },
+    { min: 46, text: "IMAGE: Analyzing base64 pixel vectors for financial signatures..." },
+    { min: 51, text: "IMAGE: Downscaling and optimizing image canvas compression parameters..." },
+    { min: 56, text: "IMAGE: Proof of Payment compressed down to ~150kB JPEG format." },
+    { min: 61, text: "STORAGE: Pushing compressed receipt binaries to Cloud Storage node stream..." },
+    { min: 65, text: "STORAGE: Screenshot successfully loaded on CDN. Secured storage reference acquired." },
+    { min: 68, text: "FIRESTORE: Synchronizing structured team data to Cloud Firestore instances..." },
+    { min: 73, text: "FIRESTORE: Writing document record to server collections..." },
+    { min: 78, text: "FIRESTORE: Transaction commit completed safely under encrypted SSL lock." },
+    { min: 82, text: "RESERVATION: Commencing Seat Slot selection rules..." },
+    { min: 86, text: `RESERVATION: Hardlocking seat slot matching module [${moduleTitle.toUpperCase()}] for your team!` },
+    { min: 91, text: "RESERVATION: Seat slot successfully reserved & verified on global servers." },
+    { min: 94, text: "DISPATCH: Preparing post-payment automated verification emails queue..." },
+    { min: 97, text: `DISPATCH: Setup complete. Broadcaster dispatched mail pipeline to "${email || 'your inbox'}".` },
+    { min: 99, text: "DISPATCH: Registration completed. Redirecting to confirmation receipt..." }
+  ];
+
+  const activeLogs = logTemplates.filter(log => progress >= log.min);
+
+  // Auto-scroll terminal logs
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [activeLogs.length]);
+
+  const radius = 64;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 sm:p-6 bg-[#030303]/95 backdrop-blur-2xl"
+    >
+      {/* Dynamic Grid Overlay */}
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:30px_30px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-blue-500/[0.04] blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-xl relative z-10 flex flex-col items-center">
+        {/* Glowing Head */}
+        <div className="mb-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/25 shadow-sm">
+          <Server className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
+          <span className="text-[10px] font-black uppercase text-blue-400 tracking-[0.25em]">Transaction Active</span>
+        </div>
+
+        {/* Circular Progress Meter */}
+        <div className="relative w-44 h-44 flex items-center justify-center mb-8">
+          <svg className="w-full h-full transform -rotate-90">
+            {/* Background Circular path */}
+            <circle
+              cx="88"
+              cy="88"
+              r={radius}
+              className="stroke-gray-800/40"
+              strokeWidth="6"
+              fill="transparent"
+            />
+            {/* Pulsing Animated Glowing Inner Progress circle */}
+            <motion.circle
+              cx="88"
+              cy="88"
+              r={radius}
+              className="stroke-blue-500"
+              strokeWidth="6"
+              fill="transparent"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              animate={{ strokeDashoffset }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            />
+          </svg>
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-3xl font-mono font-black text-white leading-none tracking-tight">
+              {Math.floor(progress)}%
+            </span>
+            <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest mt-1.5">
+              Uploading
+            </span>
+          </div>
+        </div>
+
+        {/* Informative Current Status Card */}
+        <div className="text-center mb-8">
+          <h3 className="text-xl font-display font-black text-white tracking-tight leading-tight">
+            Registering for <span className="text-blue-400">{moduleTitle}</span>
+          </h3>
+          <p className="text-xs text-gray-400 mt-2 max-w-md mx-auto leading-relaxed">
+            Please keep this tab open and your network stable. We are preparing, validating, and hardcoding your response slots.
+          </p>
+        </div>
+
+        {/* Process Checklist (2 columns to occupy left-right space gracefully) */}
+        <div className="w-full bg-[#080808]/80 border border-white/5 rounded-3xl p-5 mb-6 backdrop-blur-md shadow-lg">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3.5">
+            {steps.map((step, idx) => {
+              const isFinished = progress > step.maxPercent;
+              const isActive = progress >= step.minPercent && progress <= step.maxPercent;
+              
+              return (
+                <div 
+                  key={idx} 
+                  className={`flex items-center gap-3 transition-opacity duration-300 ${
+                    isFinished ? "opacity-100" : isActive ? "opacity-100" : "opacity-30"
+                  }`}
+                >
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${
+                    isFinished 
+                      ? "bg-green-500/10 border-green-500/30 text-green-400" 
+                      : isActive 
+                        ? "bg-blue-500/10 border-blue-500/30 text-blue-400" 
+                        : "bg-gray-800/20 border-gray-800 text-gray-500"
+                  }`}>
+                    {isFinished ? (
+                      <Check className="w-3 h-3 text-green-400 stroke-[3]" />
+                    ) : isActive ? (
+                      <motion.div 
+                        animate={{ scale: [0.8, 1.2, 0.8] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="w-1.5 h-1.5 rounded-full bg-blue-400"
+                      />
+                    ) : (
+                      <span className="text-[9px] font-bold font-mono">{idx + 1}</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs font-black text-gray-200 uppercase tracking-tight leading-none truncate">
+                      {step.title}
+                    </span>
+                    <span className="text-[9px] text-gray-400 font-medium truncate mt-0.5 leading-none">
+                      {isActive ? "Processing" : isFinished ? "Success" : "Queued"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Live Systems Telemetry Console Log */}
+        <div className="w-full bg-black border border-white/5 rounded-2xl p-4">
+          <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping inline-block" />
+              Realtime System Logs
+            </span>
+            <span className="text-[8px] font-mono text-gray-500 uppercase">tty/auth-socket-01</span>
+          </div>
+          
+          <div 
+            ref={terminalRef}
+            className="h-28 overflow-y-auto font-mono text-[9px] text-blue-400/90 leading-relaxed scrollbar-thin scrollbar-thumb-gray-805 scrollbar-track-transparent space-y-1.5 pr-2"
+          >
+            {activeLogs.map((log, i) => (
+              <div key={i} className="flex items-start gap-1">
+                <span className="text-blue-500/60 font-medium select-none">❯</span>
+                <span>{log.text}</span>
+              </div>
+            ))}
+            <div className="flex items-center gap-1">
+              <span className="text-blue-500/60 font-medium select-none">❯</span>
+              <motion.span 
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ repeat: Infinity, duration: 0.8 }}
+                className="inline-block w-1.5 h-3 bg-blue-400"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }

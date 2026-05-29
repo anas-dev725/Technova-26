@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Sparkles, Calendar, MapPin } from 'lucide-react';
@@ -12,6 +13,33 @@ interface HeroProps {
 }
 
 export default function HeroV2({ timeLeft }: HeroProps) {
+  const tagline = "CONNECT, CREATE, & CONQUER";
+
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayText, setDisplayText] = useState("");
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (!isDeleting && charIndex === tagline.length) {
+      timer = setTimeout(() => setIsDeleting(true), 3000); // Wait 3 seconds at full text
+    } else if (isDeleting && charIndex === 0) {
+      timer = setTimeout(() => setIsDeleting(false), 500); // Small pause before typing again
+    } else {
+      const delay = isDeleting ? 40 : 80; // Speed of typing / deleting
+      timer = setTimeout(() => {
+        setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
+      }, delay);
+    }
+
+    return () => clearTimeout(timer);
+  }, [charIndex, isDeleting]);
+
+  useEffect(() => {
+    setDisplayText(tagline.substring(0, charIndex));
+  }, [charIndex]);
+
   return (
     <section className="relative min-h-screen flex items-center pt-24 sm:pt-28 overflow-hidden bg-white dark:bg-[#050505]">
       {/* Background Grid & Glows */}
@@ -35,12 +63,19 @@ export default function HeroV2({ timeLeft }: HeroProps) {
             </motion.h1>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-2xl sm:text-4xl font-display font-bold text-gray-700 dark:text-gray-300 tracking-tight mb-8"
+              className="text-2xl sm:text-4xl font-display font-black tracking-tight mb-8 min-h-[40px] sm:min-h-[50px] flex items-center justify-start select-none"
             >
-              Connect, Create, & Conquer
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 dark:from-blue-400 dark:via-indigo-400 dark:to-cyan-400 drop-shadow-sm font-black uppercase text-left">
+                {displayText}
+              </span>
+              <motion.span 
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                className="inline-block ml-1.5 w-[3.5px] sm:w-[5px] h-[24px] sm:h-[36px] bg-blue-600 dark:bg-blue-400"
+              />
             </motion.div>
 
             <motion.div
