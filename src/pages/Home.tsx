@@ -544,26 +544,50 @@ export default function Home() {
       </section>
 
       {/* Register CTA Section */}
-      <section id="register" className="py-24 relative overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-300">
+      <section id="register" className="py-16 md:py-24 relative overflow-hidden bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent" />
+        
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-20 text-center relative overflow-hidden shadow-2xl">
-
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+          <motion.div
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="relative bg-gradient-to-br from-[#1366ff] via-[#1052ff] to-[#013ddc] rounded-[3rem] p-8 sm:p-16 lg:p-20 text-center overflow-hidden shadow-2xl"
+          >
+            {/* Soft Ambient White/Blue Radial Glows for added luxury depth */}
+            <div className="absolute -top-12 -left-12 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-12 -right-12 w-72 h-72 bg-white/5 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 tracking-tight">Ready to blow some minds?</h2>
-              <p className="text-blue-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-medium">
+            <div className="relative z-10 flex flex-col items-center">
+              {/* Ready to blow some minds? Title */}
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-sans font-black text-white mb-6 tracking-tight leading-tight select-none">
+                Ready to blow some minds?
+              </h2>
+
+              {/* Description Paragraph */}
+              <p className="text-blue-50/90 text-sm sm:text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed font-medium select-none">
                 Join thousands of students in the ultimate test of skill, creativity, and innovation. Don't sleep on this - spots are filling up fast!
               </p>
-              <Link 
-                to="/modules"
-                className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-white text-blue-600 font-bold text-base sm:text-lg hover:bg-gray-50 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] hover:-translate-y-1"
-              >
-                Lock In Your Spot Now <ArrowRight className="w-5 h-5" />
-              </Link>
+
+              {/* Lock In Your Spot Now Button */}
+              <div className="w-full flex justify-center">
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto"
+                >
+                  <Link
+                    to="/register"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 rounded-full bg-white text-[#1052ff] font-extrabold text-sm sm:text-base hover:bg-white/95 transition-all shadow-lg font-sans"
+                  >
+                    Lock In Your Spot Now
+                    <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+                  </Link>
+                </motion.div>
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

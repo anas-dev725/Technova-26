@@ -66,7 +66,7 @@ export default function HeroV1({ timeLeft }: HeroProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-black tracking-tight mb-6 min-h-[50px] sm:min-h-[80px] flex items-center justify-center select-none"
           >
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 dark:from-blue-400 dark:via-indigo-400 dark:to-cyan-400 drop-shadow-sm font-black uppercase text-center">
+            <span className="text-blue-600 dark:text-blue-500 drop-shadow-sm font-black uppercase text-center">
               {displayText}
             </span>
             <motion.span 
@@ -82,10 +82,10 @@ export default function HeroV1({ timeLeft }: HeroProps) {
             transition={{ duration: 0.5, delay: 0.25 }}
             className="inline-flex items-center justify-center mb-6 relative group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-full blur opacity-50 group-hover:opacity-75 transition duration-500 dark:opacity-40 dark:group-hover:opacity-60"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full blur opacity-40 group-hover:opacity-60 transition duration-500 dark:opacity-30 dark:group-hover:opacity-50"></div>
             <div className="relative px-6 py-2.5 bg-white dark:bg-black border border-blue-100 dark:border-blue-900/50 rounded-full flex items-center gap-3 shadow-sm">
               <Trophy className="w-5 h-5 text-blue-500 animate-pulse" />
-              <span className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200 bg-clip-text text-transparent">
                 Win Exciting Cash Prizes up to 100K!
               </span>
             </div>

@@ -68,7 +68,7 @@ export default function HeroV2({ timeLeft }: HeroProps) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-2xl sm:text-4xl font-display font-black tracking-tight mb-8 min-h-[40px] sm:min-h-[50px] flex items-center justify-start select-none"
             >
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 dark:from-blue-400 dark:via-indigo-400 dark:to-cyan-400 drop-shadow-sm font-black uppercase text-left">
+              <span className="text-blue-600 dark:text-blue-500 drop-shadow-sm font-black uppercase text-left">
                 {displayText}
               </span>
               <motion.span 
@@ -85,7 +85,7 @@ export default function HeroV2({ timeLeft }: HeroProps) {
               className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-white/5 border border-blue-100 dark:border-white/10 rounded-2xl mb-10 shadow-xl backdrop-blur-md"
             >
               <Trophy className="w-6 h-6 text-blue-500" />
-              <span className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300 bg-clip-text text-transparent">
+              <span className="text-sm sm:text-base font-bold bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200 bg-clip-text text-transparent">
                 Win Cash Prizes up to 100K!
               </span>
             </motion.div>
