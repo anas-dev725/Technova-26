@@ -244,15 +244,15 @@ export default function Team() {
         )}
 
         {/* Info Layout overlaid on backdrop but beautifully integrated */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-6 flex flex-col justify-end text-left z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-4 sm:p-6 flex flex-col justify-end text-left z-20">
           <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-2">
-            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-mono font-black uppercase tracking-widest border mb-2 ${accentClass}`}>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] sm:text-[9px] font-mono font-black uppercase tracking-widest border mb-1.5 ${accentClass}`}>
               {member.role === 'PR' ? 'Director of PR' : member.role}
             </span>
-            <h3 className="font-display font-black text-white tracking-tight text-lg group-hover:text-white transition-colors duration-300">
+            <h3 className="font-display font-black text-white tracking-tight text-base sm:text-lg group-hover:text-white transition-colors duration-300">
               {member.name}
             </h3>
-            <p className="text-[10px] text-zinc-400 font-medium font-mono leading-tight mt-1 tracking-tight">
+            <p className="text-[9px] sm:text-[10px] text-zinc-400 font-medium font-mono leading-tight mt-0.5 sm:mt-1 tracking-tight">
               {member.dept}
             </p>
           </div>
@@ -313,7 +313,7 @@ export default function Team() {
   };
 
   return (
-    <div className="pt-32 sm:pt-40 pb-28 relative min-h-screen bg-[#020205] scrollbar-none text-white transition-colors duration-300">
+    <div className="pt-32 sm:pt-40 pb-28 relative min-h-screen bg-[#020205] scrollbar-none text-white transition-colors duration-300 overflow-x-hidden">
       
       {/* Immersive background high-tech wire grid and glow points */}
       <div className="absolute inset-0 z-0 pointer-events-none sticky-framer-overlay">
@@ -359,7 +359,7 @@ export default function Team() {
         {/* ======================================================== */}
         {/*                  DESKTOP TREE GRAPH LAYOUT               */}
         {/* ======================================================== */}
-        <div className="hidden md:block relative max-w-7xl mx-auto pb-16">
+        <div className="hidden xl:block relative max-w-7xl mx-auto pb-16">
           <div className="flex flex-col items-center">
             
             {/* 1. MASTER ROOT HEADER BOX */}
@@ -654,12 +654,12 @@ export default function Team() {
         {/* ======================================================== */}
         {/*                  MOBILE/TABLET TREE FLOW                */}
         {/* ======================================================== */}
-        <div className="md:hidden relative flex flex-col items-stretch max-w-sm mx-auto">
+        <div className="xl:hidden relative flex flex-col items-stretch max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-2">
           
           {/* Central flowing backbone for mobile (Gradient flowing from blue to cyan) */}
           <div className="absolute left-6 min-[380px]:left-8 top-0 bottom-12 w-[2px] bg-gradient-to-b from-blue-500 to-cyan-400 z-0" />
 
-          <div className="space-y-10 pl-12 min-[380px]:pl-16 text-left">
+          <div className="space-y-10 pl-12 pr-2 min-[380px]:pl-16 min-[380px]:pr-4 text-left">
             
             {/* Header placeholder on mobile */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none">
