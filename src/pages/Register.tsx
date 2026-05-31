@@ -329,7 +329,7 @@ export default function Register() {
     : selectedModule.mode;
 
   const currentModuleFee = getFees(currentModuleMode, selectedModule.id);
-  const discountPercentage = promoCode.toUpperCase() === 'TECHNOVA35' ? 0.35 : 0.30;
+  const discountPercentage = promoCode.toUpperCase() === '35TECHNO' ? 0.35 : 0.30;
   const discountAmount = isPromoApplied ? Math.floor(currentModuleFee * discountPercentage) : 0;
   const finalFee = currentModuleFee - discountAmount;
 
@@ -337,7 +337,7 @@ export default function Register() {
     const code = val.toUpperCase();
     setPromoCode(val);
     
-    if (code === 'TECHNOVA35' || code === 'TECHNOVA30') {
+    if (code === '35TECHNO' || code === 'TECHNOVA30') {
       if (!isPromoApplied) {
         confetti({
           particleCount: 150,
@@ -762,8 +762,8 @@ export default function Register() {
                                 type="text"
                                 value={promoCode}
                                 onChange={(e) => handlePromoCheck(e.target.value)}
-                                className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${isPromoApplied ? 'border-green-500 bg-green-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-lg font-mono uppercase`}
-                                placeholder="ENTER CODE"
+                                className={`w-full px-6 py-5 rounded-2xl bg-white dark:bg-black/20 border-2 ${isPromoApplied ? 'border-green-500 bg-green-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm md:text-lg font-mono uppercase`}
+                                placeholder="ENTER DISCOUNT CODE"
                               />
                               {isPromoApplied && (
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -772,6 +772,11 @@ export default function Register() {
                               )}
                             </div>
                           </div>
+                          {!isPromoApplied && (
+                            <p className="mt-2.5 text-xs font-semibold text-gray-400 dark:text-zinc-500 flex items-center gap-1.5 animate-pulse">
+                              <span>💡</span> Enter the early bird discount code (e.g. <span className="font-mono text-blue-500 uppercase font-black">TECHNOVA30</span>)
+                            </p>
+                          )}
                           {isPromoApplied && (
                             <motion.div 
                               initial={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -780,7 +785,7 @@ export default function Register() {
                               className="mt-3 text-xs text-green-500 font-bold flex items-center gap-2 bg-green-500/10 py-2 px-4 rounded-full w-fit"
                             >
                               <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              Success! {promoCode.toUpperCase()} applied. You saved Rs. {discountAmount.toLocaleString()} ({promoCode.toUpperCase() === 'TECHNOVA35' ? '35%' : '30%'} off)
+                              Success! {promoCode.toUpperCase()} applied. You saved Rs. {discountAmount.toLocaleString()} ({promoCode.toUpperCase() === '35TECHNO' ? '35%' : '30%'} off)
                             </motion.div>
                           )}
 
