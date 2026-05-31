@@ -371,34 +371,40 @@ export default function Timeline() {
         <div className="flex flex-col gap-6 mb-8 bg-gray-50/50 dark:bg-white/[0.02] p-4 sm:p-6 rounded-3xl border border-gray-200/50 dark:border-white/5">
           
           {/* Day Selection Slider */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="inline-flex p-1 rounded-2xl bg-white dark:bg-white/5 border border-gray-250/30 dark:border-white/10 shadow-sm w-full sm:w-auto">
-              <button
-                onClick={() => setActiveDay('day1')}
-                className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  activeDay === 'day1'
-                    ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
-                    : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
-                }`}
-              >
-                <Calendar className="w-4 h-4" />
-                Day 1 (Saturday, July 11)
-              </button>
-              <button
-                onClick={() => setActiveDay('day2')}
-                className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  activeDay === 'day2'
-                    ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
-                    : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
-                }`}
-              >
-                <Calendar className="w-4 h-4" />
-                Day 2 (Sunday, July 12)
-              </button>
+          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 w-full">
+            {/* Left column spacer */}
+            <div className="hidden sm:block" />
+            
+            {/* Center column with active day buttons */}
+            <div className="flex justify-center w-full">
+              <div className="inline-flex p-1 rounded-2xl bg-white dark:bg-white/5 border border-gray-250/30 dark:border-white/10 shadow-sm w-full sm:w-auto">
+                <button
+                  onClick={() => setActiveDay('day1')}
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+                    activeDay === 'day1'
+                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
+                  }`}
+                >
+                  <Calendar className="w-4 h-4" />
+                  Day 1
+                </button>
+                <button
+                  onClick={() => setActiveDay('day2')}
+                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+                    activeDay === 'day2'
+                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
+                  }`}
+                >
+                  <Calendar className="w-4 h-4" />
+                  Day 2
+                </button>
+              </div>
             </div>
 
-            {/* View selectors */}
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            {/* Right column with view switches */}
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
               {pinnedEvents.length > 0 && (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-650 dark:text-amber-400 text-xs font-bold uppercase">
                   <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
@@ -468,14 +474,11 @@ export default function Timeline() {
         </div>
 
         {/* Current day selection title label */}
-        <div className="mb-6 flex flex-col sm:flex-row items-baseline justify-between gap-2 border-b border-gray-100 dark:border-white/5 pb-4">
+        <div className="mb-6 flex flex-col items-center justify-center text-center gap-2 border-b border-gray-100 dark:border-white/5 pb-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-display font-black text-gray-900 dark:text-white tracking-tight">
               {daysInfo[activeDay].theme}
             </h2>
-            <p className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 mt-0.5">
-              {daysInfo[activeDay].date}
-            </p>
           </div>
           <p className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider">
             Showing {filteredEvents.length} of {timelineData[activeDay].length} modules listed

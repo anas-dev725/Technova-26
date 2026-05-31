@@ -20,10 +20,10 @@ interface TeamMember {
 }
 
 export default function Team() {
-  // Chairperson & Vice Chairperson
+  // President & Vice President
   const chairperson: TeamMember = {
     name: 'Hamna Saleem',
-    role: 'Chairperson',
+    role: 'President',
     dept: 'Data Analyst & IEEE IoBM Lead',
     img: hamnaPfp,
     linkedin: 'https://www.linkedin.com/in/hamna-saleem-659a5b223/',
@@ -32,7 +32,7 @@ export default function Team() {
 
   const viceChairperson: TeamMember = {
     name: 'Muhammad Anas',
-    role: 'Vice Chairperson',
+    role: 'Vice President',
     dept: 'AI Automation & Systems Architect',
     img: anasProfileBase64,
     github: 'https://github.com/anas-dev725',
@@ -40,7 +40,7 @@ export default function Team() {
     website: 'https://muhammad-anas-ai-engineer.vercel.app/'
   };
 
-  // Left Wing Children (reporting to Chairperson)
+  // Left Wing Children (reporting to President)
   const leftWing: TeamMember[] = [
     {
       name: 'Moiz Ali Siddiqui',
@@ -74,8 +74,17 @@ export default function Team() {
     }
   ];
 
-  // Right Wing Children (reporting to Vice Chairperson)
+  // Right Wing Children (reporting to Vice President)
   const rightWing: TeamMember[] = [
+    {
+      name: 'Muhammad Abbas',
+      role: 'Director Corporate Affairs',
+      dept: 'AI Engineer',
+      initials: 'MA',
+      gradient: 'from-cyan-500 to-blue-600',
+      linkedin: 'https://www.linkedin.com/in/syed-muhammad-abbas-hassan-zaidi-505a8b340/',
+      mail: 'Std_34578@iobm.edu.pk'
+    },
     {
       name: 'Talha Ahmed',
       role: 'Director of Module Operations',
@@ -83,14 +92,6 @@ export default function Team() {
       img: talhaAhmedBase64,
       github: 'https://github.com/Talhaahmad9',
       linkedin: 'Https://linkedin.com/in/talha-ahmad9'
-    },
-    {
-      name: 'Zainab Fatima',
-      role: 'Director Operations',
-      dept: 'Crowd Coordination & Ground Flow',
-      initials: 'ZF',
-      gradient: 'from-cyan-500 to-blue-600',
-      linkedin: 'https://www.linkedin.com/'
     },
     {
       name: 'Mustafa Kamal',
@@ -413,14 +414,14 @@ export default function Team() {
             <div className="h-10" />
 
             {/* ======================================================== */}
-            {/*         THE TWO PILLARS (CHAIRPERSON VS VICE CHAIRPERSON)   */}
+            {/*         THE TWO PILLARS (PRESIDENT VS VICE PRESIDENT)    */}
             {/* ======================================================== */}
             <div className="grid grid-cols-2 gap-16 lg:gap-24 w-full relative z-10">
               
               {/* ================= LEFT PILLAR: HAMNA (PINK ACCENT CARD, CYAN LINE) ============= */}
               <div className="flex flex-col items-center">
                 
-                {/* Chairperson Node Card (Pink Accent) */}
+                {/* President Node Card (Pink Accent) */}
                 <div className="relative">
                   {renderMemberCard(chairperson, 'pink', 'large')}
 
@@ -500,7 +501,7 @@ export default function Team() {
               {/* ================= RIGHT PILLAR: ANAS (CYAN ACCENT CARD, CYAN LINE) ============= */}
               <div className="flex flex-col items-center">
                 
-                {/* Vice Chairperson Node Card (Cyan Accent) */}
+                {/* Vice President Node Card (Cyan Accent) */}
                 <div className="relative">
                   {renderMemberCard(viceChairperson, 'cyan', 'large')}
 
@@ -525,10 +526,10 @@ export default function Team() {
                   {/* Row-by-row centered flex layouts for Anas's reports to guarantee perfect centering */}
                   <div className="flex flex-col gap-y-16 mt-4 relative z-10 w-full items-center">
                     
-                    {/* First Row (Talha & Zainab) */}
+                    {/* First Row (Muhammad Abbas & Talha) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Director of Module Operations */}
+                      {/* Director Corporate Affairs */}
                       <div className="relative">
                         {renderMemberCard(rightWing[0], 'cyan', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -537,7 +538,7 @@ export default function Team() {
                         </div>
                       </div>
 
-                      {/* Director Operations */}
+                      {/* Director of Module Operations */}
                       <div className="relative">
                         {renderMemberCard(rightWing[1], 'cyan', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -667,7 +668,7 @@ export default function Team() {
               <h2 className="text-lg font-bold uppercase text-white tracking-tight">Presidency Core</h2>
             </div>
 
-            {/* Mobile Chairperson Card */}
+            {/* Mobile President Card */}
             <div className="relative">
               {/* Branch connecting back to vertebrae spine */}
               <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/50" />
@@ -675,7 +676,7 @@ export default function Team() {
               {renderMemberCard(chairperson, 'pink', 'large')}
             </div>
 
-            {/* Mobile Vice Chairperson Card */}
+            {/* Mobile Vice President Card */}
             <div className="relative">
               {/* Branch connecting back to vertebrae spine */}
               <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/50" />
@@ -685,7 +686,7 @@ export default function Team() {
 
             {/* Left Wing children divider header */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">L_WING // CHAIRPERSON_REPORTS</span>
+              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">L_WING // PRESIDENT_REPORTS</span>
               <h2 className="text-base font-bold uppercase text-white tracking-tight">Executive operations</h2>
             </div>
 

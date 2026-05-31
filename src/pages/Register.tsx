@@ -22,7 +22,23 @@ const memberSchema = z.object({
 
 const registerSchema = z.object({
   subGameId: z.string().optional(),
-  email: z.string().email('Invalid contact email address'),
+  email: z.string()
+    .email('Invalid contact email address')
+    .refine((val) => {
+      const parts = val.toLowerCase().split('@');
+      if (parts.length === 2) {
+        const domain = parts[1].trim();
+        const typos = [
+          'gmil.com', 'gmal.com', 'gmaill.com', 'gmeil.com', 'gamil.com', 'gmaile.com', 'gmai.com', 'gmile.com',
+          'yaho.com', 'yhoo.com', 'yaha.com',
+          'hotml.com', 'hotmai.com', 'hotmale.com'
+        ];
+        return !typos.includes(domain);
+      }
+      return true;
+    }, {
+      message: 'Possible domain typo (did you mean @gmail.com?)'
+    }),
   university: z.string().min(2, 'Please enter your university name'),
   paymentMethod: z.literal('bank_transfer'),
   members: z.array(memberSchema),
