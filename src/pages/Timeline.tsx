@@ -34,7 +34,7 @@ export default function Timeline() {
 
   const tracks = ['All', 'General', 'Tech', 'Design', 'AI', 'Innovation', 'Gaming'];
 
-  // All 16 precise real modules mapped beautifully with user-friendly descriptions and locations
+  // All 16 precise real modules mapped beautifully with user-friendly descriptions and locations set to TBD
   const timelineData: Record<'day1' | 'day2', TimelineEvent[]> = {
     day1: [
       { 
@@ -45,7 +45,7 @@ export default function Timeline() {
         title: "Registration & Badge Collection", 
         desc: "Arrive at the campus, confirm your registration details, and collect your official TechNova event badges and student guide kit.", 
         track: "General", 
-        location: "Main Lobby Reception, Ground Floor", 
+        location: "TBD", 
         icon: Users,
         capacity: "All registered students",
         durationLabel: "1.5 Hours"
@@ -58,7 +58,7 @@ export default function Timeline() {
         title: "Grand Opening Ceremony", 
         desc: "Listen to the welcome address from our university director, catch up on important schedules, and meet our senior judges.", 
         track: "General", 
-        location: "Main Auditorium, Hall A", 
+        location: "TBD", 
         icon: Zap,
         durationLabel: "1 Hour"
       },
@@ -70,7 +70,7 @@ export default function Timeline() {
         title: "Digital Dash (UI/UX Challenge)", 
         desc: "Race against time to design a beautiful, responsive mobile app screen using your choice of standard Figma design systems.", 
         track: "Design", 
-        location: "Graphics Studio Terminal, 1st Floor", 
+        location: "TBD", 
         icon: Layout,
         capacity: "Individual participants",
         durationLabel: "3 Hours"
@@ -83,7 +83,7 @@ export default function Timeline() {
         title: "Maths Mania", 
         desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
         track: "Tech", 
-        location: "Lecture Hall 102, 1st Floor", 
+        location: "TBD", 
         icon: BrainCircuit,
         capacity: "Individual participants",
         durationLabel: "3 Hours"
@@ -96,7 +96,7 @@ export default function Timeline() {
         title: "Webforces", 
         desc: "Showcase your modern developer skills by building an interactive landing page using clean responsive Tailwind standards.", 
         track: "Design", 
-        location: "Software Lab 1, 2nd Floor", 
+        location: "TBD", 
         icon: Palette,
         capacity: "Duo partners",
         durationLabel: "5 Hours"
@@ -109,7 +109,7 @@ export default function Timeline() {
         title: "Datathon", 
         desc: "Analyze dataset streams to identify key features, draft clear insights, and visualize details on a stunning UI dashboard.", 
         track: "Tech", 
-        location: "Data Analytics Lab, 2nd Floor", 
+        location: "TBD", 
         icon: Code,
         capacity: "Duo partners",
         durationLabel: "5 Hours"
@@ -122,7 +122,7 @@ export default function Timeline() {
         title: "Lunch & Social Hour", 
         desc: "Take a healthy break to enjoy hot meals, catch up with cohort peers, and share your module experiences.", 
         track: "General", 
-        location: "Student Cafeteria Dining Hall", 
+        location: "TBD", 
         icon: CoffeeIcon,
         durationLabel: "1 Hour"
       },
@@ -134,7 +134,7 @@ export default function Timeline() {
         title: "Prompt Engineering", 
         desc: "Coax generative models to build code, fix subtle bugs, and assemble creative layouts under complex constraint sheets.", 
         track: "AI", 
-        location: "Seminar Hall B, 1st Floor", 
+        location: "TBD", 
         icon: BrainCircuit,
         capacity: "Individual participants",
         durationLabel: "2.5 Hours"
@@ -149,7 +149,7 @@ export default function Timeline() {
         title: "Day 2 Check-In & Morning Tea", 
         desc: "Sign in for the second day, grab a hot beverage, configure your systems, and take your designated seats for the challenge blocks.", 
         track: "General", 
-        location: "Main Lobby Reception, Ground Floor", 
+        location: "TBD", 
         icon: Clock,
         durationLabel: "1 Hour"
       },
@@ -161,7 +161,7 @@ export default function Timeline() {
         title: "Capture The Flag (CTF)", 
         desc: "Join a fast cybersecurity sandbox. Decrypt keys, probe web sockets, and resolve server defense tasks with your team.", 
         track: "Tech", 
-        location: "Advanced Systems Lab, 2nd Floor", 
+        location: "TBD", 
         icon: Shield,
         capacity: "Squad members (up to 4)",
         durationLabel: "6 Hours"
@@ -174,7 +174,7 @@ export default function Timeline() {
         title: "FYP Warriors", 
         desc: "Pitch your design projects and software prototypes in front of top local engineering recruiters and incubators.", 
         track: "Innovation", 
-        location: "IT Seminar Room, 3rd Floor", 
+        location: "TBD", 
         icon: Award,
         capacity: "Squad teams",
         durationLabel: "4 Hours"
@@ -187,7 +187,7 @@ export default function Timeline() {
         title: "Startup Launchpad", 
         desc: "Propose high-potential venture solutions and draft interactive prototypes for scalable local consumer needs.", 
         track: "Innovation", 
-        location: "Business Incubator Hall, 1st Floor", 
+        location: "TBD", 
         icon: Rocket,
         capacity: "Squad teams (up to 4)",
         durationLabel: "4 Hours"
@@ -200,7 +200,7 @@ export default function Timeline() {
         title: "Esports Arena (PUBG Mobile)", 
         desc: "Claim structural zone victories! Squad up for custom rooms, or watch real-time spectator screens with live casting.", 
         track: "Gaming", 
-        location: "Esports Lounge, Basement Floor", 
+        location: "TBD", 
         icon: Gamepad2,
         capacity: "Competitors and Spectators",
         durationLabel: "5 Hours"
@@ -213,7 +213,7 @@ export default function Timeline() {
         title: "Lunch & Prayer Interval", 
         desc: "Unwind, complete your daily coordinates, or interact with recruiters at corporate booths.", 
         track: "General", 
-        location: "Student Cafeteria Dining Hall", 
+        location: "TBD", 
         icon: CoffeeIcon,
         durationLabel: "1 Hour"
       },
@@ -225,7 +225,7 @@ export default function Timeline() {
         title: "Agentic AI Arena", 
         desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
         track: "AI", 
-        location: "AI Academic Lab, 3rd Floor", 
+        location: "TBD", 
         icon: BrainCircuit,
         capacity: "Duo partners",
         durationLabel: "2 Hours"
@@ -238,7 +238,7 @@ export default function Timeline() {
         title: "Awards Ceremony & Closing", 
         desc: "Celebrate victorious achievements, distribute participation certificates, and record beautiful photography blocks.", 
         track: "General", 
-        location: "Main Auditorium, Hall A", 
+        location: "TBD", 
         icon: Trophy,
         durationLabel: "1 Hour"
       }

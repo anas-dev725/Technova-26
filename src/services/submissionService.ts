@@ -12,7 +12,8 @@ import {
   Timestamp,
   runTransaction,
   getDoc,
-  setDoc
+  setDoc,
+  deleteDoc
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 
@@ -199,6 +200,15 @@ export const submissionService = {
       });
     } catch (error) {
       handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+    }
+  },
+
+  async deleteSubmission(submissionId: string) {
+    try {
+      const docRef = doc(db, 'submissions', submissionId);
+      await deleteDoc(docRef);
+    } catch (error) {
+      handleFirestoreError(error, 'delete', `submissions/${submissionId}`);
     }
   },
 

@@ -22,7 +22,8 @@ import {
   EyeOff,
   ChevronDown,
   RefreshCw,
-  Settings
+  Settings,
+  Trash2
 } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
@@ -141,6 +142,29 @@ export default function Admin() {
       }
     } catch (error) {
       console.error('Status update error:', error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!id) return;
+    if (!confirm('Are you absolutely sure you want to permanently delete this registration entry? This action is irreversible.')) {
+      return;
+    }
+
+    try {
+      await submissionService.deleteSubmission(id);
+      
+      // Update local state immediately to remove the row and sync stats/totals
+      setSubmissions(prev => prev.filter(sub => sub.id !== id));
+      
+      // If the currently viewed submission is the deleted one, close the modal
+      if (selectedSubmission?.id === id) {
+        setSelectedSubmission(null);
+      }
+    } catch (error: any) {
+      console.error('Error deleting submission:', error);
+      const detail = error?.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
+      alert('Failed to delete registration: ' + detail);
     }
   };
 
@@ -333,8 +357,8 @@ export default function Admin() {
               Admin Dashboard
               <span className="w-4 h-[1px] bg-blue-500"></span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-display font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">
-              Submissions <span className="text-blue-500 not-italic">Live</span>
+            <h1 className="text-3xl md:text-5xl font-display font-black text-gray-900 dark:text-white tracking-tighter uppercase">
+              Submissions <span className="text-blue-500">Live</span>
             </h1>
           </div>
           <div className="flex items-center justify-between sm:justify-end gap-3 bg-white dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 backdrop-blur-md shadow-xl">
@@ -412,8 +436,10 @@ export default function Admin() {
         {/* Filters & Actions */}
         <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl p-2 border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden">
           <div className="p-4 md:p-8 space-y-6">
-            <div className="flex flex-col xl:flex-row items-center justify-between gap-6">
-              <div className="relative w-full xl:max-w-md group">
+            {/* Row 1: Search & Filter Controls */}
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
+              {/* Search input */}
+              <div className="relative w-full lg:max-w-md group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-colors group-focus-within:text-blue-500" />
                 <input 
                   type="text" 
@@ -424,7 +450,8 @@ export default function Admin() {
                 />
               </div>
               
-              <div className="flex flex-wrap items-center justify-center gap-3 w-full xl:w-auto">
+              {/* Dropdown + Tab filter group */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 {/* Custom Module Dropdown */}
                 <div className="relative w-full sm:w-auto">
                   <button
@@ -489,7 +516,8 @@ export default function Admin() {
                   </AnimatePresence>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5">
+                {/* Status Tabs */}
+                <div className="flex items-center gap-1.5 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5">
                   {[
                     { id: 'all', label: 'All' },
                     { id: 'pending', label: 'Pending' },
@@ -499,7 +527,7 @@ export default function Admin() {
                     <button
                       key={status.id}
                       onClick={() => setFilterStatus(status.id)}
-                      className={`flex-1 sm:flex-none px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                      className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                         filterStatus === status.id 
                           ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
                           : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
@@ -509,11 +537,20 @@ export default function Admin() {
                     </button>
                   ))}
                 </div>
+              </div>
+            </div>
 
+            {/* Separator line */}
+            <div className="h-[1px] bg-gray-100 dark:bg-white/5" />
+
+            {/* Row 2: Management/Diagnostic Controls & Bulk Exports */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6">
+              {/* Management Tools (Sync / Diagnostics) */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button 
                   onClick={handleMigrateIds}
                   disabled={isMigrating}
-                  className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="px-5 py-3.5 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isMigrating ? (
                     <>
@@ -531,7 +568,7 @@ export default function Admin() {
                 <button 
                   onClick={handleSyncCounters}
                   disabled={isSyncing}
-                  className="flex-1 sm:flex-none px-5 py-3.5 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="px-5 py-3.5 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSyncing ? (
                     <>
@@ -547,9 +584,10 @@ export default function Admin() {
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 w-full xl:w-auto">
+              {/* Data Export Options */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button 
-                  className="flex-1 xl:flex-none px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                  className="px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
                   onClick={() => {
                   const maxMembers = Math.max(1, ...filteredSubmissions.map(s => s.members?.length || 0));
                   const headers = [
@@ -647,8 +685,8 @@ export default function Admin() {
                 <FileText className="w-4 h-4" />
                 Export Excel
               </button>
-                <button 
-                  onClick={async () => {
+              <button 
+                onClick={async () => {
                   try {
                     const zip = new JSZip();
                     const folder = zip.folder("receipts");
@@ -682,8 +720,8 @@ export default function Admin() {
                     alert("Failed to export receipts.");
                   }
                 }}
-                  className="flex-1 xl:flex-none px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
-                >
+                className="px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+              >
                 <Download className="w-4 h-4" />
                 Export Receipts
               </button>
@@ -738,7 +776,7 @@ export default function Admin() {
 
                   <div className="flex items-center justify-between gap-3" onClick={e => e.stopPropagation()}>
                     <button 
-                      onClick={() => setSelectedSubmission(sub)}
+                      onClick={(e) => { e.stopPropagation(); setSelectedSubmission(sub); }}
                       className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
                     >
                       <Eye className="w-3.5 h-3.5" />
@@ -746,18 +784,27 @@ export default function Admin() {
                     </button>
                     <div className="flex gap-2">
                       <button 
-                        onClick={() => handleStatusUpdate(sub.id!, 'approved')}
+                        onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
                         disabled={sub.status === 'approved'}
                         className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-emerald-500/20"
+                        title="Approve"
                       >
                         <CheckCircle2 className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => handleStatusUpdate(sub.id!, 'rejected')}
+                        onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
                         disabled={sub.status === 'rejected'}
                         className="p-3 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-rose-500/20"
+                        title="Reject"
                       >
                         <XCircle className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
+                        className="p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm border border-rose-500/20"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -837,26 +884,36 @@ export default function Admin() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
                           <button 
-                            onClick={() => setSelectedSubmission(sub)}
+                            onClick={(e) => { e.stopPropagation(); setSelectedSubmission(sub); }}
                             className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                            title="View"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
                           <button 
-                            onClick={() => handleStatusUpdate(sub.id!, 'approved')}
+                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
                             disabled={sub.status === 'approved'}
                             className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                            title="Approve"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                           </button>
                           <button 
-                            onClick={() => handleStatusUpdate(sub.id!, 'rejected')}
+                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
                             disabled={sub.status === 'rejected'}
                             className="p-2 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                            title="Reject"
                           >
                             <XCircle className="w-3.5 h-3.5" />
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
+                            className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </td>
@@ -865,7 +922,7 @@ export default function Admin() {
                 </AnimatePresence>
                 {filteredSubmissions.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 italic text-sm">
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500 italic text-sm">
                       No matching records found.
                     </td>
                   </tr>
@@ -1093,7 +1150,14 @@ export default function Admin() {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+                  <button 
+                    onClick={() => handleDelete(selectedSubmission.id!)}
+                    className="flex-1 sm:flex-none px-6 py-3 rounded-xl font-black transition-all border-2 border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete
+                  </button>
                   <button 
                     onClick={() => handleStatusUpdate(selectedSubmission.id!, 'rejected')}
                     className={`flex-1 sm:flex-none px-6 py-3 rounded-xl font-black transition-all border-2 text-[10px] uppercase tracking-widest ${
