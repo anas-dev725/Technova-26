@@ -47,6 +47,23 @@ export default function Admin() {
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
 
+  // Custom confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    variant?: 'danger' | 'info' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    confirmText: 'Continue',
+    variant: 'info'
+  });
+
   // Login Form State
   const [adminId, setAdminId] = useState('');
   const [password, setPassword] = useState('');
@@ -147,55 +164,74 @@ export default function Admin() {
 
   const handleDelete = async (id: string) => {
     if (!id) return;
-    if (!confirm('Are you absolutely sure you want to permanently delete this registration entry? This action is irreversible.')) {
-      return;
-    }
-
-    try {
-      await submissionService.deleteSubmission(id);
-      
-      // Update local state immediately to remove the row and sync stats/totals
-      setSubmissions(prev => prev.filter(sub => sub.id !== id));
-      
-      // If the currently viewed submission is the deleted one, close the modal
-      if (selectedSubmission?.id === id) {
-        setSelectedSubmission(null);
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Registration Entry',
+      message: 'Are you absolutely sure you want to permanently delete this registration entry? This action is irreversible.',
+      confirmText: 'Delete Entry',
+      variant: 'danger',
+      onConfirm: async () => {
+        try {
+          await submissionService.deleteSubmission(id);
+          
+          // Update local state immediately to remove the row and sync stats/totals
+          setSubmissions(prev => prev.filter(sub => sub.id !== id));
+          
+          // If the currently viewed submission is the deleted one, close the modal
+          if (selectedSubmission?.id === id) {
+            setSelectedSubmission(null);
+          }
+        } catch (error: any) {
+          console.error('Error deleting submission:', error);
+          const detail = error?.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
+          alert('Failed to delete registration: ' + detail);
+        }
       }
-    } catch (error: any) {
-      console.error('Error deleting submission:', error);
-      const detail = error?.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
-      alert('Failed to delete registration: ' + detail);
-    }
+    });
   };
 
   const handleMigrateIds = async () => {
-    if (!confirm('This will generate unique IDs for all existing entries that don\'t have one based on their submission time. Continue?')) return;
-    
-    setIsMigrating(true);
-    try {
-      const count = await submissionService.migrateMissingIds();
-      alert(`Success! Generated IDs for ${count || 0} entries.`);
-    } catch (error) {
-      alert('Migration failed. Check console for error.');
-      console.error(error);
-    } finally {
-      setIsMigrating(false);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Generate Missing IDs',
+      message: "This will generate unique IDs for all existing entries that don't have one based on their submission time. Continue?",
+      confirmText: 'Generate IDs',
+      variant: 'warning',
+      onConfirm: async () => {
+        setIsMigrating(true);
+        try {
+          const count = await submissionService.migrateMissingIds();
+          alert(`Success! Generated IDs for ${count || 0} entries.`);
+        } catch (error) {
+          alert('Migration failed. Check console for error.');
+          console.error(error);
+        } finally {
+          setIsMigrating(false);
+        }
+      }
+    });
   };
 
   const handleSyncCounters = async () => {
-    if (!confirm('This will synchronize the sequential counters with the current number of submissions for each module. Use this if IDs are starting from #001 again incorrectly. Continue?')) return;
-    
-    setIsSyncing(true);
-    try {
-      const count = await submissionService.syncCounters(submissions);
-      alert(`Success! Synchronized counters for ${count || 0} modules.`);
-    } catch (error) {
-      alert('Sync failed. Check console for error.');
-      console.error(error);
-    } finally {
-      setIsSyncing(false);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Synchronize Counters',
+      message: 'This will synchronize the sequential counters with the current number of submissions for each module. Use this if IDs are starting from #001 again incorrectly. Continue?',
+      confirmText: 'Synchronize',
+      variant: 'warning',
+      onConfirm: async () => {
+        setIsSyncing(true);
+        try {
+          const count = await submissionService.syncCounters(submissions);
+          alert(`Success! Synchronized counters for ${count || 0} modules.`);
+        } catch (error) {
+          alert('Sync failed. Check console for error.');
+          console.error(error);
+        } finally {
+          setIsSyncing(false);
+        }
+      }
+    });
   };
 
   const filteredSubmissions = submissions
@@ -1179,6 +1215,74 @@ export default function Admin() {
                     Approve
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Confirmation Modal */}
+      <AnimatePresence>
+        {confirmDialog.isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              key="confirm-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+            />
+            
+            {/* Modal Box */}
+            <motion.div 
+              key="confirm-modal"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[101] overflow-hidden p-6 text-left"
+            >
+              <div className="flex items-start gap-4">
+                <div className={`p-3 rounded-2xl shrink-0 ${
+                  confirmDialog.variant === 'danger' ? 'bg-rose-500/15 text-rose-500' :
+                  confirmDialog.variant === 'warning' ? 'bg-amber-500/15 text-amber-500' :
+                  'bg-blue-500/15 text-blue-500'
+                }`}>
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                    {confirmDialog.title}
+                  </h3>
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-semibold">
+                    {confirmDialog.message}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
+                  className="px-4 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setConfirmDialog(p => ({ ...p, isOpen: false }));
+                    confirmDialog.onConfirm();
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg ${
+                    confirmDialog.variant === 'danger' ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/15' :
+                    confirmDialog.variant === 'warning' ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/15' :
+                    'bg-blue-600 hover:bg-blue-700 shadow-blue-600/15'
+                  }`}
+                >
+                  {confirmDialog.confirmText}
+                </button>
               </div>
             </motion.div>
           </>

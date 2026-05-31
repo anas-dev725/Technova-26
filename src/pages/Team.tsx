@@ -78,7 +78,7 @@ export default function Team() {
   const rightWing: TeamMember[] = [
     {
       name: 'Talha Ahmed',
-      role: 'Director Technology',
+      role: 'Director of Module Operations',
       dept: 'AI Development & System Architect',
       img: talhaAhmedBase64,
       github: 'https://github.com/Talhaahmad9',
@@ -187,7 +187,9 @@ export default function Team() {
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.6, type: 'spring', stiffness: 90 }}
         className={`relative group rounded-[2rem] overflow-hidden bg-[#06070e] border border-zinc-800/60 shadow-2xl transition-all duration-300 ${
-          size === 'large' ? 'w-[300px] h-[375px]' : 'w-[250px] h-[312px]'
+          size === 'large' 
+            ? 'w-full max-w-[300px] h-auto aspect-[4/5] md:w-[300px] md:h-[375px]' 
+            : 'w-full max-w-[250px] h-auto aspect-[4/5] md:w-[250px] md:h-[312px]'
         } ${
           isPink ? 'hover:border-pink-500/50 hover:shadow-[0_0_30px_rgba(244,63,94,0.15)]' : 'hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)]'
         }`}
@@ -526,7 +528,7 @@ export default function Team() {
                     {/* First Row (Talha & Zainab) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Director Technology */}
+                      {/* Director of Module Operations */}
                       <div className="relative">
                         {renderMemberCard(rightWing[0], 'cyan', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -655,9 +657,9 @@ export default function Team() {
         <div className="md:hidden relative flex flex-col items-stretch max-w-sm mx-auto">
           
           {/* Central flowing backbone for mobile (Gradient flowing from blue to cyan) */}
-          <div className="absolute left-6 top-0 bottom-12 w-[2px] bg-gradient-to-b from-blue-500 to-cyan-400 z-0" />
+          <div className="absolute left-6 min-[380px]:left-8 top-0 bottom-12 w-[2px] bg-gradient-to-b from-blue-500 to-cyan-400 z-0" />
 
-          <div className="space-y-10 pl-16 text-left">
+          <div className="space-y-10 pl-12 min-[380px]:pl-16 text-left">
             
             {/* Header placeholder on mobile */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none">
@@ -668,16 +670,16 @@ export default function Team() {
             {/* Mobile Chairperson Card */}
             <div className="relative">
               {/* Branch connecting back to vertebrae spine */}
-              <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 w-[40px] h-[2px] bg-cyan-400/50" />
-              <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/50" />
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
               {renderMemberCard(chairperson, 'pink', 'large')}
             </div>
 
             {/* Mobile Vice Chairperson Card */}
             <div className="relative">
               {/* Branch connecting back to vertebrae spine */}
-              <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 w-[40px] h-[2px] bg-cyan-400/50" />
-              <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/50" />
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
               {renderMemberCard(viceChairperson, 'cyan', 'large')}
             </div>
 
@@ -690,8 +692,8 @@ export default function Team() {
             {leftWing.map((member) => (
               <div className="relative" key={member.name}>
                 {/* Connection line */}
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 w-[40px] h-[2px] bg-cyan-400/30" />
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/30" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 {renderMemberCard(member, 'pink', 'normal')}
               </div>
             ))}
@@ -705,8 +707,8 @@ export default function Team() {
             {rightWing.map((member) => (
               <div className="relative" key={member.name}>
                 {/* Connection line */}
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 w-[40px] h-[2px] bg-cyan-400/30" />
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/30" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 {renderMemberCard(member, 'cyan', 'normal')}
               </div>
             ))}
@@ -720,8 +722,8 @@ export default function Team() {
             {additionalWing.map((member, index) => (
               <div className="relative" key={member.name}>
                 {/* Connection line */}
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 w-[40px] h-[2px] bg-cyan-400/30" />
-                <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/30" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 {renderMemberCard(member, index % 2 === 0 ? 'pink' : 'cyan', 'normal')}
               </div>
             ))}
