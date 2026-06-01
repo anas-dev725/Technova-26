@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import confetti from 'canvas-confetti';
-import { modules, getFees } from '../data/modules';
+import { modules, getFees, TeamMode } from '../data/modules';
 import { submissionService } from '../services/submissionService';
 import { emailService } from '../services/emailService';
 
@@ -58,6 +58,7 @@ export default function Register() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const [searchParams] = useSearchParams();
   const gameParam = searchParams.get('game');
+  const modeParam = searchParams.get('mode');
   
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -168,11 +169,14 @@ export default function Register() {
         // Startup and FYP: 4 fields total, 3 mandatory
         replace(Array(4).fill({ fullName: '', cnic: '', contactNumber: '' }));
       } else {
-        const count = selectedModule.mode === 'Individual' ? 1 : selectedModule.mode === 'Duo' ? 2 : 4;
+        const activeMode = (modeParam && ['Individual', 'Duo', 'Squad'].includes(modeParam))
+          ? modeParam as TeamMode
+          : selectedModule.mode;
+        const count = activeMode === 'Individual' ? 1 : activeMode === 'Duo' ? 2 : 4;
         replace(Array(count).fill({ fullName: '', cnic: '', contactNumber: '' }));
       }
     }
-  }, [selectedModule, moduleId, navigate, replace, selectedSubGameId, isInnovationModule]);
+  }, [selectedModule, moduleId, navigate, replace, selectedSubGameId, isInnovationModule, modeParam]);
 
   const compressImage = (base64Str: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -342,7 +346,7 @@ export default function Register() {
     
   const currentModuleMode = selectedModule.subGames && selectedSubGameId
     ? (selectedModule.subGames.find(g => g.id === selectedSubGameId)?.mode || selectedModule.mode)
-    : selectedModule.mode;
+    : ((modeParam && ['Individual', 'Duo', 'Squad'].includes(modeParam)) ? (modeParam as TeamMode) : selectedModule.mode);
 
   const currentModuleFee = getFees(currentModuleMode, selectedModule.id);
   

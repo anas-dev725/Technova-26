@@ -10,6 +10,14 @@ export interface SubGame {
   prize: string;
 }
 
+export interface ModuleHead {
+  name: string;
+  role: string;
+  designation?: string;
+  email?: string;
+  linkedin?: string;
+}
+
 export interface Module {
   id: string;
   title: string;
@@ -19,6 +27,10 @@ export interface Module {
   mode: TeamMode;
   prize: string;
   longDescription: string;
+  challengeName?: string;
+  skills?: string[];
+  rulesList?: string[];
+  heads?: ModuleHead[];
   subGames?: SubGame[];
 }
 
@@ -31,7 +43,27 @@ export const modules: Module[] = [
     category: 'Innovation',
     mode: 'Squad',
     prize: 'TBD',
-    longDescription: 'The pinnacle of your academic journey is here. Present your Final Year Project to a panel of industry veterans and academic experts. This is your chance to shine, network, and maybe even get recruited!'
+    challengeName: 'The Final Defense',
+    longDescription: 'The pinnacle of your academic and technical journey meets the ultimate pressure test. FYP Warriors is a specialized platform for final year students to pitch their capstone projects, software prototypes, or hardware inventions to industry veterans and experienced researchers.\n\nDefend your research, demonstrate your software architectures, and prove the real-world scalability of your solutions. This is not just a standard academic presentation: it is an evaluation by leading tech executives looking for exceptional talent, industrial innovation, and market readiness.',
+    skills: ['System Architecture', 'Technical Defense', 'Academic Research', 'Product Scalability'],
+    rulesList: [
+      'Open specifically to final year undergraduate projects and capstone teams.',
+      'Present either your final year project ideas, ongoing systems, or completed software/hardware projects.',
+      'Teams must bring their own devices, demonstration kits, and socket extensions.',
+      'You must install and showcase your own custom roll-up standees and technical posters in your assigned presentation cubicle.',
+      'Every participant in the team must actively participate in delivering the pitch and responding to technical Q&As.',
+      'Presentations must be restricted to 8 minutes, followed by a detailed technical defense of 5 minutes.',
+      'Integrity is paramount: any intellectual theft, copying code from existing open-source repositories without citation, or misrepresentation will result in immediate disqualification.',
+      'Evaluation is conducted by a distinguished jury from both academia and industry. Their decision is absolute.'
+    ],
+    heads: [
+      { name: 'Sarah', role: 'Module Lead', designation: 'Lead Systems Evaluator', linkedin: 'https://linkedin.com' },
+      { name: 'Sania', role: 'Co-Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Marhaba', role: 'Co-Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Khizra', role: 'Co-Lead', designation: 'Research Coordinator', linkedin: 'https://linkedin.com' },
+      { name: 'Bisma', role: 'Co-Lead', designation: 'Academic Program Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Alishba', role: 'Co-Lead', designation: 'Industry Relations Officer', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'startup-launchpad',
@@ -41,7 +73,24 @@ export const modules: Module[] = [
     category: 'Innovation',
     mode: 'Squad',
     prize: 'TBD',
-    longDescription: 'Do you see a way to make a difference? Share your business concepts and prototypes with a supportive community. It\'s a fantastic platform to learn, grow, and take the first steps toward bringing your ideas to life.'
+    challengeName: 'The Pitch Arena',
+    longDescription: 'Do you have a game-changing product, prototype, or software solution waiting to be discovered? Startup Launchpad is the ultimate arena to pitch your vision. Here, you will showcase your innovative concepts, functional minimum viable products (MVPs), or full-fledged software directly to our panel of seasoned judges and industry mentors.\n\nFlesh out your business model, prepare your decks, and prepare to deliver a high-energy presentation. Convince the judges that your team has what it takes to scale, disrupt, and capture the market.',
+    skills: ['Entrepreneurial Pitching', 'Product Strategy', 'Business Modeling', 'Persuasive Delivery'],
+    rulesList: [
+      'Teams of 2 to 4 partners.',
+      'Pitch your raw business idea, tangible prototype, or fully functional software product.',
+      'Teams must present live in front of the jury panels within their designated slot.',
+      'You must bring your own devices (laptops, test setups) and custom promotional standees to showcase at your booth.',
+      'Participants must bring their own socket extensions to ensure uninterrupted power supply for their demo equipment.',
+      'The standard pitch window is strictly 8 minutes, followed by a 4-minute interactive Q&A session.',
+      'Plagiarism, copycat models, or submitting stolen academic/startup intellectual property results in immediate disqualification.',
+      'All decisions of the jury and mentors are final.'
+    ],
+    heads: [
+      { name: 'Waniya', role: 'Module Lead', designation: 'Incubation Program Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Ammara', role: 'Co-Lead', designation: 'Venture Capital Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Vania', role: 'Co-Lead', designation: 'Product Strategy Specialist', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'capture-the-flag',
@@ -51,7 +100,26 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Squad',
     prize: 'TBD',
-    longDescription: 'Calling all tech enthusiasts! This is a 6-hour journey where your squad will dive into systems, uncovering how they work and learning to protect them. It\'s an engaging test of your curiosity and problem-solving skills.'
+    challengeName: 'Zero Signal',
+    longDescription: 'The signal is gone. The galaxy is under attack. Zero Signal is a Capture the Flag cyber warfare challenge set across a live galaxy map, where every flag you capture claims territory, and every second you\'re slow, some other crew takes it.\n\nSix planets. Six attack surfaces. Each one is a different fight: crack the challenge, plant your flag, and watch the map shift in real time. The scoreboard is live, and everyone can see it.\n\nThis is not a quiz. It is a war zone.',
+    skills: ['Digital Sleuthing', 'Strategic Thinking', 'Pattern Recognition', 'Cybersecurity Fundamentals'],
+    rulesList: [
+      'Teams of 3 to 4 members.',
+      'All challenges must be accessed exclusively through the official competition platform.',
+      'AI tools and LLMs are permitted and encouraged: use every tool at your disposal.',
+      'Collaboration between crews is strictly prohibited: your signal, your glory.',
+      'Bring your own laptop: no special installation required.',
+      'Participants may only interact with challenges assigned to their crew. Interfering with another crew\'s session is prohibited.',
+      'No real-world exploits may be deployed against competition infrastructure. All hacking is contained within the simulated environment.',
+      'The flag format is strictly ZEROSIG{...}: submissions outside this format will be rejected.',
+      'Sharing flag answers or solutions with rival crews results in immediate disqualification of both parties.',
+      'Organizers reserve the right to adapt rules in response to unforeseen circumstances. Their decision is final.'
+    ],
+    heads: [
+      { name: 'Elisha', role: 'Module Lead', designation: 'Cybersecurity Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Ainab', role: 'Co-Lead', designation: 'AI & Data Security Researcher', linkedin: 'https://linkedin.com' },
+      { name: 'Hussam', role: 'Co-Lead', designation: 'Network Defense Engineer', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'agentic-ai-arena',
@@ -61,7 +129,26 @@ export const modules: Module[] = [
     category: 'AI',
     mode: 'Duo',
     prize: 'TBD',
-    longDescription: 'Step into the Agentic AI Arena, where the goal is to build autonomous agents that can think, act, and reason. Whether it\'s task automation or strategy-based competition, show us how your agents handle the pressure of the arena.'
+    challengeName: 'The Trust Arena',
+    longDescription: 'Build agents that think. Let them compete. Watch trust emerge. The Trust Arena is a multi-agent strategy tournament built on the Prisoner\'s Dilemma, focusing on the foundational problems of cooperation, deception, and emergent trust in AI systems.\n\nYou design and engineer an intelligent agent that perceives its environment, reasons autonomously, communicates with opponents, and decides when to cooperate and when to betray.\n\nEvery round, every decision, every message shapes the outcome. The arena rewards those who read the room.\n\nPerceive, Reason, Communicate, and Act.',
+    skills: ['Logic and Automation', 'Strategic Decision Making', 'Game Theory', 'Behavioral Design'],
+    rulesList: [
+      'Teams of 2 participants.',
+      'Agents must be written in Python 3.9+.',
+      'Only free-tier LLM APIs are permitted. No paid plans or credits allowed.',
+      'AI coding assistants (ChatGPT, Claude, Copilot, Cursor) are permitted and encouraged.',
+      'LangChain, AutoGen, and CrewAI may not serve as the core architecture: reasoning and memory must be your own code.',
+      'Agents must respond within 25 seconds per round. Timeouts default to cooperate.',
+      'Prompt injection via opponent messages is strictly prohibited and monitored in real time. The three-strike system applies.',
+      'No code, strategy, or agent logic sharing between teams during active competition.',
+      'Plagiarism, code copying, or agent interference results in immediate disqualification.',
+      'Organizers reserve the right to adapt rules. All decisions are final.'
+    ],
+    heads: [
+      { name: 'Sameed', role: 'Module Lead', designation: 'Multi-Agent Frameworks Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Hamza', role: 'Co-Lead', designation: 'AI Systems Architect', linkedin: 'https://linkedin.com' },
+      { name: 'Wasay', role: 'Co-Lead', designation: 'Game Theory Analyst', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'datathon',
@@ -71,7 +158,23 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Duo',
     prize: 'TBD',
-    longDescription: 'Join the Datathon to showcase your data science skills. From exploratory data analysis to complex machine learning models, your goal is to extract meaningful insights from raw data and solve real-world problems.'
+    challengeName: 'Ghost in the Protocol',
+    longDescription: 'A crime has been committed. The evidence is buried in a database. Ghost in the Protocol is a data forensics challenge where you step into the role of a digital investigator, piecing together a criminal conspiracy hidden inside rows, tables, and transactions.\n\nYou\'ll dig through access logs, trace money trails, and expose the suspect hiding in plain sight. The deeper you go, the more the story unravels, and the harder it gets.\n\nIt\'s not just about the data. It\'s about thinking like a detective.',
+    skills: ['Data Analysis', 'Problem Solving', 'Critical Thinking', 'Investigative Logic'],
+    rulesList: [
+      'Teams of exactly 2 participants.',
+      'No generative AI tools permitted: no ChatGPT, Claude, Copilot, or any LLM coding assistant.',
+      'No mobile devices allowed during the competition.',
+      'Absolute team isolation, you may only communicate within your duo. Cross-team communication is strictly prohibited.',
+      'The provided database is read-only. Any attempt to modify, inject, or corrupt it results in immediate disqualification.',
+      'Code similarity beyond the allowed threshold will be flagged and may result in disqualification.',
+      'Any misconduct, external assistance, or attempt to sabotage rival teams leads to immediate disqualification.'
+    ],
+    heads: [
+      { name: 'Areej', role: 'Module Lead', designation: 'Senior Data Forensics Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Javeria', role: 'Co-Lead', designation: 'Chief Intelligence Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Abdur Rafay', role: 'Co-Lead', designation: 'Behavioral Data Engineer', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'prompt-engineering',
@@ -81,25 +184,50 @@ export const modules: Module[] = [
     category: 'AI',
     mode: 'Individual',
     prize: 'TBD',
-    longDescription: 'In the age of AI, the one who knows how to talk to the machines wins. You\'ll be solving creative and technical tasks using the latest LLMs and image generation models. Show us how you prompt!'
+    challengeName: 'Crack the Code',
+    longDescription: 'The AI does not want to talk. Your job is to make it. Crack the Code is an AI adversarial challenge where you go head-to-head against a language model that has been given a secret and told never to reveal it.\n\nYour only weapon is language. Through careful reasoning, creative misdirection, and precision prompt construction, you must engineer your way past the AI\'s defenses and extract what lies beneath.\n\nThree phases with escalating resistance.\n\nOne objective: make it talk, probe, engineer, and conquer.',
+    skills: ['AI Communication', 'Creative Communication', 'Logical Reasoning', 'Lateral Thinking'],
+    rulesList: [
+      'Solo participation only.',
+      'All interactions with the AI must occur exclusively through the official competition platform. No external API access is permitted.',
+      'All AI tools and LLMs are permitted to assist in crafting prompts: use every tool at your disposal.',
+      'Sharing prompts, strategies, or extracted secrets with other participants during the event is strictly prohibited.',
+      'Bring your own laptop: the platform is web-based and requires no special installation.',
+      'Each participant may only interact with the challenge assigned to them. Probing or interfering with other participants\' instances is prohibited.',
+      'The hidden system prompt is server-side and inaccessible. Accessing it through technical means outside the platform is a violation.',
+      'Organizers reserve the right to adapt rules in response to unforeseen circumstances. All decisions are final.'
+    ],
+    heads: [
+      { name: 'Nimra', role: 'Module Lead', designation: 'Prompt Security Researcher', linkedin: 'https://linkedin.com' },
+      { name: 'Ayaan', role: 'Co-Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Ali Warsi', role: 'Co-Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'esports-competition',
     title: 'Esports Competition',
-    description: 'Unleash your gaming passion. Join fellow enthusiasts to showcase your strategy and skills in some of the most popular titles in a lively, community-focused arena.',
+    description: 'Unleash your gaming passion. Join fellow enthusiasts to showcase your strategy and skills in PUBGM in a lively, community-focused arena.',
     icon: Gamepad2,
     category: 'Gaming',
-    mode: 'Individual',
+    mode: 'Squad',
     prize: 'TBD',
-    longDescription: 'Welcome to the Technova Esports Arena! This is where passion meets play. We\'ve picked the hottest titles to celebrate your strategy and reflexes. Whether you\'re teaming up with your squad or playing solo, come share the excitement and show us your best moves.',
-    subGames: [
-      {
-        id: 'pubg-mobile',
-        title: 'PUBG Mobile',
-        description: 'Squad-based action and strategy. Drop in, explore, and work with your team to navigate the arena in this fan-favorite title.',
-        mode: 'Squad',
-        prize: 'TBD'
-      }
+    challengeName: 'PUBG Mobile',
+    longDescription: 'Welcome to the Technova Esports Arena! This is where passion meets play. For Technova\'26, the battleground is set exclusively for PUBG Mobile. Whether you are dropping in as a Duo or navigating the map with your full Squad, prepare to showcase your tactical strategy, reflexes, and team coordination to become the ultimate champions.',
+    skills: ['Tactical Strategy', 'Team Coordination', 'Reflexes and Combat', 'Map Awareness'],
+    rulesList: [
+      'Squad (4 players) and Duo (2 players) modes are allowed.',
+      'All players must use their own mobile devices. Tablets, iPads, and Emulators are strictly prohibited.',
+      'No hacks, third-party plug-ins, or modified game clients may be used. Violations will result in immediate disqualification.',
+      'Standard PUBG Mobile competitive map settings and tournament rulebooks will be enforced.',
+      'Teams must be fully registered and present in the lobby at least 15 minutes before the match start time.',
+      'In case of any internet or technical issues on the player\'s side, the lobby will not be restarted.',
+      'Any form of teaming up or unsportsmanlike behavior will result in a ban.',
+      'The organizers reserve the right to modify rules. All decisions on disputes, scores, and standings are final.'
+    ],
+    heads: [
+      { name: 'Arsalan', role: 'Module Lead', designation: 'Esports Tournament Director', linkedin: 'https://linkedin.com' },
+      { name: 'Zainab', role: 'Co-Lead', designation: 'Esports Operations Manager', linkedin: 'https://linkedin.com' },
+      { name: 'Mustajab', role: 'Co-Lead', designation: 'Chief Referee & Coordinator', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -110,7 +238,25 @@ export const modules: Module[] = [
     category: 'Design',
     mode: 'Duo',
     prize: 'TBD',
-    longDescription: 'Hey there, creative! In this challenge, you\'ll flex your frontend muscles to build a futuristic landing page. We\'re looking for that perfect mix of "wow" factor and rock-solid usability. No boring sites allowed!'
+    challengeName: 'Digital Rescue Hunt',
+    longDescription: 'The internet has been corrupted. Web Force is a frontend development challenge where you and your team become digital rescue agents, deployed to restore a broken web. Broken pages and corrupted code. A digital network is on the edge of collapse, and only your skills can bring it back.\n\nFrom fixing shattered HTML and styling raw interfaces under pressure, to hunting clues across QR codes and APIs, every mission unlocks the next. The team with the sharpest build and the fastest hands wins.\n\nThe web is broken. You\'re the fix.',
+    skills: ['Web Development', 'UI Layout Design', 'System Troubleshooting', 'Creative Problem Solving'],
+    rulesList: [
+      'Teams of 2 participants.',
+      'AI tools and pre-built templates are strictly prohibited.',
+      'Mobile phone usage is not allowed during the competition.',
+      'Internet access is permitted for competition-related tasks only.',
+      'Cross-team collaboration is prohibited.',
+      'Late submissions may result in score penalties or disqualification.',
+      'Any form of plagiarism results in immediate disqualification.',
+      'Participants must maintain discipline and professionalism throughout the event.',
+      'Organizers reserve the right to modify rules if necessary.'
+    ],
+    heads: [
+      { name: 'Sidra', role: 'Module Lead', designation: 'Chief Frontend Architect', linkedin: 'https://linkedin.com' },
+      { name: 'Muneer', role: 'Co-Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
+      { name: 'Jawad', role: 'Co-Lead', designation: 'Interaction Engineer', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'digital-dash',
@@ -118,9 +264,27 @@ export const modules: Module[] = [
     description: 'Race against time to design the perfect user journey. Show us your intuition for design systems and user-centric flows.',
     icon: Layout,
     category: 'Design',
-    mode: 'Individual',
+    mode: 'Duo',
     prize: 'TBD',
-    longDescription: 'Digital Dash is a high-speed UI/UX design challenge. You\'ll be given a problem statement and a set of constraints to design a functional and aesthetic solution in record time. Efficiency and elegance are key!'
+    challengeName: 'UI/UX Design',
+    longDescription: 'The Grid has gone dark. Interfaces are broken. Citizens are lost.\n\nDigital Dash is a UI/UX design sprint where you enter as a signal architect who is called upon to rebuild a collapsed digital infrastructure and restore order to a city drowning in bad design.\n\nYou will sketch, wireframe, and forge a working interface from scratch under real pressure, and midway through, a live mutation gets broadcast that forces you to adapt on the fly.\n\nGreat design is not just how it looks. It is how well it holds up when everything changes.\n\nDesign, Disrupt, and Dominate.',
+    skills: ['Visual Design', 'User Experience Design', 'Digital Prototyping', 'Adaptability under Pressure'],
+    rulesList: [
+      'Teams of 2 participants.',
+      'All design work must be created live during the competition window. No pre-made files or assets may be imported on either day.',
+      'AI use is prohibited.',
+      'Free asset libraries (icons, images) are allowed with credit given in your presentation.',
+      'Pen and paper wireframes are allowed, must be photographed and submitted digitally before close.',
+      'Collaboration is permitted within your registered team only. No external assistance from any human outside your team.',
+      'Bring your own device on both days. Figma, Adobe XD, Pen and paper wireframes are supported.',
+      'Submitting pre-built, AI-generated, or externally sourced design files as original work results in immediate disqualification.',
+      'Judges decisions are final.'
+    ],
+    heads: [
+      { name: 'Huzaifa', role: 'Module Lead', designation: 'Lead Product Designer', linkedin: 'https://linkedin.com' },
+      { name: 'Shaeem', role: 'Co-Lead', designation: 'UX Research Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Faiza', role: 'Co-Lead', designation: 'Visual Systems Lead', linkedin: 'https://linkedin.com' }
+    ]
   },
   {
     id: 'maths-mania',
@@ -130,7 +294,7 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Individual',
     prize: 'TBD',
-    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator—they require a spark of genius. Ready to prove you\'re the master of the variable?'
+    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?'
   }
 ];
 
