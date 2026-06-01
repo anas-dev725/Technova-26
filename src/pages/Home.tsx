@@ -1,7 +1,7 @@
 // Technova'26 - Connect, Create, & Conquer
 import { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, AnimatePresence } from 'motion/react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
 import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
 import { technova3Base64 } from '../assets/technova3Base64';
@@ -21,7 +21,7 @@ import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import { modules } from '../data/modules';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock } from 'lucide-react';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock, X } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -98,6 +98,7 @@ function MemberCard({ member }: { member: any, key?: string | number }) {
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [activeDay, setActiveDay] = useState(0);
+  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const HERO_VERSION: 'v1' | 'v2' = 'v1'; // Switch this to 'v2' to see the new version
   const location = useLocation();
 
@@ -203,7 +204,7 @@ export default function Home() {
                   <Trophy className="w-6 h-6 text-blue-500" />
                 </div>
                 <div>
-                  <div className="text-2xl font-black text-white">PKR 500K+</div>
+                  <div className="text-2xl font-black text-white">PKR 150K+</div>
                   <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">In Prizes & Swag</div>
                 </div>
               </div>
@@ -218,8 +219,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8 text-center">
             {[
-              { label: 'Participants', value: 1000, suffix: '+' },
-              { label: 'Prize Pool', value: 500, prefix: 'PKR ', suffix: 'K+' },
+              { label: 'Participants', value: 500, suffix: '+' },
+              { label: 'Prize Pool', value: 150, prefix: 'PKR ', suffix: 'K+' },
               { label: 'Hours Event', value: 48, suffix: 'hrs' },
               { label: 'Mentors & Pros', value: 50, suffix: '+' },
               { label: 'Edition', value: 2, suffix: 'nd' },
@@ -356,12 +357,12 @@ export default function Home() {
               <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 leading-tight">Want to sponsor Technova'26?</h3>
               <p className="text-gray-400 text-lg max-w-xl leading-relaxed">Join us in shaping the future of technology and get your brand in front of thousands of top-tier innovators.</p>
             </div>
-            <Link 
-              to="/sponsors"
-              className="relative z-10 shrink-0 px-6 py-3 sm:px-10 sm:py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-base sm:text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group"
+            <button 
+              onClick={() => setIsPartnerModalOpen(true)}
+              className="relative z-10 shrink-0 px-6 py-3 sm:px-10 sm:py-5 rounded-[2rem] bg-blue-600 text-white font-bold text-base sm:text-xl hover:bg-blue-500 transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] flex items-center gap-3 group cursor-pointer"
             >
               Become a Sponsor <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -373,7 +374,7 @@ export default function Home() {
             <p className="text-blue-500 font-bold uppercase tracking-wider text-sm mb-2">LAST YEAR'S ECHOES</p>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6">Legacy of <span className="text-blue-500">Technova'25</span></h2>
             <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed font-medium">
-              We brought together 1,200+ participants from over 30 universities to compete in 12+ competition modules. Relive the moments that made Technova'25 legendary.
+              We brought together 500+ participants from over 25 universities to compete in 5+ competition modules. Relive the moments that made Technova'25 legendary.
             </p>
             <Link 
               to="/legacy"
@@ -578,7 +579,7 @@ export default function Home() {
                   className="w-full sm:w-auto"
                 >
                   <Link
-                    to="/register"
+                    to="/modules"
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 rounded-full bg-white text-[#1052ff] font-extrabold text-sm sm:text-base hover:bg-white/95 transition-all shadow-lg font-sans"
                   >
                     Lock In Your Spot Now
@@ -590,6 +591,84 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Partner with Us Modal */}
+      <AnimatePresence>
+        {isPartnerModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPartnerModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-[#111] rounded-[2.5rem] shadow-2xl overflow-y-auto z-10 border border-gray-200 dark:border-white/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-8 md:p-12">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white">Partner with Us</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Fill out the form and our team will get back to you shortly.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsPartnerModalOpen(false)}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <X className="w-6 h-6 text-gray-400" />
+                  </button>
+                </div>
+
+                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsPartnerModalOpen(false); alert('Thank you for your interest! We will contact you soon.'); }}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Company Name</label>
+                      <input type="text" required placeholder="Acme Inc." className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white font-medium" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Work Email</label>
+                      <input type="email" required placeholder="contact@acme.com" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white font-medium" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
+                      <input type="tel" required placeholder="+92 3XX XXXXXXX" className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white font-medium" />
+                    </div>
+                    <div className="space-y-2 col-span-1 relative">
+                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Interested Tier</label>
+                      <select className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white cursor-pointer select-none font-medium">
+                        <option>Platinum Partner</option>
+                        <option>Gold Partner</option>
+                        <option>Silver Partner</option>
+                        <option>Custom / Media Partner</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Business Objectives</label>
+                    <textarea rows={3} placeholder="Recruitment, Brand Awareness, Product Launch..." className="w-full px-6 py-4 rounded-2xl bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white resize-none font-medium" />
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full py-5 rounded-2xl bg-blue-600 text-white font-black text-lg hover:bg-blue-500 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-blue-500/20 cursor-pointer"
+                  >
+                    Submit Inquiry
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

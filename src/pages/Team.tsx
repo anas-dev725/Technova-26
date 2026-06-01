@@ -178,8 +178,8 @@ export default function Team() {
   const renderMemberCard = (member: TeamMember, type: 'pink' | 'cyan' = 'pink', size: 'large' | 'normal' = 'normal') => {
     const isPink = type === 'pink';
     const accentClass = isPink 
-      ? 'border-pink-500/20 text-pink-400 bg-pink-500/10' 
-      : 'border-cyan-500/20 text-cyan-400 bg-cyan-400/10';
+      ? 'border-pink-500/20 text-pink-500 dark:text-pink-400 bg-pink-500/10' 
+      : 'border-cyan-500/20 text-cyan-600 dark:text-cyan-400 bg-cyan-400/10';
     
     return (
       <motion.div
@@ -188,7 +188,7 @@ export default function Team() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.6, type: 'spring', stiffness: 90 }}
-        className={`relative group rounded-[2rem] overflow-hidden bg-[#06070e] border border-zinc-800/60 shadow-2xl transition-all duration-300 ${
+        className={`relative group rounded-[2rem] overflow-hidden bg-white dark:bg-[#06070e] border border-gray-200 dark:border-zinc-800/60 shadow-2xl transition-all duration-300 ${
           size === 'large' 
             ? 'w-full max-w-[300px] h-auto aspect-[4/5] md:w-[300px] md:h-[375px]' 
             : 'w-full max-w-[250px] h-auto aspect-[4/5] md:w-[250px] md:h-[312px]'
@@ -226,9 +226,9 @@ export default function Team() {
         )}
 
         {/* Indicator Node Dot in top corner */}
-        <div className="absolute top-4 left-4 z-25 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-zinc-800/80">
+        <div className="absolute top-4 left-4 z-25 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md border border-gray-200 dark:border-zinc-800/80">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
-          <span className="font-mono text-[8px] text-zinc-400 uppercase tracking-widest font-black">
+          <span className="font-mono text-[8px] text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-black">
             NODE_SYS
           </span>
         </div>
@@ -236,8 +236,8 @@ export default function Team() {
         {/* Leader Indicator Overlay badge */}
         {size === 'large' && (
           <div className="absolute top-4 right-4 pointer-events-none z-25">
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 text-[8px] font-black uppercase tracking-widest backdrop-blur-md border border-zinc-800/80 ${
-              isPink ? 'text-pink-400' : 'text-cyan-400'
+            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 text-[8px] font-black uppercase tracking-widest backdrop-blur-md border border-gray-200 dark:border-zinc-800/80 ${
+              isPink ? 'text-pink-505 dark:text-pink-400' : 'text-cyan-600 dark:text-cyan-400'
             }`}>
               <Crown className="w-2.5 h-2.5 text-yellow-400" />
               EXECUTIVE LEAD
@@ -315,12 +315,12 @@ export default function Team() {
   };
 
   return (
-    <div className="pt-32 sm:pt-40 pb-28 relative min-h-screen bg-[#020205] scrollbar-none text-white transition-colors duration-300 overflow-x-hidden">
+    <div className="pt-32 sm:pt-40 pb-28 relative min-h-screen bg-slate-50 dark:bg-[#020205] scrollbar-none text-gray-950 dark:text-white transition-colors duration-300 overflow-x-hidden">
       
       {/* Immersive background high-tech wire grid and glow points */}
       <div className="absolute inset-0 z-0 pointer-events-none sticky-framer-overlay">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:32px_32px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_15%,#0b0d1e_0%,transparent_100%)] opacity-70" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_15%,#eef2ff_0%,transparent_100%)] dark:bg-[radial-gradient(ellipse_60%_50%_at_50%_15%,#0b0d1e_0%,transparent_100%)] opacity-70" />
         
         {/* Soft background radial glows behind the hierarchical graph node paths */}
         <div className="absolute top-[250px] left-1/4 -translate-x-1/2 w-[350px] h-[350px] bg-pink-500/[0.03] rounded-full blur-[110px]" />
@@ -335,16 +335,16 @@ export default function Team() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-6 font-display"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-6 font-display"
           >
-            <Users className="w-3.5 h-3.5 text-blue-500" />
+            <Users className="w-3.5 h-3.5 text-blue-600 dark:text-blue-500" />
             Executive Committee 2026
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl sm:text-7xl font-sans font-bold tracking-tight text-white mb-6"
+            className="text-5xl sm:text-7xl font-sans font-bold tracking-tight text-gray-900 dark:text-white mb-6"
           >
             Meet Our <span className="text-blue-500 font-extrabold">ExCom Team</span>
           </motion.h1>
@@ -352,7 +352,7 @@ export default function Team() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-4 text-zinc-400 max-w-3xl mx-auto text-sm sm:text-base md:text-lg font-sans tracking-wide leading-relaxed"
+            className="mt-4 text-gray-600 dark:text-zinc-400 max-w-3xl mx-auto text-sm sm:text-base md:text-lg font-sans tracking-wide leading-relaxed"
           >
             The dedicated minds, developers, and visionaries leading the charge to curate a premier national technical experience at TechNova '26.
           </motion.p>
@@ -369,16 +369,16 @@ export default function Team() {
               initial={{ opacity: 0, y: -30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="relative z-20 bg-gradient-to-b from-[#031026]/90 to-[#020308]/95 border-2 border-cyan-400 rounded-xl px-12 py-5 shadow-[0_0_20px_rgba(34,211,238,0.15)] text-center w-[360px]"
+              className="relative z-20 bg-white dark:bg-gradient-to-b dark:from-[#031026]/90 dark:to-[#020308]/95 border-2 border-cyan-500 dark:border-cyan-400 rounded-xl px-12 py-5 shadow-lg dark:shadow-[0_0_20px_rgba(34,211,238,0.15)] text-center w-[360px]"
             >
-              <div className="absolute top-1.5 right-1.5 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-cyan-400/10 border border-cyan-400/25">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                <span className="text-[7px] text-cyan-400 font-mono font-black tracking-widest leading-none">PRIMARY</span>
+              <div className="absolute top-1.5 right-1.5 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-cyan-500/10 dark:bg-cyan-400/10 border border-cyan-500/20 dark:border-cyan-400/25">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400" />
+                <span className="text-[7px] text-cyan-600 dark:text-cyan-400 font-mono font-black tracking-widest leading-none">PRIMARY</span>
               </div>
-              <h2 className="text-lg font-mono font-black text-white uppercase tracking-wider">
+              <h2 className="text-lg font-mono font-black text-gray-900 dark:text-white uppercase tracking-wider">
                 EXECUTIVE COUNCIL
               </h2>
-              <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest mt-1">
+              <p className="text-[10px] font-mono text-gray-500 dark:text-zinc-400 uppercase tracking-widest mt-1">
                 ENGINE_CORE_SYS_V26
               </p>
             </motion.div>
@@ -400,7 +400,7 @@ export default function Team() {
               </div>
 
               {/* T-Junction center node */}
-              <div className="w-3 h-3 rounded-full bg-zinc-950 border-[2.5px] border-cyan-400 shadow-[0_0_10px_#22d3ee] relative z-10" />
+              <div className="w-3 h-3 rounded-full bg-white dark:bg-zinc-950 border-[2.5px] border-cyan-400 shadow-[0_0_10px_#22d3ee] relative z-10" />
 
               {/* Left and Right Terminators (Vertical segments dropping directly down into Hamna & Muhammad Anas) */}
               <div className="absolute left-0 top-0 h-12 w-1">
@@ -602,7 +602,7 @@ export default function Team() {
               {/* Central drop dot and vertical pipelines */}
               <div className="relative z-10 flex flex-col items-center justify-center h-full w-full">
                 {/* Central drop dot */}
-                <div className="w-2.5 h-2.5 rounded-full bg-zinc-950 border-2 border-cyan-400 shadow-[0_0_8px_#22d3ee] relative z-10" />
+                <div className="w-2.5 h-2.5 rounded-full bg-white dark:bg-zinc-950 border-2 border-cyan-400 shadow-[0_0_8px_#22d3ee] relative z-10" />
                 
                 {/* Center vertical down drop to the split of 3 */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 h-8 w-1">
@@ -665,8 +665,8 @@ export default function Team() {
             
             {/* Header placeholder on mobile */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">EXCOM_STRUCTURE_ROOT</span>
-              <h2 className="text-lg font-bold uppercase text-white tracking-tight">Presidency Core</h2>
+              <span className="font-mono text-[9px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest block">EXCOM_STRUCTURE_ROOT</span>
+              <h2 className="text-lg font-bold uppercase text-gray-900 dark:text-white tracking-tight">Presidency Core</h2>
             </div>
 
             {/* Mobile President Card */}
@@ -687,8 +687,8 @@ export default function Team() {
 
             {/* Left Wing children divider header */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">L_WING // PRESIDENT_REPORTS</span>
-              <h2 className="text-base font-bold uppercase text-white tracking-tight">Executive operations</h2>
+              <span className="font-mono text-[9px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest block">L_WING // PRESIDENT_REPORTS</span>
+              <h2 className="text-base font-bold uppercase text-gray-900 dark:text-white tracking-tight">Executive operations</h2>
             </div>
 
             {leftWing.map((member) => (
@@ -702,8 +702,8 @@ export default function Team() {
 
             {/* Right Wing children divider header */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">R_WING // TECH_CREATIVE_MEDIA</span>
-              <h2 className="text-base font-bold uppercase text-white tracking-tight">Technical & Creative Portfolio</h2>
+              <span className="font-mono text-[9px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest block">R_WING // TECH_CREATIVE_MEDIA</span>
+              <h2 className="text-base font-bold uppercase text-gray-900 dark:text-white tracking-tight">Technical & Creative Portfolio</h2>
             </div>
 
             {rightWing.map((member) => (
@@ -717,8 +717,8 @@ export default function Team() {
 
             {/* Additional Wing children divider header */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">A_WING // CORE_OPERATIONS_SUPPORT</span>
-              <h2 className="text-base font-bold uppercase text-white tracking-tight">Core Operations & Volunteer Core</h2>
+              <span className="font-mono text-[9px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest block">A_WING // CORE_OPERATIONS_SUPPORT</span>
+              <h2 className="text-base font-bold uppercase text-gray-900 dark:text-white tracking-tight">Core Operations & Volunteer Core</h2>
             </div>
 
             {additionalWing.map((member, index) => (
