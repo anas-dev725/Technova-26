@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Sparkles, Calendar, MapPin } from 'lucide-react';
+import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
+import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
+import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 
 interface HeroProps {
   timeLeft: {
@@ -41,7 +44,7 @@ export default function HeroV2({ timeLeft }: HeroProps) {
   }, [charIndex]);
 
   return (
-    <section className="relative min-h-screen flex items-center pt-24 sm:pt-28 overflow-hidden bg-white dark:bg-[#050505]">
+    <section className="relative min-h-screen flex items-center pt-32 sm:pt-36 lg:pt-40 overflow-hidden bg-white dark:bg-[#050505]">
       {/* Background Grid & Glows */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -53,6 +56,40 @@ export default function HeroV2({ timeLeft }: HeroProps) {
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
           {/* Left Content */}
           <div className="flex flex-col items-start text-left">
+            {/* Three Logos container above the heading */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.05 }}
+              className="flex flex-col items-center lg:items-start justify-start mb-6 sm:mb-8 w-fit gap-2"
+            >
+              <div className="flex items-center gap-4 sm:gap-6 px-6 py-3 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md rounded-2xl border border-gray-200/50 dark:border-zinc-800/50 shadow-sm transition-all hover:bg-white/60 dark:hover:bg-zinc-900/60 duration-300">
+                <img 
+                  src={iobmLogo} 
+                  alt="IoBM Logo" 
+                  className="h-12 sm:h-16 w-auto object-contain filter hover:scale-105 transition-transform duration-300 pointer-events-none"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="w-[1px] h-8 bg-gray-300/60 dark:bg-zinc-700/60" />
+                <img 
+                  src={ccsisLogo} 
+                  alt="CCSIS Logo" 
+                  className="h-12 sm:h-16 w-auto object-contain filter hover:scale-105 transition-transform duration-300 pointer-events-none"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="w-[1px] h-8 bg-gray-300/60 dark:bg-zinc-700/60" />
+                <img 
+                  src={ieeeLogo} 
+                  alt="IEEE Logo" 
+                  className="h-12 sm:h-16 w-auto object-contain filter hover:scale-105 transition-transform duration-300 pointer-events-none"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <span className="text-xs sm:text-sm font-mono text-gray-400 dark:text-zinc-500 font-bold tracking-[0.25em] uppercase select-none self-center lg:self-start pl-2">
+                presents
+              </span>
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

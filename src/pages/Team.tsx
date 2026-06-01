@@ -5,6 +5,7 @@ import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
 import hamnaPfp from '../assets/hamna pfp.jpeg';
 import moizPfp from '../assets/moiz pfp.jpeg';
 import ashirPfp from '../assets/ashir pfp.jpeg';
+import ramshaPfp from '../assets/ramsha pfp.jpeg';
 
 interface TeamMember {
   name: string;
@@ -57,12 +58,12 @@ export default function Team() {
       linkedin: 'https://www.linkedin.com/in/aashir-ali-6aa2b233a/'
     },
     {
-      name: 'Syed Bilal',
-      role: 'Director Logistics',
-      dept: 'Inventory & Resource Optimization',
-      initials: 'SB',
-      gradient: 'from-pink-500 to-rose-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Ramsha Khan',
+      role: 'Volunteer Lead',
+      dept: 'Data Analyst',
+      img: ramshaPfp,
+      linkedin: 'https://www.linkedin.com/in/ramshaimran1',
+      mail: 'ramshaimran.work@gmail.com'
     },
     {
       name: 'Aisha Khan',
@@ -469,10 +470,10 @@ export default function Team() {
 
                     </div>
 
-                    {/* Second Row (Bilal & Aisha) */}
+                    {/* Second Row (Ramsha & Aisha) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Director Logistics */}
+                      {/* Volunteer Lead */}
                       <div className="relative">
                         {renderMemberCard(leftWing[2], 'pink', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -716,8 +717,8 @@ export default function Team() {
 
             {/* Additional Wing children divider header */}
             <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
-              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">A_WING // REGISTRATIONS_SECURITY_MEDIA</span>
-              <h2 className="text-base font-bold uppercase text-white tracking-tight">Core Operations Support</h2>
+              <span className="font-mono text-[9px] text-cyan-400 font-bold uppercase tracking-widest block">A_WING // CORE_OPERATIONS_SUPPORT</span>
+              <h2 className="text-base font-bold uppercase text-white tracking-tight">Core Operations & Volunteer Core</h2>
             </div>
 
             {additionalWing.map((member, index) => (
