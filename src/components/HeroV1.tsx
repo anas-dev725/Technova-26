@@ -53,8 +53,8 @@ export default function HeroV1({ timeLeft }: HeroProps) {
       </div>
 
       {/* Screen 1: Top Fold content (Logos down to Countdown Timer, fitting first view perfectly) */}
-      <div className="min-h-[94vh] lg:min-h-[95vh] w-full flex flex-col justify-center items-center pt-20 sm:pt-24 lg:pt-28 pb-6 relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex-grow flex flex-col items-center justify-center text-center">
+      <div className="min-h-0 lg:min-h-[95vh] w-full flex flex-col justify-start lg:justify-center items-center pt-32 sm:pt-36 lg:pt-28 pb-6 relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex-grow flex flex-col items-center justify-start lg:justify-center text-center w-full">
           
           {/* Three Logos container above the heading with generous padding and spacing */}
           <motion.div

@@ -350,7 +350,6 @@ export default function Register() {
     const uc = code.toUpperCase();
     if (uc === '35TECHNO') return 0.35;
     if (uc === 'TECHNOVA30') return 0.30;
-    if (uc === 'TECHNOVA20') return 0.20;
     return 0;
   };
 
@@ -362,7 +361,7 @@ export default function Register() {
     const code = val.toUpperCase();
     setPromoCode(val);
     
-    if (code === '35TECHNO' || code === 'TECHNOVA30' || code === 'TECHNOVA20') {
+    if (code === '35TECHNO' || code === 'TECHNOVA30') {
       if (!isPromoApplied) {
         confetti({
           particleCount: 150,
@@ -799,7 +798,7 @@ export default function Register() {
                           </div>
                            {!isPromoApplied && (
                             <p className="mt-2.5 text-xs font-semibold text-gray-400 dark:text-zinc-500 flex flex-wrap items-center gap-1.5 animate-pulse">
-                              <span>💡</span> Enter a discount code (e.g. <span className="font-mono text-blue-500 uppercase font-black">TECHNOVA30</span> or <span className="font-mono text-blue-500 uppercase font-black">TECHNOVA20</span>)
+                              <span>💡</span> Enter a discount code (e.g. <span className="font-mono text-blue-500 uppercase font-black">TECHNOVA30</span>)
                             </p>
                           )}
                           {isPromoApplied && (
