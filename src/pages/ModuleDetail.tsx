@@ -5,7 +5,7 @@ import {
   ArrowLeft, Users, User, UsersRound, Trophy, 
   CreditCard, Clock, MapPin, CheckCircle2, 
   ShieldCheck, AlertCircle, Sparkles, Gamepad2,
-  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin
+  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket
 } from 'lucide-react';
 import { modules, getFees, TeamMode } from '../data/modules';
 
@@ -305,7 +305,7 @@ export default function ModuleDetail() {
                               
                               <div className="relative z-10 space-y-3">
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-mono font-black uppercase tracking-[0.2em] rounded-lg">
-                                  <Award className="w-3 h-3" /> {head.role}
+                                  <Award className="w-3 h-3" /> Module Lead
                                 </span>
                                 <div>
                                   <h4 className={`${isFyp ? 'text-lg' : 'text-xl'} font-black text-gray-900 dark:text-white tracking-tight`}>{head.name}</h4>
@@ -462,7 +462,7 @@ export default function ModuleDetail() {
               {/* Early Bird Promo Info */}
               <div className="bg-amber-500/10 dark:bg-amber-500/5 rounded-3xl border border-amber-500/20 p-6">
                 <div className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
+                  <Ticket className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
                   <div>
                     <h4 className="text-sm font-black text-amber-800 dark:text-amber-400 uppercase tracking-wider mb-1">Join Us Early!</h4>
                     <p className="text-xs text-amber-700 dark:text-gray-300 leading-relaxed font-semibold">

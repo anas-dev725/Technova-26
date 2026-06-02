@@ -58,11 +58,11 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Sarah', role: 'Module Lead', designation: 'Lead Systems Evaluator', linkedin: 'https://linkedin.com' },
-      { name: 'Sania', role: 'Co-Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Marhaba', role: 'Co-Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Khizra', role: 'Co-Lead', designation: 'Research Coordinator', linkedin: 'https://linkedin.com' },
-      { name: 'Bisma', role: 'Co-Lead', designation: 'Academic Program Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Alishba', role: 'Co-Lead', designation: 'Industry Relations Officer', linkedin: 'https://linkedin.com' }
+      { name: 'Sania', role: 'Module Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Marhaba', role: 'Module Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Khizra', role: 'Module Lead', designation: 'Research Coordinator', linkedin: 'https://linkedin.com' },
+      { name: 'Bisma', role: 'Module Lead', designation: 'Academic Program Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Alishba', role: 'Module Lead', designation: 'Industry Relations Officer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -88,8 +88,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Waniya', role: 'Module Lead', designation: 'Incubation Program Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Ammara', role: 'Co-Lead', designation: 'Venture Capital Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Vania', role: 'Co-Lead', designation: 'Product Strategy Specialist', linkedin: 'https://linkedin.com' }
+      { name: 'Ammara', role: 'Module Lead', designation: 'Venture Capital Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Vania', role: 'Module Lead', designation: 'Product Strategy Specialist', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -117,8 +117,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Elisha', role: 'Module Lead', designation: 'Cybersecurity Specialist', linkedin: 'https://linkedin.com' },
-      { name: 'Ainab', role: 'Co-Lead', designation: 'AI & Data Security Researcher', linkedin: 'https://linkedin.com' },
-      { name: 'Hussam', role: 'Co-Lead', designation: 'Network Defense Engineer', linkedin: 'https://linkedin.com' }
+      { name: 'Ainab', role: 'Module Lead', designation: 'AI & Data Security Researcher', linkedin: 'https://linkedin.com' },
+      { name: 'Hussam', role: 'Module Lead', designation: 'Network Defense Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -146,8 +146,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Sameed', role: 'Module Lead', designation: 'Multi-Agent Frameworks Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Hamza', role: 'Co-Lead', designation: 'AI Systems Architect', linkedin: 'https://linkedin.com' },
-      { name: 'Wasay', role: 'Co-Lead', designation: 'Game Theory Analyst', linkedin: 'https://linkedin.com' }
+      { name: 'Hamza', role: 'Module Lead', designation: 'AI Systems Architect', linkedin: 'https://linkedin.com' },
+      { name: 'Wasay', role: 'Module Lead', designation: 'Game Theory Analyst', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -172,8 +172,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Areej', role: 'Module Lead', designation: 'Senior Data Forensics Specialist', linkedin: 'https://linkedin.com' },
-      { name: 'Javeria', role: 'Co-Lead', designation: 'Chief Intelligence Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Abdur Rafay', role: 'Co-Lead', designation: 'Behavioral Data Engineer', linkedin: 'https://linkedin.com' }
+      { name: 'Javeria', role: 'Module Lead', designation: 'Chief Intelligence Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Abdur Rafay', role: 'Module Lead', designation: 'Behavioral Data Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -199,8 +199,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Nimra', role: 'Module Lead', designation: 'Prompt Security Researcher', linkedin: 'https://linkedin.com' },
-      { name: 'Ayaan', role: 'Co-Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Ali Warsi', role: 'Co-Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
+      { name: 'Ayaan', role: 'Module Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Ali Warsi', role: 'Module Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -226,8 +226,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Arsalan', role: 'Module Lead', designation: 'Esports Tournament Director', linkedin: 'https://linkedin.com' },
-      { name: 'Zainab', role: 'Co-Lead', designation: 'Esports Operations Manager', linkedin: 'https://linkedin.com' },
-      { name: 'Mustajab', role: 'Co-Lead', designation: 'Chief Referee & Coordinator', linkedin: 'https://linkedin.com' }
+      { name: 'Zainab', role: 'Module Lead', designation: 'Esports Operations Manager', linkedin: 'https://linkedin.com' },
+      { name: 'Mustajab', role: 'Module Lead', designation: 'Chief Referee & Coordinator', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -254,8 +254,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Sidra', role: 'Module Lead', designation: 'Chief Frontend Architect', linkedin: 'https://linkedin.com' },
-      { name: 'Muneer', role: 'Co-Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
-      { name: 'Jawad', role: 'Co-Lead', designation: 'Interaction Engineer', linkedin: 'https://linkedin.com' }
+      { name: 'Muneer', role: 'Module Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
+      { name: 'Jawad', role: 'Module Lead', designation: 'Interaction Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -282,8 +282,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Huzaifa', role: 'Module Lead', designation: 'Lead Product Designer', linkedin: 'https://linkedin.com' },
-      { name: 'Shaeem', role: 'Co-Lead', designation: 'UX Research Specialist', linkedin: 'https://linkedin.com' },
-      { name: 'Faiza', role: 'Co-Lead', designation: 'Visual Systems Lead', linkedin: 'https://linkedin.com' }
+      { name: 'Shaeem', role: 'Module Lead', designation: 'UX Research Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Faiza', role: 'Module Lead', designation: 'Visual Systems Lead', linkedin: 'https://linkedin.com' }
     ]
   },
   {
