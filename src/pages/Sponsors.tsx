@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Building2, Handshake, ArrowRight, CheckCircle2, Shield, Trophy, Zap, X } from 'lucide-react';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
+import alMeezanLogo from '../assets/al meezan.png';
 
 export default function Sponsors() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -140,6 +141,7 @@ export default function Sponsors() {
               <h2 className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-12 text-center">Platinum Partners</h2>
               <div className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-5xl mx-auto px-4">
                 {[
+                  { name: 'Al Meezan', logo: alMeezanLogo },
                   { name: 'Texitech', logo: texitechLogo },
                   { name: 'Telec', logo: telecLogo }
                 ].map((sponsor) => (

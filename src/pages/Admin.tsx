@@ -25,7 +25,7 @@ import {
   Settings,
   Trash2
 } from 'lucide-react';
-import { auth } from '../lib/firebase';
+import { auth, signInWithGoogle } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
 import { submissionService, Submission } from '../services/submissionService';
 import JSZip from 'jszip';
@@ -70,6 +70,7 @@ export default function Admin() {
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingInWithGoogle, setIsLoggingInWithGoogle] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -107,12 +108,25 @@ export default function Admin() {
     } catch (error: any) {
       console.error('Login error:', error);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        setAuthError('Invalid Admin ID or Password. Please ensure you have created this account in Firebase Console.');
+        setAuthError('Invalid Admin ID or Password. If you are experiencing credential issues, please use the safer and easier "Sign in with Google" option below using an authorized email such as anasmobin0@gmail.com.');
       } else {
         setAuthError('An error occurred during authentication. Please try again.');
       }
     } finally {
       setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setAuthError(null);
+    setIsLoggingInWithGoogle(true);
+    try {
+      await signInWithGoogle();
+    } catch (error: any) {
+      console.error('Google Sign-In error:', error);
+      setAuthError(error.message || 'Failed to sign in with Google');
+    } finally {
+      setIsLoggingInWithGoogle(false);
     }
   };
 
@@ -299,68 +313,98 @@ export default function Admin() {
           </div>
 
           {!user ? (
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Admin ID</label>
-                <div className="relative group">
-                  <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                  <input 
-                    type="text"
-                    required
-                    value={adminId}
-                    onChange={(e) => setAdminId(e.target.value)}
-                    placeholder="e.g. technova26"
-                    className="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all dark:text-white font-bold"
-                  />
+            <>
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Admin ID</label>
+                  <div className="relative group">
+                    <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input 
+                      type="text"
+                      required
+                      value={adminId}
+                      onChange={(e) => setAdminId(e.target.value)}
+                      placeholder="e.g. technova26"
+                      className="w-full pl-14 pr-6 py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all dark:text-white font-bold"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Password</label>
-                <div className="relative group">
-                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                  <input 
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-14 pr-14 py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all dark:text-white font-bold"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Password</label>
+                  <div className="relative group">
+                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input 
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-14 pr-14 py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none transition-all dark:text-white font-bold"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <AnimatePresence>
-                {authError && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3"
-                  >
-                    <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                    <p className="text-sm font-bold text-red-500 leading-snug">{authError}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                <AnimatePresence>
+                  {authError && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3"
+                    >
+                      <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                      <p className="text-sm font-bold text-red-500 leading-snug">{authError}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  type="submit"
+                  disabled={isLoggingIn || isLoggingInWithGoogle}
+                  className="w-full py-5 rounded-2xl bg-blue-600 text-white font-black hover:bg-blue-500 transition-all hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg uppercase tracking-widest"
+                >
+                  {isLoggingIn ? (
+                    <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  ) : 'Authorize Access'}
+                </button>
+              </form>
+
+              <div className="relative my-8 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-white/10"></div>
+                </div>
+                <span className="relative px-4 bg-white dark:bg-[#0c0c0e] text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none">Or Continue With</span>
+              </div>
 
               <button
-                type="submit"
-                disabled={isLoggingIn}
-                className="w-full py-5 rounded-2xl bg-blue-600 text-white font-black hover:bg-blue-500 transition-all hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg uppercase tracking-widest"
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={isLoggingIn || isLoggingInWithGoogle}
+                className="w-full py-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 hover:border-blue-500 dark:hover:border-blue-500 text-gray-950 dark:text-white font-black hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-sm flex items-center justify-center gap-3 uppercase tracking-wider shadow-sm"
               >
-                {isLoggingIn ? (
-                  <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                ) : 'Authorize Access'}
+                {isLoggingInWithGoogle ? (
+                  <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 text-red-500 dark:text-red-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                    </svg>
+                    Sign in with Google
+                  </>
+                )}
               </button>
-            </form>
+            </>
           ) : (
             <div className="space-y-6">
               <div className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 text-center">
