@@ -248,7 +248,7 @@ export default function Team() {
         )}
 
         {/* Info Layout overlaid on backdrop but beautifully integrated */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent p-4 sm:p-6 flex flex-col justify-end text-left z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 sm:p-6 flex flex-col justify-end text-left z-20">
           <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-2">
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] sm:text-[9.5px] font-mono font-black uppercase tracking-widest border mb-1.5 ${accentClass}`}>
               {member.role === 'PR' ? 'Director of PR' : member.role}
