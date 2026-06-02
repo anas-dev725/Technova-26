@@ -1,6 +1,6 @@
 import emailjs from '@emailjs/browser';
 
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_2a2n8b2';
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_adg5pwa';
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const APPROVAL_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || TEMPLATE_ID;
 const REJECTION_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_REJECTION_TEMPLATE_ID || TEMPLATE_ID;
@@ -11,6 +11,7 @@ export const emailService = {
    * Initializes EmailJS with the public key.
    */
   init() {
+    console.log('[EmailJS] Initializing. Public Key status:', PUBLIC_KEY ? 'Present (detected)' : 'MISSING');
     if (PUBLIC_KEY) {
       emailjs.init(PUBLIC_KEY);
     }
@@ -27,7 +28,12 @@ export const emailService = {
     participantId?: string;
   }) {
     if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
-      console.warn('EmailJS not configured. Skipping email confirmation.');
+      console.group('📧 [EmailJS] Missing Configuration Detected');
+      console.warn('VITE_EMAILJS_SERVICE_ID:', SERVICE_ID ? `Loaded (${SERVICE_ID})` : 'MISSING');
+      console.warn('VITE_EMAILJS_TEMPLATE_ID:', TEMPLATE_ID ? 'Loaded' : 'MISSING');
+      console.warn('VITE_EMAILJS_PUBLIC_KEY:', PUBLIC_KEY ? 'Loaded' : 'MISSING');
+      console.warn('Ensure you have defined VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY in your Environment Settings, and refreshed/rebuilt the application.');
+      console.groupEnd();
       return;
     }
 
