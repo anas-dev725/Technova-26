@@ -116,7 +116,7 @@ export const modules: Module[] = [
       'Organizers reserve the right to adapt rules in response to unforeseen circumstances. Their decision is final.'
     ],
     heads: [
-      { name: 'Elisha', role: 'Module Lead', designation: 'Cybersecurity Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Elisha Tejani', role: 'Module Lead', designation: 'Data security analyst', linkedin: 'https://www.linkedin.com/in/elisha-tejani/' },
       { name: 'Ainab', role: 'Module Lead', designation: 'AI & Data Security Researcher', linkedin: 'https://linkedin.com' },
       { name: 'Hussam', role: 'Module Lead', designation: 'Network Defense Engineer', linkedin: 'https://linkedin.com' }
     ]
@@ -171,8 +171,8 @@ export const modules: Module[] = [
       'Any misconduct, external assistance, or attempt to sabotage rival teams leads to immediate disqualification.'
     ],
     heads: [
-      { name: 'Areej', role: 'Module Lead', designation: 'Senior Data Forensics Specialist', linkedin: 'https://linkedin.com' },
-      { name: 'Javeria', role: 'Module Lead', designation: 'Chief Intelligence Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Areej Mazhar', role: 'Module Lead', designation: 'Software Engineer', linkedin: 'https://www.linkedin.com/in/areej-mazhar/' },
+      { name: 'Javeria Sameen', role: 'Module Lead', designation: 'Software Engineer', linkedin: 'https://www.linkedin.com/in/javeria-sameen-100a9430b/' },
       { name: 'Abdur Rafay', role: 'Module Lead', designation: 'Behavioral Data Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
@@ -266,8 +266,8 @@ export const modules: Module[] = [
     category: 'Design',
     mode: 'Duo',
     prize: 'TBD',
-    challengeName: 'UI/UX Design',
-    longDescription: 'The Grid has gone dark. Interfaces are broken. Citizens are lost.\n\nDigital Dash is a UI/UX design sprint where you enter as a signal architect who is called upon to rebuild a collapsed digital infrastructure and restore order to a city drowning in bad design.\n\nYou will sketch, wireframe, and forge a working interface from scratch under real pressure, and midway through, a live mutation gets broadcast that forces you to adapt on the fly.\n\nGreat design is not just how it looks. It is how well it holds up when everything changes.\n\nDesign, Disrupt, and Dominate.',
+    challengeName: 'Restore the Signal',
+    longDescription: 'THINK YOU HAVE WHAT IT TAKES TO DESIGN A WINNING EXPERIENCE?\n\nCONNECT YOUR IDEAS, CREATE EXPERIENCES, & CONQUER THE COMPETITION\n\nDigital Dash is a fast-paced UI/UX challenge where you become a signal architect tasked with fixing a city\'s broken digital systems. Research, wireframe, prototype, and adapt to a surprise challenge as you design a solution under pressure.\n\nSector Seven has gone silent. Citizens are struggling with disconnected apps and confusing interfaces. Enter the Grid, identify the problems, and create a smart dashboard to bring the city back online.\n\nDesign, Adapt, & Restore the Signal',
     skills: ['Visual Design', 'User Experience Design', 'Digital Prototyping', 'Adaptability under Pressure'],
     rulesList: [
       'Teams of 2 participants.',
@@ -281,8 +281,8 @@ export const modules: Module[] = [
       'Judges decisions are final.'
     ],
     heads: [
-      { name: 'Huzaifa', role: 'Module Lead', designation: 'Lead Product Designer', linkedin: 'https://linkedin.com' },
-      { name: 'Shaeem', role: 'Module Lead', designation: 'UX Research Specialist', linkedin: 'https://linkedin.com' },
+      { name: 'Rafia', role: 'Module Lead', designation: 'Lead Product Designer', linkedin: 'https://linkedin.com' },
+      { name: 'Shaeem Imran', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/shaeem-imran7' },
       { name: 'Faiza', role: 'Module Lead', designation: 'Visual Systems Lead', linkedin: 'https://linkedin.com' }
     ]
   },
