@@ -1,6 +1,6 @@
 import emailjs from '@emailjs/browser';
 
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_2a2n8b2';
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const APPROVAL_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_APPROVAL_TEMPLATE_ID || TEMPLATE_ID;
 const REJECTION_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_REJECTION_TEMPLATE_ID || TEMPLATE_ID;
