@@ -427,11 +427,39 @@ export default function Register() {
                 </div>
               )}
 
-              <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-lg mx-auto font-medium leading-relaxed">
-                Your registration for <span className="text-blue-600 dark:text-blue-400 font-bold">{currentModuleTitle}</span> has been successfully logged. 
-                <br /><br />
-                Our team will now verify your <span className="underline decoration-blue-500/30">Payment Receipt</span>. You will receive a confirmation email at <strong>{watch('email')}</strong> shortly once verified.
+              <p className="text-gray-600 dark:text-zinc-400 text-base mb-8 max-w-lg mx-auto font-medium leading-relaxed">
+                Your registration for <span className="text-blue-600 dark:text-blue-400 font-bold">{currentModuleTitle}</span> has been successfully logged.
               </p>
+
+              {/* Status & Next Steps Card */}
+              <div className="max-w-md mx-auto mb-10 p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-white/5 text-left space-y-4 shadow-sm backdrop-blur-md">
+                <div className="flex gap-4 items-start">
+                  <div className="w-5 h-5 rounded-full bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5 animate-pulse">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-black text-gray-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Check Your Inbox</h4>
+                    <p className="text-sm text-gray-600 dark:text-zinc-300">
+                      Please check your inbox as you may have received the confirmation email at <span className="font-semibold text-gray-900 dark:text-white break-all">{watch('email')}</span>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-px bg-gray-100 dark:bg-white/5 w-full" />
+
+                <div className="flex gap-4 items-start">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping absolute duration-1000" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 relative" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-black text-gray-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Payment Verification</h4>
+                    <p className="text-sm text-gray-600 dark:text-zinc-300">
+                      Stay tuned as our team will verify your payment within <span className="font-semibold text-gray-900 dark:text-white">24-48 hours</span>.
+                    </p>
+                  </div>
+                </div>
+              </div>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button 
