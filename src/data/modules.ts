@@ -61,8 +61,8 @@ export const modules: Module[] = [
       { name: 'Sania', role: 'Module Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
       { name: 'Marhaba', role: 'Module Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
       { name: 'Khizra', role: 'Module Lead', designation: 'Research Coordinator', linkedin: 'https://linkedin.com' },
-      { name: 'Bisma', role: 'Module Lead', designation: 'Academic Program Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Alishba', role: 'Module Lead', designation: 'Industry Relations Officer', linkedin: 'https://linkedin.com' }
+      { name: 'Bisma Zakir', role: 'Module Lead', designation: 'Data Analyst', linkedin: 'https://www.linkedin.com/in/bisma-zakir-a5bb6b202/' },
+      { name: 'Alishba Asghar', role: 'Module Lead', designation: 'Data analyst', linkedin: 'https://www.linkedin.com/in/alishba-asghar-7a38843a0/' }
     ]
   },
   {
@@ -117,7 +117,7 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Elisha Tejani', role: 'Module Lead', designation: 'Data security analyst', linkedin: 'https://www.linkedin.com/in/elisha-tejani/' },
-      { name: 'Ainab', role: 'Module Lead', designation: 'AI & Data Security Researcher', linkedin: 'https://linkedin.com' },
+      { name: 'Ainab shaikh', role: 'Module Lead', designation: 'Cybersecurity Analyst', linkedin: 'https://www.linkedin.com/in/ainab-shaikh-bb0a39310/' },
       { name: 'Hussam', role: 'Module Lead', designation: 'Network Defense Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
@@ -127,19 +127,19 @@ export const modules: Module[] = [
     description: 'Welcome to the future of autonomy. Design and deploy AI agents that can solve complex tasks and compete in dynamic environments.',
     icon: Bot,
     category: 'AI',
-    mode: 'Duo',
+    mode: 'Squad',
     prize: 'TBD',
     challengeName: 'The Trust Arena',
     longDescription: 'Build agents that think. Let them compete. Watch trust emerge. The Trust Arena is a multi-agent strategy tournament built on the Prisoner\'s Dilemma, focusing on the foundational problems of cooperation, deception, and emergent trust in AI systems.\n\nYou design and engineer an intelligent agent that perceives its environment, reasons autonomously, communicates with opponents, and decides when to cooperate and when to betray.\n\nEvery round, every decision, every message shapes the outcome. The arena rewards those who read the room.\n\nPerceive, Reason, Communicate, and Act.',
     skills: ['Logic and Automation', 'Strategic Decision Making', 'Game Theory', 'Behavioral Design'],
     rulesList: [
-      'Teams of 2 participants.',
+      'Teams of 3 to 4 participants.',
       'Agents must be written in Python 3.9+.',
       'Only free-tier LLM APIs are permitted. No paid plans or credits allowed.',
       'AI coding assistants (ChatGPT, Claude, Copilot, Cursor) are permitted and encouraged.',
       'LangChain, AutoGen, and CrewAI may not serve as the core architecture: reasoning and memory must be your own code.',
       'Agents must respond within 25 seconds per round. Timeouts default to cooperate.',
-      'Prompt injection via opponent messages is strictly prohibited and monitored in real time. The three-strike system applies.',
+      'Prompt injection via opponent messages is strictly prohibited. All match communications are logged and subject to audit. Confirmed violations result in immediate disqualification',
       'No code, strategy, or agent logic sharing between teams during active competition.',
       'Plagiarism, code copying, or agent interference results in immediate disqualification.',
       'Organizers reserve the right to adapt rules. All decisions are final.'
@@ -198,7 +198,7 @@ export const modules: Module[] = [
       'Organizers reserve the right to adapt rules in response to unforeseen circumstances. All decisions are final.'
     ],
     heads: [
-      { name: 'Nimra', role: 'Module Lead', designation: 'Prompt Security Researcher', linkedin: 'https://linkedin.com' },
+      { name: 'Nimra Yousuf', role: 'Module Lead', designation: 'AI engineer', linkedin: 'https://www.linkedin.com/in/nimra-yousuf-1b7173326/' },
       { name: 'Ayaan', role: 'Module Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
       { name: 'Ali Warsi', role: 'Module Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
     ]

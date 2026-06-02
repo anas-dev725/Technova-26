@@ -6,6 +6,8 @@ import hamnaPfp from '../assets/hamna pfp.jpeg';
 import moizPfp from '../assets/moiz pfp.jpeg';
 import ashirPfp from '../assets/ashir pfp.jpeg';
 import ramshaPfp from '../assets/ramsha pfp.jpeg';
+import adeenPfp from '../assets/adeen pfp.jpeg';
+import daneenPfp from '../assets/Daneen pfp.jpeg';
 
 interface TeamMember {
   name: string;
@@ -66,25 +68,24 @@ export default function Team() {
       mail: 'ramshaimran.work@gmail.com'
     },
     {
-      name: 'Aisha Khan',
-      role: 'Director Marketing',
-      dept: 'Public Campaigning & Relations',
-      initials: 'AK',
-      gradient: 'from-purple-500 to-pink-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Daneen Nathani',
+      role: 'Volunteer Lead',
+      dept: 'Junior Data Analyst',
+      img: daneenPfp,
+      linkedin: 'https://www.linkedin.com/in/daneennathani/',
+      mail: 'daneennathani15@outlook.com'
     }
   ];
 
   // Right Wing Children (reporting to Vice President)
   const rightWing: TeamMember[] = [
     {
-      name: 'Muhammad Abbas',
-      role: 'Director Corporate Affairs',
+      name: 'Adeen Gul Shaikh',
+      role: 'Event administrator',
       dept: 'AI Engineer',
-      initials: 'MA',
-      gradient: 'from-cyan-500 to-blue-600',
-      linkedin: 'https://www.linkedin.com/in/syed-muhammad-abbas-hassan-zaidi-505a8b340/',
-      mail: 'Std_34578@iobm.edu.pk'
+      img: adeenPfp,
+      linkedin: 'https://www.linkedin.com/in/adeen-shaikh-257153322/',
+      mail: 'adeenmajeedshaikh@gmail.com'
     },
     {
       name: 'Talha Ahmed',
@@ -95,12 +96,13 @@ export default function Team() {
       linkedin: 'Https://linkedin.com/in/talha-ahmad9'
     },
     {
-      name: 'Mustafa Kamal',
-      role: 'Director Creative',
-      dept: 'Motion Art & Brand Production',
-      initials: 'MK',
-      gradient: 'from-blue-500 to-indigo-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Muhammad Abbas',
+      role: 'Director Corporate Affairs',
+      dept: 'AI Engineer',
+      initials: 'MA',
+      gradient: 'from-cyan-500 to-blue-600',
+      linkedin: 'https://www.linkedin.com/in/syed-muhammad-abbas-hassan-zaidi-505a8b340/',
+      mail: 'Std_34578@iobm.edu.pk'
     },
     {
       name: 'Eshal Noor',
@@ -178,8 +180,8 @@ export default function Team() {
   const renderMemberCard = (member: TeamMember, type: 'pink' | 'cyan' = 'pink', size: 'large' | 'normal' = 'normal') => {
     const isPink = type === 'pink';
     const accentClass = isPink 
-      ? 'border-pink-500/20 text-pink-500 dark:text-pink-400 bg-pink-500/10' 
-      : 'border-cyan-500/20 text-cyan-600 dark:text-cyan-400 bg-cyan-400/10';
+      ? 'border-pink-500/40 text-pink-100 bg-pink-900/85 backdrop-blur-lg shadow shadow-black/35' 
+      : 'border-cyan-400/40 text-cyan-100 bg-cyan-950/85 backdrop-blur-lg shadow shadow-black/35';
     
     return (
       <motion.div
@@ -206,7 +208,7 @@ export default function Team() {
           <img 
             src={member.img} 
             alt={member.name} 
-            className="w-full h-full object-cover filter brightness-100 group-hover:scale-105 transition-all duration-700 ease-out" 
+            className="w-full h-full object-cover filter brightness-[0.9] group-hover:brightness-[0.95] group-hover:scale-105 transition-all duration-700 ease-out" 
             referrerPolicy="no-referrer"
           />
         ) : (
@@ -226,7 +228,7 @@ export default function Team() {
         )}
 
         {/* Indicator Node Dot in top corner */}
-        <div className="absolute top-4 left-4 z-25 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md border border-gray-200 dark:border-zinc-800/80">
+        <div className="absolute top-4 left-4 z-25 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/85 dark:bg-black/70 backdrop-blur-md border border-gray-200 dark:border-zinc-800/80">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
           <span className="font-mono text-[8px] text-gray-500 dark:text-zinc-400 uppercase tracking-widest font-black">
             NODE_SYS
@@ -236,8 +238,8 @@ export default function Team() {
         {/* Leader Indicator Overlay badge */}
         {size === 'large' && (
           <div className="absolute top-4 right-4 pointer-events-none z-25">
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 text-[8px] font-black uppercase tracking-widest backdrop-blur-md border border-gray-200 dark:border-zinc-800/80 ${
-              isPink ? 'text-pink-505 dark:text-pink-400' : 'text-cyan-600 dark:text-cyan-400'
+            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/85 dark:bg-black/70 text-[8px] font-black uppercase tracking-widest backdrop-blur-md border border-gray-200 dark:border-zinc-800/80 ${
+              isPink ? 'text-pink-500 dark:text-pink-400' : 'text-cyan-600 dark:text-cyan-400'
             }`}>
               <Crown className="w-2.5 h-2.5 text-yellow-400" />
               EXECUTIVE LEAD
@@ -246,15 +248,15 @@ export default function Team() {
         )}
 
         {/* Info Layout overlaid on backdrop but beautifully integrated */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent p-4 sm:p-6 flex flex-col justify-end text-left z-20">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent p-4 sm:p-6 flex flex-col justify-end text-left z-20">
           <div className="transform transition-transform duration-500 ease-out group-hover:-translate-y-2">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] sm:text-[9px] font-mono font-black uppercase tracking-widest border mb-1.5 ${accentClass}`}>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] sm:text-[9.5px] font-mono font-black uppercase tracking-widest border mb-1.5 ${accentClass}`}>
               {member.role === 'PR' ? 'Director of PR' : member.role}
             </span>
-            <h3 className="font-display font-black text-white tracking-tight text-base sm:text-lg group-hover:text-white transition-colors duration-300">
+            <h3 className="font-display font-black text-white tracking-tight text-base sm:text-lg group-hover:text-white transition-colors duration-300 drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.5)]">
               {member.name}
             </h3>
-            <p className="text-[9px] sm:text-[10px] text-zinc-400 font-medium font-mono leading-tight mt-0.5 sm:mt-1 tracking-tight">
+            <p className="text-[9.5px] sm:text-[10.5px] text-zinc-300 font-semibold font-mono leading-tight mt-0.5 sm:mt-1 tracking-tight drop-shadow-[0_1px_1.5px_rgba(0,0,0,0.5)]">
               {member.dept}
             </p>
           </div>
@@ -470,10 +472,10 @@ export default function Team() {
 
                     </div>
 
-                    {/* Second Row (Ramsha & Aisha) */}
+                    {/* Second Row (Volunteer Leads: Ramsha & Daneen) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Volunteer Lead */}
+                      {/* Volunteer Lead (Ramsha) */}
                       <div className="relative">
                         {renderMemberCard(leftWing[2], 'pink', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -482,7 +484,7 @@ export default function Team() {
                         </div>
                       </div>
 
-                      {/* Director Marketing */}
+                      {/* Volunteer Lead (Daneen) */}
                       <div className="relative">
                         {renderMemberCard(leftWing[3], 'pink', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -527,10 +529,10 @@ export default function Team() {
                   {/* Row-by-row centered flex layouts for Anas's reports to guarantee perfect centering */}
                   <div className="flex flex-col gap-y-16 mt-4 relative z-10 w-full items-center">
                     
-                    {/* First Row (Muhammad Abbas & Talha) */}
+                    {/* First Row (Adeen Gul Shaikh & Talha Ahmed) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Director Corporate Affairs */}
+                      {/* Event administrator */}
                       <div className="relative">
                         {renderMemberCard(rightWing[0], 'cyan', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
@@ -550,10 +552,10 @@ export default function Team() {
 
                     </div>
 
-                    {/* Second Row (Creative & PR) */}
+                    {/* Second Row (Director Corporate Affairs & Director PR) */}
                     <div className="flex gap-x-12 justify-center w-full">
                       
-                      {/* Director Creative */}
+                      {/* Director Corporate Affairs */}
                       <div className="relative">
                         {renderMemberCard(rightWing[2], 'cyan', 'normal')}
                         {/* Horizontal connector connecting to the center vertical line */}
