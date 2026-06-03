@@ -143,6 +143,43 @@ export default function Team() {
     }
   ];
 
+  // Faculty Advisory Board Data
+  const facultyHead: TeamMember = {
+    name: 'Dr. Khalid Mahboob, (Ph.D.)',
+    role: 'Faculty Mentor',
+    dept: 'Senior Lecturer, CCSIS',
+    initials: 'KM',
+    gradient: 'from-indigo-950 via-slate-900 to-[#100326]',
+    linkedin: 'https://www.linkedin.com/'
+  };
+
+  const facultyMembers: TeamMember[] = [
+    {
+      name: 'Dr. Muhammad Asim',
+      role: 'Faculty Advisor',
+      dept: 'HOD Computer Science Dept, CCSIS',
+      initials: 'MA',
+      gradient: 'from-violet-900/90 via-[#180410] to-[#0c0214]',
+      linkedin: 'https://www.linkedin.com/'
+    },
+    {
+      name: 'Engr. Humera Akhter',
+      role: 'IEEE Branch Counselor',
+      dept: 'Assistant Professor, CCSIS',
+      initials: 'HA',
+      gradient: 'from-emerald-950 via-[#02131e] to-[#000408]',
+      linkedin: 'https://www.linkedin.com/'
+    },
+    {
+      name: 'Dr. Tariq Rahim Soomro',
+      role: 'Patron',
+      dept: 'Dean College of Computer Science & Information Systems (CCSIS)',
+      initials: 'TS',
+      gradient: 'from-[#031026] via-[#02131e] to-[#011a3b]',
+      linkedin: 'https://www.linkedin.com/in/tariqsoomro/'
+    }
+  ];
+
   // Beautiful flowing line rendering helper
   const FlowPath = ({ 
     direction = 'vertical', 
@@ -623,7 +660,7 @@ export default function Team() {
                 <FlowPath direction="vertical" length="48px" color="cyan" delay={0.8} />
               </div>
               {/* Center drop line */}
-              <div className="absolute left-1/2 -ml-[1px] top-0 h-12 w-1">
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 h-12 w-1">
                 <FlowPath direction="vertical" length="48px" color="cyan" delay={0.8} />
               </div>
               {/* Right drop line */}
@@ -649,6 +686,63 @@ export default function Team() {
               {/* Member 3: Aliza Zaidi */}
               <div className="relative">
                 {renderMemberCard(additionalWing[2], 'pink', 'normal')}
+              </div>
+            </div>
+
+            {/* Vertical connector down to Faculty Board Section */}
+            <div className="relative h-16 w-full flex items-center justify-center">
+              <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1">
+                <FlowPath direction="vertical" length="64px" color="cyan" delay={0.2} />
+              </div>
+            </div>
+
+            {/* Faculty Board Middle Card */}
+            <div className="relative z-10 flex flex-col items-center">
+              <span className="text-[10px] font-mono font-black text-rose-500 dark:text-rose-400 uppercase tracking-[0.2em] mb-4 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">
+                FACULTY ADVISORY BOARD
+              </span>
+              <div className="relative">
+                {renderMemberCard(facultyHead, 'cyan', 'large')}
+                
+                {/* Center vertical lineage going down below the faculty head */}
+                <div className="absolute left-1/2 -translate-x-1/2 -bottom-16 w-1 h-16 flex justify-center pb-2">
+                  <FlowPath direction="vertical" length="64px" color="cyan" delay={0.4} />
+                </div>
+              </div>
+            </div>
+
+            <div className="h-16" />
+
+            {/* Horizontal split for the 3 faculty members */}
+            <div className="relative w-[50%] h-1 flex items-center justify-center">
+              <FlowPath direction="horizontal" length="100%" color="cyan" delay={0.6} />
+              
+              {/* Left drop line */}
+              <div className="absolute left-0 top-0 h-12 w-1">
+                <FlowPath direction="vertical" length="48px" color="cyan" delay={0.8} />
+              </div>
+              {/* Center drop line */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 h-12 w-1">
+                <FlowPath direction="vertical" length="48px" color="cyan" delay={0.8} />
+              </div>
+              {/* Right drop line */}
+              <div className="absolute right-0 top-0 h-12 w-1">
+                <FlowPath direction="vertical" length="48px" color="cyan" delay={0.8} />
+              </div>
+            </div>
+
+            <div className="h-12" />
+
+            {/* Row of 3 Faculty Members */}
+            <div className="flex flex-wrap lg:flex-nowrap gap-12 justify-center w-full relative z-10 mt-4">
+              <div className="relative">
+                {renderMemberCard(facultyMembers[0], 'pink', 'normal')}
+              </div>
+              <div className="relative">
+                {renderMemberCard(facultyMembers[1], 'cyan', 'normal')}
+              </div>
+              <div className="relative">
+                {renderMemberCard(facultyMembers[2], 'pink', 'normal')}
               </div>
             </div>
 
@@ -727,6 +821,28 @@ export default function Team() {
             {additionalWing.map((member, index) => (
               <div className="relative" key={member.name}>
                 {/* Connection line */}
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/30" />
+                <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                {renderMemberCard(member, index % 2 === 0 ? 'pink' : 'cyan', 'normal')}
+              </div>
+            ))}
+
+            {/* Faculty Advisory Board divider header */}
+            <div className="relative border-l-2 border-cyan-400 pl-4 py-1 select-none pt-4">
+              <span className="font-mono text-[9px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest block">FACULTY_BOARD // MENTORS_&_ADVISORS</span>
+              <h2 className="text-base font-bold uppercase text-gray-900 dark:text-white tracking-tight">Faculty Advisory Board</h2>
+            </div>
+
+            {/* Mobile Faculty Head */}
+            <div className="relative">
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/50" />
+              <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
+              {renderMemberCard(facultyHead, 'cyan', 'large')}
+            </div>
+
+            {/* Mobile Faculty Members row representation */}
+            {facultyMembers.map((member, index) => (
+              <div className="relative" key={member.name}>
                 <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 w-[24px] min-[380px]:w-[32px] h-[2px] bg-cyan-400/30" />
                 <div className="absolute left-[-24px] min-[380px]:left-[-32px] top-1/2 -translate-y-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 {renderMemberCard(member, index % 2 === 0 ? 'pink' : 'cyan', 'normal')}
