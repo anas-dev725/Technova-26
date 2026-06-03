@@ -9,6 +9,7 @@ import ashirPfp from '../assets/ashir pfp.jpeg';
 import ramshaPfp from '../assets/ramsha pfp.jpeg';
 import adeenPfp from '../assets/adeen pfp.jpeg';
 import daneenPfp from '../assets/Daneen pfp.jpeg';
+import mustafaPfp from '../assets/mustafa pfp.jpeg';
 
 interface TeamMember {
   name: string;
@@ -51,14 +52,16 @@ export default function Team() {
       role: 'General Secretary',
       dept: 'Full Stack Integration & Strategy',
       img: moizPfp,
-      linkedin: 'https://linkedin.com/in/moizalisiddiqui'
+      linkedin: 'https://linkedin.com/in/moizalisiddiqui',
+      mail: 'nar.sas789@gmail.com'
     },
     {
       name: 'Aashir Ali',
       role: 'Director Finance',
       dept: 'Budgeting & Asset Portfolio',
       img: ashirPfp,
-      linkedin: 'https://www.linkedin.com/in/aashir-ali-6aa2b233a/'
+      linkedin: 'https://www.linkedin.com/in/aashir-ali-6aa2b233a/',
+      mail: 'abbasiaashirali110@gmail.com'
     },
     {
       name: 'Ramsha Khan',
@@ -146,37 +149,38 @@ export default function Team() {
   // Faculty Advisory Board Data
   const facultyHead: TeamMember = {
     name: 'Dr. Khalid Mahboob, (Ph.D.)',
-    role: 'Faculty Mentor',
-    dept: 'Senior Lecturer, CCSIS',
+    role: 'Director Technova',
+    dept: 'Assistant Professor, CCSIS',
     initials: 'KM',
     gradient: 'from-indigo-950 via-slate-900 to-[#100326]',
-    linkedin: 'https://www.linkedin.com/'
+    linkedin: 'https://www.linkedin.com/in/dr-khalid-mahboob-ph-d-bb833b1b/',
+    mail: 'khalid.mahboob@iobm.edu.pk'
   };
 
   const facultyMembers: TeamMember[] = [
     {
-      name: 'Dr. Muhammad Asim',
-      role: 'Faculty Advisor',
-      dept: 'HOD Computer Science Dept, CCSIS',
-      initials: 'MA',
+      name: 'Syed Shabeeb Raza',
+      role: 'Director Operations',
+      dept: 'Junior Lecturer, CCSIS',
+      initials: 'SR',
       gradient: 'from-violet-900/90 via-[#180410] to-[#0c0214]',
-      linkedin: 'https://www.linkedin.com/'
+      linkedin: 'https://www.linkedin.com/in/the-shabeeb-raza/'
     },
     {
-      name: 'Engr. Humera Akhter',
-      role: 'IEEE Branch Counselor',
-      dept: 'Assistant Professor, CCSIS',
-      initials: 'HA',
-      gradient: 'from-emerald-950 via-[#02131e] to-[#000408]',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Mustafa Ahmed Khan',
+      role: 'Media & Marketing Director',
+      dept: 'Junior Lecturer, CCSIS',
+      img: mustafaPfp,
+      linkedin: 'https://www.linkedin.com/in/mustafa-ahmed-khan-7b3a86267/',
+      mail: 'mustafa.ahmed@iobm.edu.pk'
     },
     {
-      name: 'Dr. Tariq Rahim Soomro',
-      role: 'Patron',
-      dept: 'Dean College of Computer Science & Information Systems (CCSIS)',
-      initials: 'TS',
+      name: 'Shayan Faiz',
+      role: 'Director Events',
+      dept: 'Junior Lecturer, CCSIS',
+      initials: 'SF',
       gradient: 'from-[#031026] via-[#02131e] to-[#011a3b]',
-      linkedin: 'https://www.linkedin.com/in/tariqsoomro/'
+      linkedin: 'https://www.linkedin.com/in/shayan-faiz-853819234/'
     }
   ];
 
