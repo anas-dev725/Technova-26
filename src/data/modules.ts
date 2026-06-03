@@ -60,7 +60,7 @@ export const modules: Module[] = [
       { name: 'Sarah', role: 'Module Lead', designation: 'Lead Systems Evaluator', linkedin: 'https://linkedin.com' },
       { name: 'Sania', role: 'Module Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
       { name: 'Marhaba', role: 'Module Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Khizra', role: 'Module Lead', designation: 'Research Coordinator', linkedin: 'https://linkedin.com' },
+      { name: 'Khizra Hassan', role: 'Module Lead', designation: 'Aspiring ML Engineer', linkedin: 'https://www.linkedin.com/in/khizra-hassan--/' },
       { name: 'Bisma Zakir', role: 'Module Lead', designation: 'Data Analyst', linkedin: 'https://www.linkedin.com/in/bisma-zakir-a5bb6b202/' },
       { name: 'Alishba Asghar', role: 'Module Lead', designation: 'Data analyst', linkedin: 'https://www.linkedin.com/in/alishba-asghar-7a38843a0/' }
     ]
