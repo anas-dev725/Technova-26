@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Github, Linkedin, Mail, Globe, Sparkle, Sparkles, User, Award, Shield, Star, Crown, Cable, Users } from 'lucide-react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
+import anasPfp from '../assets/Anas pfp 1.jpg';
 import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
 import hamnaPfp from '../assets/hamna pfp.jpeg';
 import moizPfp from '../assets/moiz pfp.jpeg';
@@ -37,7 +38,7 @@ export default function Team() {
     name: 'Muhammad Anas',
     role: 'Vice President',
     dept: 'AI Automation & Systems Architect',
-    img: anasProfileBase64,
+    img: anasPfp,
     github: 'https://github.com/anas-dev725',
     linkedin: 'https://www.linkedin.com/in/muhammad-anas804/',
     website: 'https://muhammad-anas-ai-engineer.vercel.app/'
