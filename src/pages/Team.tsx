@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { Github, Linkedin, Mail, Globe, Sparkle, Sparkles, User, Award, Shield, Star, Crown, Cable, Users } from 'lucide-react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
 import anasPfp from '../assets/Anas pfp 1.jpg';
-import { talhaAhmedBase64 } from '../assets/talhaAhmedBase64';
+import talhaPfp from '../assets/talha pfp.jpg';
 import hamnaPfp from '../assets/hamna pfp.jpeg';
 import moizPfp from '../assets/moiz pfp.jpeg';
 import ashirPfp from '../assets/ashir pfp.jpeg';
@@ -98,7 +98,7 @@ export default function Team() {
       name: 'Talha Ahmed',
       role: 'Director of Module Operations',
       dept: 'AI Development & System Architect',
-      img: talhaAhmedBase64,
+      img: talhaPfp,
       github: 'https://github.com/Talhaahmad9',
       linkedin: 'Https://linkedin.com/in/talha-ahmad9'
     },
