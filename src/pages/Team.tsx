@@ -10,6 +10,9 @@ import ramshaPfp from '../assets/ramsha pfp.jpeg';
 import adeenPfp from '../assets/adeen pfp.jpeg';
 import daneenPfp from '../assets/Daneen pfp.jpeg';
 import mustafaPfp from '../assets/mustafa pfp.jpeg';
+import shayanPfp from '../assets/shayan pfp.jpeg';
+import abbassPfp from '../assets/abbass pfp.jpg';
+import khalidPfp from '../assets/khalid pfp.jpeg';
 
 interface TeamMember {
   name: string;
@@ -103,8 +106,7 @@ export default function Team() {
       name: 'Muhammad Abbas',
       role: 'Director Corporate Affairs',
       dept: 'AI Engineer',
-      initials: 'MA',
-      gradient: 'from-cyan-500 to-blue-600',
+      img: abbassPfp,
       linkedin: 'https://www.linkedin.com/in/syed-muhammad-abbas-hassan-zaidi-505a8b340/',
       mail: 'Std_34578@iobm.edu.pk'
     },
@@ -151,8 +153,7 @@ export default function Team() {
     name: 'Dr. Khalid Mahboob, (Ph.D.)',
     role: 'Director Technova',
     dept: 'Assistant Professor, CCSIS',
-    initials: 'KM',
-    gradient: 'from-indigo-950 via-slate-900 to-[#100326]',
+    img: khalidPfp,
     linkedin: 'https://www.linkedin.com/in/dr-khalid-mahboob-ph-d-bb833b1b/',
     mail: 'khalid.mahboob@iobm.edu.pk'
   };
@@ -178,8 +179,7 @@ export default function Team() {
       name: 'Shayan Faiz',
       role: 'Director Events',
       dept: 'Junior Lecturer, CCSIS',
-      initials: 'SF',
-      gradient: 'from-[#031026] via-[#02131e] to-[#011a3b]',
+      img: shayanPfp,
       linkedin: 'https://www.linkedin.com/in/shayan-faiz-853819234/'
     }
   ];
