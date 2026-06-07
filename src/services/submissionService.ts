@@ -41,7 +41,7 @@ export interface Submission {
   discountApplied?: number;
 }
 
-const MODULE_PREFIXES: Record<string, string> = {
+export const MODULE_PREFIXES: Record<string, string> = {
   'fyp-warriors': 'FW',
   'startup-launchpad': 'SL',
   'capture-the-flag': 'CTF',
@@ -281,5 +281,14 @@ export const submissionService = {
     }
     
     return Object.keys(modulesSubmissions).length;
+  },
+
+  async resetCounter(moduleId: string, value: number = 0) {
+    try {
+      const counterRef = doc(db, 'counters', moduleId);
+      await setDoc(counterRef, { count: value });
+    } catch (error) {
+      handleFirestoreError(error, 'write', `counters/${moduleId}`);
+    }
   }
 }

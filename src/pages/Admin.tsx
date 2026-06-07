@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { auth, signInWithGoogle } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
-import { submissionService, Submission } from '../services/submissionService';
+import { submissionService, Submission, MODULE_PREFIXES } from '../services/submissionService';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -44,6 +44,10 @@ export default function Admin() {
   const [isMigrating, setIsMigrating] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [resetModuleId, setResetModuleId] = useState('maths-mania');
+  const [resetCounterValue, setResetCounterValue] = useState(0);
+  const [isResettingCounter, setIsResettingCounter] = useState(false);
+  const [showCounterOverride, setShowCounterOverride] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: 'asc' | 'desc' } | null>(null);
 
@@ -243,6 +247,28 @@ export default function Admin() {
           console.error(error);
         } finally {
           setIsSyncing(false);
+        }
+      }
+    });
+  };
+
+  const handleResetCounter = async () => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Reset/Update Counter',
+      message: `Are you sure you want to set the counter for "${resetModuleId}" to ${resetCounterValue}? Future registrations for this module will start from #${(resetCounterValue + 1).toString().padStart(3, '0')}.`,
+      confirmText: 'Reset Counter',
+      variant: 'warning',
+      onConfirm: async () => {
+        setIsResettingCounter(true);
+        try {
+          await submissionService.resetCounter(resetModuleId, resetCounterValue);
+          alert(`Success! Set ID counter for "${resetModuleId}" to ${resetCounterValue}.`);
+        } catch (error) {
+          alert('Failed to reset counter. Check console for error.');
+          console.error(error);
+        } finally {
+          setIsResettingCounter(false);
         }
       }
     });
@@ -662,6 +688,18 @@ export default function Admin() {
                     </>
                   )}
                 </button>
+
+                <button 
+                  onClick={() => setShowCounterOverride(prev => !prev)}
+                  className={`px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 ${
+                    showCounterOverride 
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20 hover:bg-blue-700' 
+                      : 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                  }`}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  Reset Counter
+                </button>
               </div>
 
               {/* Data Export Options */}
@@ -806,6 +844,71 @@ export default function Admin() {
                 Export Receipts
               </button>
             </div>
+
+            {/* Manual Counter Override Panel */}
+            <AnimatePresence>
+              {showCounterOverride && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full"
+                >
+                  <div className="p-6 mt-4 rounded-3xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 space-y-4">
+                    <div>
+                      <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Manual Counter Override</h4>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">Directly set the registration count (e.g. Maths Mania start point).</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-4">
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">Module</label>
+                        <select
+                          value={resetModuleId}
+                          onChange={(e) => setResetModuleId(e.target.value)}
+                          className="w-full bg-white dark:bg-zinc-950 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-gray-800 dark:text-gray-100 outline-none focus:border-blue-500 transition-colors"
+                        >
+                          {Object.keys(MODULE_PREFIXES).map((id) => (
+                            <option key={id} value={id}>
+                              {id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} ({MODULE_PREFIXES[id]})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">New Counter Value</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={resetCounterValue}
+                          onChange={(e) => setResetCounterValue(Math.max(0, parseInt(e.target.value) || 0))}
+                          className="w-full bg-white dark:bg-zinc-950 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-gray-800 dark:text-gray-100 outline-none focus:border-blue-500 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <button
+                          onClick={handleResetCounter}
+                          disabled={isResettingCounter}
+                          className="w-full px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-blue-500/15"
+                        >
+                          {isResettingCounter ? (
+                            <>
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              Resetting...
+                            </>
+                          ) : (
+                            'Set Counter Value'
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
