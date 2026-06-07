@@ -23,6 +23,18 @@ if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true });
 }
 
+// Copy favicon to public folder for Google Search / SEO stability
+try {
+  const srcFavicon = path.join(process.cwd(), 'src', 'assets', 'favicon.png');
+  const destFavicon = path.join(publicDir, 'favicon.png');
+  if (fs.existsSync(srcFavicon)) {
+    fs.copyFileSync(srcFavicon, destFavicon);
+    console.log('Favicon copied to public root successfully!');
+  }
+} catch (e) {
+  console.error('Error copying favicon to public directory:', e);
+}
+
 function generateSitemap() {
   console.log('Generating automatic sitemap...');
   let moduleIds = [];
