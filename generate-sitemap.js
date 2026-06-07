@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const BASE_URL = 'https://technova.iobm.edu.pk';
+const BASE_URL = 'https://technova-26.vercel.app';
 
 // Core static pages
 const staticPages = [
