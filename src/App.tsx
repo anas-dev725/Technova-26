@@ -18,6 +18,7 @@ import Legacy from './pages/Legacy';
 import Admin from './pages/Admin';
 import Team from './pages/Team';
 import Timeline from './pages/Timeline';
+import Sitemap from './pages/Sitemap';
 import ScrollToTop from './components/ScrollToTop';
 import Chatbot from './components/Chatbot';
 import { ThemeProvider } from './components/ThemeContext';
@@ -41,6 +42,7 @@ export default function App() {
               <Route path="/timeline" element={<Timeline />} />
               <Route path="/legacy" element={<Legacy />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/sitemap" element={<Sitemap />} />
             </Routes>
           </main>
           <Footer />
