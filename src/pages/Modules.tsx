@@ -86,7 +86,7 @@ export default function Modules() {
                   }`}
                 >
                   {size !== 'All' && getTeamIcon(size)}
-                  {size}
+                  {size === 'Duo' ? '2-3 Team' : size}
                 </button>
               ))}
             </div>
@@ -126,7 +126,7 @@ export default function Modules() {
                       </span>
                       <span className="px-3 py-1 rounded-lg bg-blue-600/10 text-blue-600 text-[10px] font-bold uppercase tracking-widest border border-blue-600/20 flex items-center gap-1.5">
                         {getTeamIcon(mod.mode)}
-                        {mod.mode}
+                        {mod.mode === 'Duo' ? '2-3 Team' : mod.mode}
                       </span>
                     </div>
                     <h3 className="text-2xl font-display font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">

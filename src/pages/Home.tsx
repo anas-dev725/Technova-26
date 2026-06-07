@@ -271,7 +271,7 @@ export default function Home() {
                       <div className="flex flex-col items-end gap-2">
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-medium border border-gray-200 dark:border-white/10">
                           <TeamIcon className="w-3 h-3" />
-                          {mod.mode}
+                          {mod.mode === 'Duo' ? '2-3 Team' : mod.mode}
                         </div>
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-200 dark:border-blue-500/20">
                           <Trophy className="w-3 h-3" />

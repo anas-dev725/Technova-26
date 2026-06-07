@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
 import { Github, Linkedin, Mail, Globe, Sparkle, Sparkles, User, Award, Shield, Star, Crown, Cable, Users } from 'lucide-react';
 import { anasProfileBase64 } from '../assets/anasProfileBase64';
-import anasPfp from '../assets/Anas pfp 1.jpg';
+import anasPfp from '../assets/Anas VP .jpg';
 import talhaPfp from '../assets/talha pfp.jpg';
-import hamnaPfp from '../assets/hamna pfp.jpeg';
+import hamnaPfp from '../assets/hamna pfp.jpg';
 import moizPfp from '../assets/moiz pfp.jpeg';
 import ashirPfp from '../assets/ashir pfp.jpeg';
 import ramshaPfp from '../assets/ramsha pfp.jpeg';

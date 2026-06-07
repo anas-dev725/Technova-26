@@ -417,22 +417,9 @@ export default function ModuleDetail() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-tight">Team Mode</p>
-                        <p className="text-gray-900 dark:text-white font-bold">{selectedMode}</p>
+                        <p className="text-gray-900 dark:text-white font-bold">{selectedMode === 'Duo' ? '2-3 Team' : selectedMode}</p>
                       </div>
                     </div>
-                    {module.id === 'esports-competition' && (
-                      <div className="relative">
-                        <select
-                          value={selectedMode}
-                          onChange={(e) => setSelectedMode(e.target.value as TeamMode)}
-                          className="appearance-none bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-lg px-3 py-1 pr-8 text-xs font-bold outline-none focus:ring-2 focus:ring-blue-600 transition-all cursor-pointer"
-                        >
-                          <option value="Duo">Duo</option>
-                          <option value="Squad">Squad</option>
-                        </select>
-                        <ChevronDown className="w-3 h-3 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" />
-                      </div>
-                    )}
                   </div>
 
                   <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center gap-4">
