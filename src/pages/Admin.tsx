@@ -77,21 +77,42 @@ export default function Admin() {
   const [isLoggingInWithGoogle, setIsLoggingInWithGoogle] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    let unsubscribeSubmissions: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user?.email) {
         const adminStatus = await submissionService.checkIsAdmin(user.email);
         setIsAdmin(adminStatus);
         if (adminStatus) {
-          loadSubmissions();
+          // Unsubscribe from any existing first
+          if (unsubscribeSubmissions) {
+            unsubscribeSubmissions();
+            unsubscribeSubmissions = null;
+          }
+          unsubscribeSubmissions = loadSubmissions();
+        } else {
+          if (unsubscribeSubmissions) {
+            unsubscribeSubmissions();
+            unsubscribeSubmissions = null;
+          }
         }
       } else {
         setIsAdmin(false);
+        if (unsubscribeSubmissions) {
+          unsubscribeSubmissions();
+          unsubscribeSubmissions = null;
+        }
       }
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSubmissions) {
+        unsubscribeSubmissions();
+      }
+    };
   }, []);
 
   const loadSubmissions = () => {
@@ -282,6 +303,7 @@ export default function Admin() {
         sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesStatus && matchesModule && matchesSearch;
     })
@@ -1033,7 +1055,14 @@ export default function Admin() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-blue-500 transition-colors uppercase tracking-tight">{sub.members[0].fullName}</div>
+                        <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-blue-500 transition-colors uppercase tracking-tight">
+                          {sub.members[0].fullName}
+                          {sub.teamName && (
+                            <span className="ml-2 inline-flex items-center text-[9px] font-black text-blue-600 dark:text-blue-400 bg-blue-500/10 dark:bg-blue-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest leading-none">
+                              {sub.teamName}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-gray-500 text-[10px] font-medium">{sub.email}</div>
                       </td>
                       <td className="px-6 py-4">
@@ -1180,6 +1209,15 @@ export default function Admin() {
                             {selectedSubmission.university}
                           </div>
                         </section>
+
+                        {selectedSubmission.teamName && (
+                          <section className="sm:col-span-2">
+                            <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 leading-none">TEAM NAME</h3>
+                            <div className="inline-flex px-4 py-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-black uppercase tracking-widest border border-blue-500/20">
+                              {selectedSubmission.teamName}
+                            </div>
+                          </section>
+                        )}
                       </div>
 
                       <div className="p-6 rounded-[2rem] bg-gray-50 dark:bg-black/40 border border-gray-100 dark:border-white/5 relative overflow-hidden group">

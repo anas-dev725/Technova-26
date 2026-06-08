@@ -22,6 +22,7 @@ const memberSchema = z.object({
 
 const registerSchema = z.object({
   subGameId: z.string().optional(),
+  teamName: z.string().optional(),
   email: z.string()
     .email('Invalid contact email address')
     .refine((val) => {
@@ -81,6 +82,17 @@ export default function Register() {
 
   const dynamicSchema = React.useMemo(() => {
     return registerSchema.superRefine((data, ctx) => {
+      // Require teamName for Esports (PUBG / team games)
+      if (selectedModule?.id === 'esports-competition') {
+        if (!data.teamName || data.teamName.trim().length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['teamName'],
+            message: 'Team Name is required for Esports Competition'
+          });
+        }
+      }
+
       // 3 mandatory for innovation/squad, 2 mandatory for 2-3 team (Duo), otherwise all mandatory
       const minRequired = isInnovationModule 
         ? 3 
@@ -115,7 +127,7 @@ export default function Register() {
         }
       });
     });
-  }, [isInnovationModule, activeMode]);
+  }, [isInnovationModule, activeMode, selectedModule]);
 
   const {
     register,
@@ -129,6 +141,7 @@ export default function Register() {
     defaultValues: {
       email: '',
       university: '',
+      teamName: '',
       members: [],
       subGameId: gameParam || '',
       paymentMethod: 'bank_transfer'
@@ -281,6 +294,7 @@ export default function Register() {
         subGameTitle: subGame?.title || null,
         email: data.email,
         university: data.university,
+        teamName: data.teamName || null,
         members: filteredMembers,
         receiptBase64: receiptPreview,
         totalFee: finalFee,
@@ -663,7 +677,7 @@ export default function Register() {
                     /* DUO/SQUAD MODE (Existing Layout) */
                     <>
                       {/* Global Info */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12 border-b border-gray-100 dark:border-white/5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-12 border-b border-gray-100 dark:border-white/5">
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Primary Contact Email</label>
                           <input
@@ -699,6 +713,27 @@ export default function Register() {
                             >
                               <AlertCircle className="w-3.5 h-3.5" />
                               {errors.university.message}
+                            </motion.p>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+                            Team Name {selectedModule?.id === 'esports-competition' && <span className="text-red-500">*</span>}
+                          </label>
+                          <input
+                            {...register('teamName')}
+                            type="text"
+                            className={`w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border-2 ${errors.teamName ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/10'} text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all`}
+                            placeholder={selectedModule?.id === 'esports-competition' ? "PUBG Team/Squad Name" : "Optional Team Name"}
+                          />
+                          {errors.teamName && (
+                            <motion.p 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="mt-2 text-xs text-red-500 font-black flex items-center gap-1.5 uppercase tracking-wider"
+                            >
+                              <AlertCircle className="w-3.5 h-3.5" />
+                              {errors.teamName.message}
                             </motion.p>
                           )}
                         </div>

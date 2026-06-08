@@ -82,7 +82,8 @@ service cloud.firestore {
     }
 
     match /admins/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow list: if isSignedIn() && resource.data.email == request.auth.token.email;
       allow write: if false; // Only manageable via Firebase Console or Admin SDK
     }
   }

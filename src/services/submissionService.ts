@@ -32,6 +32,7 @@ export interface Submission {
   subGameTitle?: string;
   email: string;
   university: string;
+  teamName?: string;
   members: TeamMember[];
   receiptBase64: string;
   status: 'pending' | 'approved' | 'rejected';
@@ -187,7 +188,7 @@ export const submissionService = {
       });
       callback(submissions);
     }, (error) => {
-      console.error("Firestore Subscribe Error:", error);
+      handleFirestoreError(error, 'get', 'submissions');
     });
   },
 
