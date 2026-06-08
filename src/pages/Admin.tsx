@@ -133,7 +133,7 @@ export default function Admin() {
     } catch (error: any) {
       console.error('Login error:', error);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        setAuthError('Invalid Admin ID or Password. If you are experiencing credential issues, please use the safer and easier "Sign in with Google" option below using an authorized email such as anasmobin0@gmail.com.');
+        setAuthError('Invalid Novamin ID or Password. If you are experiencing credential issues, please use the safer and easier "Sign in with Google" option below using an authorized email such as anasmobin0@gmail.com.');
       } else {
         setAuthError('An error occurred during authentication. Please try again.');
       }
@@ -351,11 +351,11 @@ export default function Admin() {
             <div className="w-20 h-20 bg-blue-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
               <Shield className="w-10 h-10 text-blue-500" />
             </div>
-            <h1 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-3 tracking-tight">Admin Portal</h1>
+            <h1 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-3 tracking-tight">Novamin Portal</h1>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
               {!user 
                 ? 'Enter your credentials to access the submission dashboard.' 
-                : 'Your current account is not authorized for admin access.'
+                : 'Your current account is not authorized for Novamin access.'
               }
             </p>
           </div>
@@ -364,7 +364,7 @@ export default function Admin() {
             <>
               <form onSubmit={handleLogin} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Admin ID</label>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2">Novamin ID</label>
                   <div className="relative group">
                     <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <input 
@@ -457,7 +457,7 @@ export default function Admin() {
             <div className="space-y-6">
               <div className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 text-center">
                 <p className="text-gray-900 dark:text-white font-bold mb-1">{user.email}</p>
-                <p className="text-sm text-red-500 font-medium">No administrative privileges assigned.</p>
+                <p className="text-sm text-red-500 font-medium">No Novamin privileges assigned.</p>
               </div>
               <button
                 onClick={handleLogout}
@@ -482,7 +482,7 @@ export default function Admin() {
           <div className="text-center sm:text-left">
             <div className="inline-flex items-center gap-2 text-blue-500 font-bold tracking-[0.2em] text-[9px] uppercase mb-2">
               <span className="w-4 h-[1px] bg-blue-500"></span>
-              Admin Dashboard
+              Novamin Dashboard
               <span className="w-4 h-[1px] bg-blue-500"></span>
             </div>
             <h1 className="text-3xl md:text-5xl font-display font-black text-gray-900 dark:text-white tracking-tighter uppercase">

@@ -82,7 +82,7 @@ export default function Sitemap() {
                   { name: 'Our Team', desc: 'Organizers, directors, department executives, and faculty', path: '/team' },
                   { name: 'Event Timeline', desc: 'Daily schedules, module durations, and venue placements', path: '/timeline' },
                   { name: 'Legacy Archive', desc: 'Relive the past footprints of IoBM technical festivals', path: '/legacy' },
-                  { name: 'Admin Gate', desc: 'Private portal for registrations review and operations control', path: '/admin' }
+                  { name: 'Novamin Gate', desc: 'Private portal for registrations review and operations control', path: '/novamin' }
                 ].map((item, index) => (
                   <Link 
                     key={index} 

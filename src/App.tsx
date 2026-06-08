@@ -41,7 +41,7 @@ export default function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/timeline" element={<Timeline />} />
               <Route path="/legacy" element={<Legacy />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/novamin" element={<Admin />} />
               <Route path="/sitemap" element={<Sitemap />} />
             </Routes>
           </main>
