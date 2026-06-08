@@ -5,6 +5,7 @@ import { ChevronRight, Trophy, Sparkles, Calendar, MapPin } from 'lucide-react';
 import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
+import heroAsset from '../assets/hero asset.png';
 
 interface HeroProps {
   timeLeft: {
@@ -166,9 +167,10 @@ export default function HeroV2({ timeLeft }: HeroProps) {
           >
             <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
             <img 
-              src="https://images.unsplash.com/photo-1546776310-eef45dd6d63c?q=80&w=1000&auto=format&fit=crop" 
-              alt="Technova Robot" 
-              className="relative z-10 w-full max-w-[500px] h-auto drop-shadow-[0_0_50px_rgba(37,99,235,0.3)] filter brightness-110 contrast-110"
+              src={heroAsset} 
+              alt="Technova Hero Asset" 
+              className="relative z-10 w-full max-w-[500px] h-auto drop-shadow-[0_0_50px_rgba(37,99,235,0.3)] filter brightness-110 contrast-110 object-contain"
+              referrerPolicy="no-referrer"
             />
           </motion.div>
         </div>

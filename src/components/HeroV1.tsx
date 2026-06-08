@@ -5,6 +5,7 @@ import { ChevronRight, Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
+import heroAsset from '../assets/hero asset.png';
 
 interface HeroProps {
   timeLeft: {
@@ -50,6 +51,18 @@ export default function HeroV1({ timeLeft }: HeroProps) {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 dark:bg-blue-600/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-50/50 dark:bg-blue-400/10 rounded-full blur-[120px]" />
+        
+        {/* Right side background image (absolutely-positioned, no layout change) */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full max-w-[650px] h-[80%] opacity-[0.22] dark:opacity-[0.25] pointer-events-none select-none z-0 hidden lg:block overflow-hidden">
+          <img 
+            src={heroAsset} 
+            alt="Hero Background Image" 
+            className="w-full h-full object-contain object-right"
+            referrerPolicy="no-referrer"
+          />
+          {/* Subtle gradient to blend into center of page */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent dark:from-[#050505] dark:via-[#050505]/40 dark:to-transparent pointer-events-none w-1/3" />
+        </div>
       </div>
 
       {/* Screen 1: Top Fold content (Logos down to Countdown Timer, fitting first view perfectly) */}
