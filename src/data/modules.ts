@@ -98,7 +98,7 @@ export const modules: Module[] = [
     description: 'Step into the world of cybersecurity. Work with your squad to discover vulnerabilities and learn to secure digital environments in a fun, collaborative challenge.',
     icon: Shield,
     category: 'Tech',
-    mode: 'Duo',
+    mode: 'Squad',
     prize: 'TBD',
     challengeName: 'Zero Signal',
     longDescription: 'The signal is gone. The galaxy is under attack. Zero Signal is a Capture the Flag cyber warfare challenge set across a live galaxy map, where every flag you capture claims territory, and every second you\'re slow, some other crew takes it.\n\nSix planets. Six attack surfaces. Each one is a different fight: crack the challenge, plant your flag, and watch the map shift in real time. The scoreboard is live, and everyone can see it.\n\nThis is not a quiz. It is a war zone.',

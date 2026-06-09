@@ -94,9 +94,12 @@ export default function Register() {
       }
 
       // 3 mandatory for innovation/squad, 2 mandatory for 2-3 team (Duo), otherwise all mandatory
-      const minRequired = isInnovationModule 
-        ? 3 
-        : (activeMode === 'Duo' ? 2 : data.members.length);
+      // BUT for PUBG Esports Competition, all 4 members of the Squad are strictly mandatory!
+      const minRequired = selectedModule?.id === 'esports-competition'
+        ? 4
+        : (isInnovationModule || activeMode === 'Squad')
+          ? 3 
+          : (activeMode === 'Duo' ? 2 : data.members.length);
 
       data.members.forEach((m, idx) => {
         const isMandatory = idx < minRequired;
@@ -749,11 +752,13 @@ export default function Register() {
                             </h3>
                             <div className="flex items-center gap-3">
                               <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20 uppercase tracking-widest">
-                                {isInnovationModule 
-                                  ? '4 Members Limit (3 Mandatory)' 
-                                  : activeMode === 'Duo'
-                                    ? '3 Members Limit (2 Mandatory)'
-                                    : `${fields.length} ${fields.length === 1 ? 'Person' : 'Members'} Required`}
+                                {selectedModule?.id === 'esports-competition'
+                                  ? '4 Members Required (All Mandatory)'
+                                  : isInnovationModule || activeMode === 'Squad'
+                                    ? '4 Members Limit (3 Mandatory)' 
+                                    : activeMode === 'Duo'
+                                      ? '3 Members Limit (2 Mandatory)'
+                                      : `${fields.length} ${fields.length === 1 ? 'Person' : 'Members'} Required`}
                               </span>
                             </div>
                           </div>
@@ -768,7 +773,7 @@ export default function Register() {
                                   <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
                                     {index === 0 ? 'Lead Person' : `Team Member ${index + 1}`}
                                   </h4>
-                                  {((isInnovationModule && index === 3) || (activeMode === 'Duo' && index === 2)) && (
+                                  {selectedModule?.id !== 'esports-competition' && (((isInnovationModule || activeMode === 'Squad') && index === 3) || (activeMode === 'Duo' && index === 2)) && (
                                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest border border-gray-200 dark:border-white/10 px-2 py-0.5 rounded-md">
                                       Optional
                                     </span>
