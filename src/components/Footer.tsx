@@ -158,7 +158,6 @@ export default function Footer() {
             <Link to="/legacy" className="text-gray-500 hover:text-blue-500 text-[10px] font-bold uppercase tracking-widest transition-colors flex items-center gap-1">
               Legacy TechNova <ExternalLink className="w-2.5 h-2.5" />
             </Link>
-            <Link to="/sitemap" className="text-gray-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Sitemap</Link>
             <a href="#" className="text-gray-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Privacy</a>
             <a href="#" className="text-gray-500 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-colors">Terms</a>
           </div>
