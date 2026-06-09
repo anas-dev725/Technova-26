@@ -324,11 +324,24 @@ export default function Admin() {
     count: submissions.filter(s => s.moduleTitle === m).length
   }));
 
+  // Dynamic calculations based on selected filterModule
+  const targetSubmissions = filterModule === 'all'
+    ? submissions
+    : submissions.filter(s => s.moduleTitle === filterModule);
+
   const stats = {
-    total: submissions.length,
-    pending: submissions.filter(s => s.status === 'pending').length,
-    approved: submissions.filter(s => s.status === 'approved').length,
-    rejected: submissions.filter(s => s.status === 'rejected').length,
+    // Basic review queue stats
+    total: targetSubmissions.length,
+    pending: targetSubmissions.filter(s => s.status === 'pending').length,
+    approved: targetSubmissions.filter(s => s.status === 'approved').length,
+    rejected: targetSubmissions.filter(s => s.status === 'rejected').length,
+
+    // High precision event/financial statistics for the active view
+    teams: targetSubmissions.length,
+    participants: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0),
+    amountApproved: targetSubmissions.filter(s => s.status === 'approved').reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountPending: targetSubmissions.filter(s => s.status === 'pending').reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountTotal: targetSubmissions.reduce((sum, s) => sum + (s.totalFee || 0), 0),
   };
 
   if (loading) {
@@ -505,27 +518,106 @@ export default function Admin() {
 
         {/* Quick Stats */}
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {[
-              { label: 'Total', value: stats.total, color: 'blue', icon: Users },
-              { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
-              { label: 'Approved', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
-              { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
-            ].map((stat, i) => (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                key={stat.label}
-                className="p-4 md:p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative group"
+          {/* Active View Title */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="flex h-3 w-3 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+              <p className="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                Active View: <span className="text-blue-500 font-extrabold">{filterModule === 'all' ? 'ALL MODULES COMBINED' : filterModule.toUpperCase()}</span>
+              </p>
+            </div>
+            {filterModule !== 'all' && (
+              <button 
+                onClick={() => setFilterModule('all')}
+                className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 hover:underline transition-colors cursor-pointer bg-blue-500/10 px-2.5 py-1 rounded"
               >
-                <div className={`w-8 h-8 md:w-12 md:h-12 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
-                  <stat.icon className={`w-4 h-4 md:w-6 md:h-6 text-${stat.color}-500`} />
+                Reset to All
+              </button>
+            )}
+          </div>
+
+          {/* Core Event Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Teams Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full translate-x-4 -translate-y-4"></div>
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-4 border border-blue-500/20">
+                <Users className="w-6 h-6 text-blue-500" />
+              </div>
+              <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-1.5 tracking-tight font-display">
+                {stats.teams}
+              </div>
+              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Teams Registered</div>
+              <div className="text-[10px] text-gray-500 font-bold">Total group submissions under active filter</div>
+            </motion.div>
+
+            {/* Participants Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full translate-x-4 -translate-y-4"></div>
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-4 border border-purple-500/20">
+                <UserIcon className="w-6 h-6 text-purple-500" />
+              </div>
+              <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-1.5 tracking-tight font-display">
+                {stats.participants}
+              </div>
+              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Participants Registered</div>
+              <div className="text-[10px] text-gray-500 font-bold">Sum of individual members across teams</div>
+            </motion.div>
+
+            {/* Amount Collected Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full translate-x-4 -translate-y-4"></div>
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4 border border-emerald-500/20">
+                <CreditCard className="w-6 h-6 text-emerald-500" />
+              </div>
+              <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-1.5 tracking-tight font-display">
+                PKR {stats.amountApproved.toLocaleString()}
+              </div>
+              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Amount Collected</div>
+              <div className="text-[10px] text-gray-500 font-bold truncate">
+                Approved: PKR {stats.amountApproved.toLocaleString()} • Pending: PKR {stats.amountPending.toLocaleString()}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Review Status Split */}
+          <div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+              {[
+                { label: 'Total', value: stats.total, color: 'blue', icon: Users },
+                { label: 'Pending', value: stats.pending, color: 'amber', icon: Clock },
+                { label: 'Approved', value: stats.approved, color: 'emerald', icon: CheckCircle2 },
+                { label: 'Rejected', value: stats.rejected, color: 'rose', icon: XCircle },
+              ].map((stat, i) => (
+                <div
+                  key={stat.label}
+                  className="p-4 md:p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-lg relative group"
+                >
+                  <div className={`w-8 h-8 md:w-12 md:h-12 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center mb-4 border border-${stat.color}-500/20`}>
+                    <stat.icon className={`w-4 h-4 md:w-6 md:h-6 text-${stat.color}-500`} />
+                  </div>
+                  <div className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-1 tracking-tight">{stat.value}</div>
+                  <div className="text-[8px] md:text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">{stat.label}</div>
                 </div>
-                <div className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-1 tracking-tight">{stat.value}</div>
-                <div className="text-[8px] md:text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">{stat.label}</div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="p-6 md:p-8 bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden relative group">
