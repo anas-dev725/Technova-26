@@ -9,6 +9,21 @@ import {
 } from 'lucide-react';
 import { modules, getFees, TeamMode } from '../data/modules';
 
+const formatTextWithBold = (text: string) => {
+  if (!text) return '';
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="font-extrabold text-blue-600 dark:text-blue-400">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+};
+
 export default function ModuleDetail() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
@@ -123,13 +138,13 @@ export default function ModuleDetail() {
                         if (pIdx === 0) {
                           return (
                             <p key={pIdx} className="text-lg sm:text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed font-sans border-l-4 border-blue-500 pl-4 py-1">
-                              {para}
+                              {formatTextWithBold(para)}
                             </p>
                           );
                         }
                         return (
                           <p key={pIdx} className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-sans font-medium">
-                            {para}
+                            {formatTextWithBold(para)}
                           </p>
                         );
                       })}
@@ -264,7 +279,7 @@ export default function ModuleDetail() {
 
                               <div className="space-y-1 pr-2">
                                 <p className="text-gray-800 dark:text-gray-200 font-bold text-sm leading-relaxed">
-                                  {rule}
+                                  {formatTextWithBold(rule)}
                                 </p>
                               </div>
                             </motion.div>

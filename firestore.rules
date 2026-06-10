@@ -86,5 +86,9 @@ service cloud.firestore {
       allow list: if isSignedIn() && resource.data.email == request.auth.token.email;
       allow write: if false; // Only manageable via Firebase Console or Admin SDK
     }
+
+    match /test/{docId} {
+      allow read: if true;
+    }
   }
 }

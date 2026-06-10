@@ -294,7 +294,17 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Duo',
     prize: 'TBD',
-    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?'
+    challengeName: 'The Variable Matrix',
+    skills: ['Logic & Reasoning', 'Quantitative Analysis', 'Pattern Recognition', 'Mental Aptitude'],
+    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?\n\nTOPICS COVERED\nThe following mathematical topics will be tested during the competition:\n• Algebra: Arithmetic, fractions, linear and quadratic equations, inequalities, sequence and series, functions and their properties.\n• Number theory: Divisibility, prime numbers, GCD and LCM, counting principle, sudoku.\n• Statistics and Probability: Descriptive Statistics, permutation and combination, elementary probability.\n• Calculus: Differentiation, integration and related theorems.\n\nCOMPETITION FORMAT\nThe competition consists of multiple rounds, conducted through both computer-based and paper-based formats:\n• **Round 1 (First Round)**: Computer-based screening test.\n• **Round 2 (Second Round)**: Advanced computer-based challenge.\n• **Round 3 (Third Round / Sudoku)**: Paper-based pattern & logic speedrun.\n• **Round 4 (Fourth Round)**: Multi-dimensional computer-based strategic test.\n• **Round 5 (Final Round)**: Visual computer-based speed and precision battle.',
+    rulesList: [
+      'Teams of 2 or 3 members are allowed.',
+      'Calculators may or may not be permitted depending on the round specifications.',
+      'No secondary devices, smartwatches, or notebooks are allowed inside the testing hall.',
+      'Rounds 1, 2, 4, and 5 are fully computer-based sessions on the official port.',
+      'Round 3 is an intensive, paper-based Sudoku and speed pattern solving challenge.',
+      'Any form of academic dishonesty, communication outside your team, or internet scouting during testing results in immediate disqualification.'
+    ]
   }
 ];
 
