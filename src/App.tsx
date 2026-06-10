@@ -22,7 +22,6 @@ import Sitemap from './pages/Sitemap';
 import ScrollToTop from './components/ScrollToTop';
 import Chatbot from './components/Chatbot';
 import { ThemeProvider } from './components/ThemeContext';
-import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   return (
@@ -48,7 +47,6 @@ export default function App() {
           </main>
           <Footer />
           <Chatbot />
-          <Analytics />
         </div>
       </Router>
     </ThemeProvider>

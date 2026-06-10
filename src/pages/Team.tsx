@@ -13,6 +13,8 @@ import mustafaPfp from '../assets/mustafa pfp.jpeg';
 import shayanPfp from '../assets/shayan pfp.jpeg';
 import abbassPfp from '../assets/abbass pfp.jpg';
 import khalidPfp from '../assets/khalid pfp.jpeg';
+import abeehaPfp from '../assets/Abeeha pfpp.png';
+import haadPfp from '../assets/haad pfp.jpg';
 
 interface TeamMember {
   name: string;
@@ -67,7 +69,7 @@ export default function Team() {
       mail: 'abbasiaashirali110@gmail.com'
     },
     {
-      name: 'Ramsha Khan',
+      name: 'Ramsha Imran',
       role: 'Volunteer Lead',
       dept: 'Data Analyst',
       img: ramshaPfp,
@@ -123,20 +125,19 @@ export default function Team() {
   // Additional Wing (Core Operations Support Directorate) (3 members)
   const additionalWing: TeamMember[] = [
     {
-      name: 'Syeda Fatima',
-      role: 'Director Registrations',
-      dept: 'Attendee Database & Desk Core',
-      initials: 'SF',
-      gradient: 'from-amber-500 to-orange-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Abeeha Asif',
+      role: 'Director Media',
+      dept: 'AI Engineer',
+      img: abeehaPfp,
+      linkedin: 'https://www.linkedin.com/in/abeeha-asif-23985430a/',
+      mail: 'abeehaasifhameed@gmail.com'
     },
     {
-      name: 'Rayyan Sheikh',
-      role: 'Director Security',
-      dept: 'Venue Access & Guard Protocol',
-      initials: 'RS',
-      gradient: 'from-emerald-500 to-teal-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Syed Muhammad Haad',
+      role: 'Marketing Director',
+      dept: 'Full Stack Web Developer',
+      img: haadPfp,
+      linkedin: 'https://www.linkedin.com/in/syed-muhammad-haad-8155a3289/'
     },
     {
       name: 'Aliza Zaidi',
@@ -677,12 +678,12 @@ export default function Team() {
 
             {/* Bottom Row of 3 Members */}
             <div className="flex flex-wrap lg:flex-nowrap gap-12 justify-center w-full relative z-10 mt-4">
-              {/* Member 1: Syeda Fatima */}
+              {/* Member 1: Abeeha Asif */}
               <div className="relative">
                 {renderMemberCard(additionalWing[0], 'pink', 'normal')}
               </div>
               
-              {/* Member 2: Rayyan Sheikh */}
+              {/* Member 2: Syed Muhammad Haad */}
               <div className="relative">
                 {renderMemberCard(additionalWing[1], 'cyan', 'normal')}
               </div>
