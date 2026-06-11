@@ -15,6 +15,7 @@ import abbassPfp from '../assets/abbass pfp.jpg';
 import khalidPfp from '../assets/khalid pfp.jpeg';
 import abeehaPfp from '../assets/Abeeha pfpp.png';
 import haadPfp from '../assets/haad pfp.jpg';
+import zoyaPfp from '../assets/zoya pfp.jpg';
 
 interface TeamMember {
   name: string;
@@ -113,12 +114,11 @@ export default function Team() {
       mail: 'Std_34578@iobm.edu.pk'
     },
     {
-      name: 'Eshal Noor',
-      role: 'Director PR',
-      dept: 'Outreach & Media Communication',
-      initials: 'EN',
-      gradient: 'from-indigo-500 to-cyan-600',
-      linkedin: 'https://www.linkedin.com/'
+      name: 'Zoya Nayab',
+      role: 'Director Student Affairs',
+      dept: 'Software Engineer',
+      img: zoyaPfp,
+      linkedin: 'https://www.linkedin.com/in/zoya-nayab-5b751737a/'
     }
   ];
 
