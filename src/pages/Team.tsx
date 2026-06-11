@@ -16,6 +16,7 @@ import khalidPfp from '../assets/khalid pfp.jpeg';
 import abeehaPfp from '../assets/Abeeha pfpp.png';
 import haadPfp from '../assets/haad pfp.jpg';
 import zoyaPfp from '../assets/zoya pfp.jpg';
+import abdulRafayPfp from '../assets/Abdul Rafay pfp.jpg';
 
 interface TeamMember {
   name: string;
@@ -140,11 +141,10 @@ export default function Team() {
       linkedin: 'https://www.linkedin.com/in/syed-muhammad-haad-8155a3289/'
     },
     {
-      name: 'Aliza Zaidi',
-      role: 'Director Media',
-      dept: 'Press Coverage & Scribing Core',
-      initials: 'AZ',
-      gradient: 'from-rose-500 to-pink-600',
+      name: 'Abdul Rafay',
+      role: 'Director Promotions',
+      dept: 'Software Engineer',
+      img: abdulRafayPfp,
       linkedin: 'https://www.linkedin.com/'
     }
   ];
@@ -688,7 +688,7 @@ export default function Team() {
                 {renderMemberCard(additionalWing[1], 'cyan', 'normal')}
               </div>
               
-              {/* Member 3: Aliza Zaidi */}
+              {/* Member 3: Abdul Rafay */}
               <div className="relative">
                 {renderMemberCard(additionalWing[2], 'pink', 'normal')}
               </div>
