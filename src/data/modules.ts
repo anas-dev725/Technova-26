@@ -57,9 +57,9 @@ export const modules: Module[] = [
       'Evaluation is conducted by a distinguished jury from both academia and industry. Their decision is absolute.'
     ],
     heads: [
-      { name: 'Sarah', role: 'Module Lead', designation: 'Lead Systems Evaluator', linkedin: 'https://linkedin.com' },
-      { name: 'Sania', role: 'Module Lead', designation: 'Senior Innovation Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Marhaba', role: 'Module Lead', designation: 'Technical Review Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Sarah Khan', role: 'Module Lead', designation: 'AI Security Engineer', linkedin: 'https://www.linkedin.com/in/sarah-khan-4b85bb392' },
+      { name: 'Sania Partab', role: 'Module Lead', designation: 'Cyber Security Analyst', linkedin: 'https://www.linkedin.com/in/sania-partab-1b1591372/' },
+      { name: 'Marhaba Ansari', role: 'Module Lead', designation: 'Cyber Security Analyst', linkedin: 'https://www.linkedin.com/in/marhaba-ansari-893217363/' },
       { name: 'Khizra Hassan', role: 'Module Lead', designation: 'Aspiring ML Engineer', linkedin: 'https://www.linkedin.com/in/khizra-hassan--/' },
       { name: 'Bisma Zakir', role: 'Module Lead', designation: 'Data Analyst', linkedin: 'https://www.linkedin.com/in/bisma-zakir-a5bb6b202/' },
       { name: 'Alishba Asghar', role: 'Module Lead', designation: 'Data analyst', linkedin: 'https://www.linkedin.com/in/alishba-asghar-7a38843a0/' }
