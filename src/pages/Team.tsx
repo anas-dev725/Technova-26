@@ -17,6 +17,7 @@ import abeehaPfp from '../assets/Abeeha pfpp.png';
 import haadPfp from '../assets/haad pfp.jpg';
 import zoyaPfp from '../assets/zoya pfp.jpg';
 import abdulRafayPfp from '../assets/Abdul Rafay pfp.jpg';
+import shabeebPfp from '../assets/shabeeb pfp.png';
 
 interface TeamMember {
   name: string;
@@ -164,8 +165,7 @@ export default function Team() {
       name: 'Syed Shabeeb Raza',
       role: 'Director Operations',
       dept: 'Junior Lecturer, CCSIS',
-      initials: 'SR',
-      gradient: 'from-violet-900/90 via-[#180410] to-[#0c0214]',
+      img: shabeebPfp,
       linkedin: 'https://www.linkedin.com/in/the-shabeeb-raza/'
     },
     {
