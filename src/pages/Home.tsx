@@ -21,6 +21,7 @@ import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import alMeezanLogo from '../assets/al meezan.png';
+import beencoLabsLogo from '../assets/Beenco labs.png';
 import { modules } from '../data/modules';
 import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock, X } from 'lucide-react';
 
@@ -309,26 +310,26 @@ export default function Home() {
               <div className="flex gap-12 w-max animate-[slide_20s_linear_infinite] hover:[animation-play-state:paused]">
                 {[
                   { name: 'Al Meezan', logo: alMeezanLogo },
-                  { name: 'B Braun', logo: bBraunLogo },
                   { name: 'Telec', logo: telecLogo },
                   { name: 'Express News', logo: expressNewsLogo },
                   { name: 'Texitech', logo: texitechLogo },
+                  { name: 'Beenco Labs', logo: beencoLabsLogo },
                   // Repeat multiple times for perfect infinite loop logic (must be even sets for -50% translation)
                   { name: 'Al Meezan', logo: alMeezanLogo },
-                  { name: 'B Braun', logo: bBraunLogo },
                   { name: 'Telec', logo: telecLogo },
                   { name: 'Express News', logo: expressNewsLogo },
                   { name: 'Texitech', logo: texitechLogo },
+                  { name: 'Beenco Labs', logo: beencoLabsLogo },
                   { name: 'Al Meezan', logo: alMeezanLogo },
-                  { name: 'B Braun', logo: bBraunLogo },
                   { name: 'Telec', logo: telecLogo },
                   { name: 'Express News', logo: expressNewsLogo },
                   { name: 'Texitech', logo: texitechLogo },
+                  { name: 'Beenco Labs', logo: beencoLabsLogo },
                   { name: 'Al Meezan', logo: alMeezanLogo },
-                  { name: 'B Braun', logo: bBraunLogo },
                   { name: 'Telec', logo: telecLogo },
                   { name: 'Express News', logo: expressNewsLogo },
                   { name: 'Texitech', logo: texitechLogo },
+                  { name: 'Beenco Labs', logo: beencoLabsLogo },
                 ].map((sponsor: any, idx) => (
                   <div 
                     key={idx}

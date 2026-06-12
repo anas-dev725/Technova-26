@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Building2, Handshake, ArrowRight, CheckCircle2, Shield, Trophy, Zap, X } from 'lucide-react';
 import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/sponsor-logos';
 import alMeezanLogo from '../assets/al meezan.png';
+import beencoLabsLogo from '../assets/Beenco labs.png';
 
 export default function Sponsors() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -168,8 +169,8 @@ export default function Sponsors() {
               <h2 className="text-xs font-black text-yellow-500 uppercase tracking-[0.4em] mb-12 text-center">Gold & Strategic Partners</h2>
               <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto px-4">
                 {[
-                  { name: 'B Braun', logo: bBraunLogo },
-                  { name: 'Express News', logo: expressNewsLogo }
+                  { name: 'Express News', logo: expressNewsLogo },
+                  { name: 'Beenco Labs', logo: beencoLabsLogo }
                 ].map((sponsor: any) => (
                   <motion.div 
                     key={sponsor.name} 
