@@ -145,9 +145,9 @@ export const modules: Module[] = [
       'Organizers reserve the right to adapt rules. All decisions are final.'
     ],
     heads: [
-      { name: 'Sameed', role: 'Module Lead', designation: 'Multi-Agent Frameworks Lead', linkedin: 'https://linkedin.com' },
-      { name: 'Hamza', role: 'Module Lead', designation: 'AI Systems Architect', linkedin: 'https://linkedin.com' },
-      { name: 'Wasay', role: 'Module Lead', designation: 'Game Theory Analyst', linkedin: 'https://linkedin.com' }
+      { name: 'Sameed Khan', role: 'Module Lead', designation: 'Multi-Agent Frameworks Lead', linkedin: 'https://linkedin.com' },
+      { name: 'Hamza Afzal', role: 'Module Lead', designation: 'AI Systems Architect', linkedin: 'https://linkedin.com' },
+      { name: 'Abdul Wasay Baig', role: 'Module Lead', designation: 'Game Theory Analyst', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -199,8 +199,8 @@ export const modules: Module[] = [
     ],
     heads: [
       { name: 'Nimra Yousuf', role: 'Module Lead', designation: 'AI engineer', linkedin: 'https://www.linkedin.com/in/nimra-yousuf-1b7173326/' },
-      { name: 'Ayaan', role: 'Module Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
-      { name: 'Ali Warsi', role: 'Module Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
+      { name: 'Syed Ayaan Nadeem', role: 'Module Lead', designation: 'AI Alignment Analyst', linkedin: 'https://linkedin.com' },
+      { name: 'Huzaifa Ahmed', role: 'Module Lead', designation: 'Adversarial Prompt Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
   {
@@ -253,8 +253,8 @@ export const modules: Module[] = [
       'Organizers reserve the right to modify rules if necessary.'
     ],
     heads: [
-      { name: 'Sidra', role: 'Module Lead', designation: 'Chief Frontend Architect', linkedin: 'https://linkedin.com' },
-      { name: 'Muneer', role: 'Module Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
+      { name: 'Sidra Ali', role: 'Module Lead', designation: 'Software Engineer', linkedin: 'https://www.linkedin.com/in/sidraalisheer/' },
+      { name: 'Muneer Ahmed', role: 'Module Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
       { name: 'Jawad', role: 'Module Lead', designation: 'Interaction Engineer', linkedin: 'https://linkedin.com' }
     ]
   },
@@ -281,9 +281,9 @@ export const modules: Module[] = [
       'Judges decisions are final.'
     ],
     heads: [
-      { name: 'Rafia', role: 'Module Lead', designation: 'Lead Product Designer', linkedin: 'https://linkedin.com' },
+      { name: 'Rafia Ameen', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/rafiaameen/' },
       { name: 'Shaeem Imran', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/shaeem-imran7' },
-      { name: 'Faiza', role: 'Module Lead', designation: 'Visual Systems Lead', linkedin: 'https://linkedin.com' }
+      { name: 'Faiza Mustafa', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/faiza-mustafa-210a1829b/' }
     ]
   },
   {
