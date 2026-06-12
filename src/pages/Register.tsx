@@ -372,6 +372,7 @@ export default function Register() {
   const getPromoPercentage = (code: string) => {
     const uc = code.toUpperCase();
     if (uc === '35TECHNO') return 0.35;
+    if (uc === 'TECHALUM35') return 0.35;
     if (uc === 'TECHNOVA30') return 0.30;
     return 0;
   };
@@ -384,7 +385,7 @@ export default function Register() {
     const code = val.toUpperCase();
     setPromoCode(val);
     
-    if (code === '35TECHNO' || code === 'TECHNOVA30') {
+    if (code === '35TECHNO' || code === 'TECHALUM35' || code === 'TECHNOVA30') {
       if (!isPromoApplied) {
         confetti({
           particleCount: 150,
