@@ -5,7 +5,7 @@ import { ChevronRight, Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { ccsisLogoBase64 as ccsisLogo } from '../assets/ccsisLogoBase64';
 import { iobmLogoBase64 as iobmLogo } from '../assets/iobmLogoBase64';
 import { ieeeLogoBase64 as ieeeLogo } from '../assets/ieeeLogoBase64';
-import heroAsset from '../assets/hero asset.png';
+import heroAsset from '../assets/hero asset bg.png';
 
 interface HeroProps {
   timeLeft: {
