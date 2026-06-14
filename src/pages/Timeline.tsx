@@ -60,7 +60,7 @@ export default function Timeline() {
         track: "AI", 
         location: "TBD", 
         icon: BrainCircuit,
-        capacity: "Squad members (3 - 4)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "2.5 Hours"
       },
       { 
@@ -73,7 +73,7 @@ export default function Timeline() {
         track: "Tech", 
         location: "TBD", 
         icon: Shield,
-        capacity: "Squad members (3 - 4)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "2.5 Hours"
       },
       { 
@@ -86,7 +86,7 @@ export default function Timeline() {
         track: "Design", 
         location: "TBD", 
         icon: Palette,
-        capacity: "Squad members (3 - 4)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "2.5 Hours"
       },
       { 
@@ -150,7 +150,7 @@ export default function Timeline() {
         track: "Tech", 
         location: "TBD", 
         icon: BrainCircuit,
-        capacity: "Teams (3 - 4 members)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "3 Hours"
       },
       { 
@@ -190,7 +190,7 @@ export default function Timeline() {
         track: "AI", 
         location: "TBD", 
         icon: BrainCircuit,
-        capacity: "Squad members (3 - 4)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "2.5 Hours"
       },
       { 
@@ -203,7 +203,7 @@ export default function Timeline() {
         track: "Tech", 
         location: "TBD", 
         icon: BrainCircuit,
-        capacity: "Teams (3 - 4 members)",
+        capacity: "Teams (2 - 3 members)",
         durationLabel: "4 Hours"
       },
       { 
