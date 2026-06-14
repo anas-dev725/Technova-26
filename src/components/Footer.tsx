@@ -34,7 +34,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-3">
               {[
-                { icon: Instagram, href: "https://www.instagram.com/technova_iobm_/" },
+                { icon: Instagram, href: "https://www.instagram.com/technova_iobm/" },
                 { icon: Linkedin, href: "https://www.linkedin.com/showcase/technova-iobm/" },
                 { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61574719920764" }
               ].map((social, i) => (
@@ -58,8 +58,8 @@ export default function Footer() {
               {[
                 { name: 'Home', path: '/' },
                 { name: 'Modules', path: '/modules' },
-                { name: 'Register', path: '/register' },
-                { name: 'Sponsors', path: '/sponsors' },
+                { name: 'Team', path: '/team' },
+                { name: 'Legacy', path: '/legacy' },
                 { name: 'About', path: '/#about' }
               ].map((link) => (
                 <li key={link.name}>
