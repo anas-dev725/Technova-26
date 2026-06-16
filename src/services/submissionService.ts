@@ -52,7 +52,8 @@ export const MODULE_PREFIXES: Record<string, string> = {
   'esports-competition': 'ESP',
   'webforces': 'WF',
   'digital-dash': 'DD',
-  'maths-mania': 'MM'
+  'maths-mania': 'MM',
+  'maths-mania-advanced': 'MMA'
 };
 
 function getParticipantPrefix(moduleId: string): string {

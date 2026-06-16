@@ -5,7 +5,7 @@ import {
   ArrowLeft, Users, User, UsersRound, Trophy, 
   CreditCard, Clock, MapPin, CheckCircle2, 
   ShieldCheck, AlertCircle, Sparkles, Gamepad2,
-  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket
+  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket, Calendar
 } from 'lucide-react';
 import { modules, getFees, TeamMode } from '../data/modules';
 
@@ -22,6 +22,64 @@ const formatTextWithBold = (text: string) => {
     }
     return part;
   });
+};
+
+const moduleSchedules: Record<string, { day: string; time: string; venue: string }> = {
+  'fyp-warriors': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '10:00 AM - 03:00 PM',
+    venue: 'Main Seminar Hall & Presentation Cubicles'
+  },
+  'startup-launchpad': {
+    day: 'Day 2 (Sunday, July 12, 2026)',
+    time: '10:00 AM - 02:00 PM',
+    venue: 'Venture Incubation Arena'
+  },
+  'capture-the-flag': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '10:00 AM - 12:30 PM',
+    venue: 'Cyber Security Lab (Block A)'
+  },
+  'agentic-ai-arena': {
+    day: 'Day 1 & Day 2 (Saturday & Sunday)',
+    time: '10:00 AM - 12:30 PM',
+    venue: 'AI Research Wing'
+  },
+  'datathon': {
+    day: 'Day 2 (Sunday, July 12, 2026)',
+    time: '10:00 AM - 02:00 PM',
+    venue: 'Data Analytics Center'
+  },
+  'prompt-engineering': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '02:00 PM - 05:05 PM',
+    venue: 'Computing Lab 3'
+  },
+  'esports-competition': {
+    day: 'Day 1 & Day 2 (Saturday & Sunday)',
+    time: 'Day 1: 02:00 PM - 05:00 PM | Day 2: 10:00 AM - 02:00 PM',
+    venue: 'Technova Gaming Zone'
+  },
+  'webforces': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '10:00 AM - 12:30 PM',
+    venue: 'Web Development Lab'
+  },
+  'digital-dash': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '02:00 PM - 05:00 PM',
+    venue: 'UI/UX Design Studio'
+  },
+  'maths-mania': {
+    day: 'Day 2 (Sunday, July 12, 2026)',
+    time: '10:00 AM - 02:00 PM',
+    venue: 'Mathematics Examination Hall'
+  },
+  'maths-mania-advanced': {
+    day: 'Day 1 (Saturday, July 11, 2026)',
+    time: '02:00 PM - 05:00 PM',
+    venue: 'Mathematics Examination Hall'
+  }
 };
 
 export default function ModuleDetail() {
@@ -50,6 +108,11 @@ export default function ModuleDetail() {
 
   const fees = getFees(selectedMode, module.id);
   const Icon = module.icon;
+  const schedule = moduleSchedules[module.id] || {
+    day: 'Day 1 & Day 2',
+    time: 'TBD (Will be Updated)',
+    venue: 'TBD (Will be Shared Soon)'
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
@@ -354,7 +417,7 @@ export default function ModuleDetail() {
                       <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white">Module Guidelines</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
                       {/* Venue & Timing Column */}
                       <div className="space-y-4">
                         <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Venue & Timing</h4>
@@ -363,13 +426,19 @@ export default function ModuleDetail() {
                             <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
                               <MapPin className="w-4 h-4 text-blue-500" />
                             </div>
-                            <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">TBD (Will be Shared Soon)</span>
+                            <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">{schedule.venue}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
+                              <Calendar className="w-4 h-4 text-blue-500" />
+                            </div>
+                            <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">{schedule.day}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
                               <Clock className="w-4 h-4 text-blue-500" />
                             </div>
-                            <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">TBD (Will be Updated)</span>
+                            <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">{schedule.time}</span>
                           </div>
                         </div>
                       </div>

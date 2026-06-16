@@ -288,21 +288,40 @@ export const modules: Module[] = [
   },
   {
     id: 'maths-mania',
-    title: 'Maths Mania',
-    description: 'Love a good brain teaser? Put your logic and quantitative reasoning to the test. It\'s not just about numbers, it\'s about creative thinking!',
+    title: 'Maths Mania (Advanced)',
+    description: 'Face the ultimate analytical challenge. Prove your mastery over advanced mathematics, complex calculus, structural algebra, and stochastic logic.',
     icon: Calculator,
     category: 'Tech',
     mode: 'Duo',
     prize: 'TBD',
-    challengeName: 'The Variable Matrix',
-    skills: ['Logic & Reasoning', 'Quantitative Analysis', 'Pattern Recognition', 'Mental Aptitude'],
-    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?\n\nTOPICS COVERED\nThe following mathematical topics will be tested during the competition:\n• Algebra: Arithmetic, fractions, linear and quadratic equations, inequalities, sequence and series, functions and their properties.\n• Number theory: Divisibility, prime numbers, GCD and LCM, counting principle, sudoku.\n• Statistics and Probability: Descriptive Statistics, permutation and combination, elementary probability.\n• Calculus: Differentiation, integration and related theorems.\n\nCOMPETITION FORMAT\nThe competition consists of multiple rounds, conducted through both computer-based and paper-based formats:\n• **Round 1 (First Round)**: Computer-based screening test.\n• **Round 2 (Second Round)**: Advanced computer-based challenge.\n• **Round 3 (Third Round / Sudoku)**: Paper-based pattern & logic speedrun.\n• **Round 4 (Fourth Round)**: Multi-dimensional computer-based strategic test.\n• **Round 5 (Final Round)**: Visual computer-based speed and precision battle.',
+    challengeName: 'The Variable Matrix (Advanced)',
+    skills: ['Advanced Calculus', 'Higher Algebra', 'Stochastic Logic', 'Abstract Reasoning'],
+    longDescription: 'Step up to the advanced tier of Maths Mania. Designed for seasoned problem solvers, this module pushes the boundaries of your mathematical intellect. Test your capabilities against high-difficulty proof-oriented structures, differential paradigms, advanced probability distributions, and structural matrix algebra under strict speed limits.\n\nTOPICS COVERED\nThe following mathematical topics will be tested during the competition:\n• Advanced Algebra: Linear systems, matrices, high-degree polynomial properties, inequalities, sequences and series.\n• Number theory & Combinatorics: Divisibility, prime modular arithmetic, combinatorics, advanced counting principles.\n• Statistics and Probability: Complex probability distributions, stochastic processes, permutations and combinations, statistical inferences.\n• Advanced Calculus: Multi-variable limits, advanced differentiation, integration by parts and substitution, differential equations, and infinite series.\n\nCOMPETITION FORMAT\nThe competition consists of multiple rounds, conducted through both computer-based and paper-based formats:\n• **Round 1 (First Round)**: Computer-based screening test.\n• **Round 2 (Second Round)**: Advanced computer-based challenge.\n• **Round 3 (Third Round / Sudoku)**: Paper-based pattern & logic speedrun.\n• **Round 4 (Fourth Round)**: Multi-dimensional computer-based strategic test.\n• **Round 5 (Final Round)**: Visual computer-based speed and precision battle.',
     rulesList: [
       'Teams of 2 to 3 members are allowed.',
       'Calculators may or may not be permitted depending on the round specifications.',
       'No secondary devices, smartwatches, or notebooks are allowed inside the testing hall.',
       'Rounds 1, 2, 4, and 5 are fully computer-based sessions on the official port.',
       'Round 3 is an intensive, paper-based Sudoku and speed pattern solving challenge.',
+      'Any form of academic dishonesty, communication outside your team, or internet scouting during testing results in immediate disqualification.'
+    ]
+  },
+  {
+    id: 'maths-mania-advanced',
+    title: 'Maths Mania (Junior)',
+    description: 'Love a good brain teaser? Put your logic and quantitative reasoning to the test. It\'s not just about numbers, it\'s about creative thinking!',
+    icon: Calculator,
+    category: 'Tech',
+    mode: 'Duo',
+    prize: 'TBD',
+    challengeName: 'The Variable Matrix (Junior)',
+    skills: ['Arithmetic', 'Basic Algebra', 'Geometry & Measurement', 'Number Systems'],
+    longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?\n\nTOPICS COVERED\nThe following mathematical topics will be tested during the competition:\n• **Arithmetic**: Fractions and Decimals, Percentage, Ratio and Proportion, Averages, Simple and Compound Interest.\n• **Algebra**: Simplifying expressions, Solving equations and inequalities, Word problems involving unknowns.\n• **Geometry and Measurement**: Properties of shapes, Perimeter, Area, Volume, Angles and Theorems.\n• **Number Systems**: Even/Odd, Prime/Composite numbers, Factors and Multiples, HCF and LCM.\n• **Data Interpretations and Analysis**: Reading Graphs, Tables, Calculating Averages, Trends, Ratios from Data, Understanding and Comparing data sets.\n• **Word Problems**: Real life problems solving, Time, Speed and Distance, Work and wages, Age Problems.\n• **Logical and Analytical Reasoning (Quant-Based)**: Pattern Recognition, Sequences and Series, Deductive logic using numbers.\n\nCOMPETITION ROUNDS\n• **Round 1**: Mathematical Foundations\n• **Round 2**: Algebra and Problem Solving\n• **Round 3**: Geometry and Data Analysis\n• **Round 4**: Logical Reasoning and Championship Round',
+    rulesList: [
+      'Question Format: Multiple Choice Questions (MCQs) and True/False.',
+      'Teams of 2 to 3 members are allowed.',
+      'Calculators may or may not be permitted depending on the round specifications.',
+      'No secondary devices, smartwatches, or notebooks are allowed inside the testing hall.',
       'Any form of academic dishonesty, communication outside your team, or internet scouting during testing results in immediate disqualification.'
     ]
   }
