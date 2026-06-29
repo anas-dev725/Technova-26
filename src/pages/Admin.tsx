@@ -23,7 +23,8 @@ import {
   ChevronDown,
   RefreshCw,
   Settings,
-  Trash2
+  Trash2,
+  Minus
 } from 'lucide-react';
 import { auth, signInWithGoogle } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
@@ -201,6 +202,17 @@ export default function Admin() {
     }
   };
 
+  const handleToggleExempted = async (id: string, currentExempted: boolean) => {
+    try {
+      await submissionService.toggleExempted(id, !currentExempted);
+      if (selectedSubmission?.id === id) {
+        setSelectedSubmission({ ...selectedSubmission, exempted: !currentExempted });
+      }
+    } catch (error) {
+      console.error('Exemption toggle error:', error);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!id) return;
     setConfirmDialog({
@@ -339,9 +351,9 @@ export default function Admin() {
     // High precision event/financial statistics for the active view
     teams: targetSubmissions.length,
     participants: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0),
-    amountApproved: targetSubmissions.filter(s => s.status === 'approved').reduce((sum, s) => sum + (s.totalFee || 0), 0),
-    amountPending: targetSubmissions.filter(s => s.status === 'pending').reduce((sum, s) => sum + (s.totalFee || 0), 0),
-    amountTotal: targetSubmissions.reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
   };
 
   if (loading) {
@@ -834,7 +846,8 @@ export default function Admin() {
                     'Total Fee (PKR)',
                     'Promo Code',
                     'Discount (PKR)',
-                    'Status'
+                    'Status',
+                    'Exempted'
                   ];
 
                   for (let i = 1; i <= maxMembers; i++) {
@@ -854,10 +867,11 @@ export default function Admin() {
                       s.moduleTitle || '',
                       s.subGameTitle || 'N/A',
                       s.university || '',
-                      s.totalFee || 0,
+                      s.exempted ? 0 : (s.totalFee || 0),
                       s.promoCode || 'NONE',
                       s.discountApplied || 0,
-                      s.status.toUpperCase()
+                      s.status.toUpperCase(),
+                      s.exempted ? 'YES' : 'NO'
                     ];
 
                     for (let i = 0; i < maxMembers; i++) {
@@ -877,9 +891,9 @@ export default function Admin() {
                   });
 
                   // Add Finance Summary Section
-                  const totalSum = filteredSubmissions.reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
-                  const approvedSum = submissions.filter(s => s.status === 'approved').reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
-                  const pendingSum = submissions.filter(s => s.status === 'pending').reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const totalSum = filteredSubmissions.filter(s => !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const approvedSum = submissions.filter(s => s.status === 'approved' && !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const pendingSum = submissions.filter(s => s.status === 'pending' && !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
 
                   aoaData.push([]); // Spacer
                   aoaData.push(['--- FINANCE REPORT SUMMARY ---']);
@@ -1073,11 +1087,16 @@ export default function Admin() {
 
                   <div className="flex items-center justify-between gap-3" onClick={e => e.stopPropagation()}>
                     <button 
-                      onClick={(e) => { e.stopPropagation(); setSelectedSubmission(sub); }}
-                      className="flex-1 py-3 px-4 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                      onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
+                      className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 transition-all ${
+                        sub.exempted 
+                          ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' 
+                          : 'bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-gray-200 shadow-sm hover:bg-gray-300 dark:hover:bg-white/15'
+                      }`}
+                      title={sub.exempted ? "Fee Compensated (Click to Include)" : "Exclude Fee (Compensate)"}
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      View
+                      <Minus className="w-3.5 h-3.5" />
+                      {sub.exempted ? "Exempted" : "Exempt Fee"}
                     </button>
                     <div className="flex gap-2">
                       <button 
@@ -1190,11 +1209,15 @@ export default function Admin() {
                       <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
                           <button 
-                            onClick={(e) => { e.stopPropagation(); setSelectedSubmission(sub); }}
-                            className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                            title="View"
+                            onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
+                            className={`p-2 rounded-lg transition-all shadow-sm ${
+                              sub.exempted 
+                                ? 'bg-amber-500 text-white hover:bg-amber-600' 
+                                : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-amber-500 hover:text-white'
+                            }`}
+                            title={sub.exempted ? "Fee Compensated (Click to Include)" : "Exclude Fee (Compensate)"}
                           >
-                            <Eye className="w-3.5 h-3.5" />
+                            <Minus className="w-3.5 h-3.5" />
                           </button>
                           <button 
                             onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
@@ -1331,7 +1354,9 @@ export default function Admin() {
                               {selectedSubmission.promoCode ? `Fee (Promo: ${selectedSubmission.promoCode})` : 'Fee Verification'}
                             </span>
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl font-black text-emerald-500 tracking-tighter italic uppercase">PKR {selectedSubmission.totalFee}</span>
+                              <span className="text-2xl font-black text-emerald-500 tracking-tighter italic uppercase">
+                                PKR {selectedSubmission.totalFee}
+                              </span>
                               {selectedSubmission.discountApplied && (
                                 <span className="text-[10px] font-black text-gray-400 line-through">
                                   PKR {selectedSubmission.totalFee + selectedSubmission.discountApplied}

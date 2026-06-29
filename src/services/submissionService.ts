@@ -40,6 +40,7 @@ export interface Submission {
   totalFee: number;
   promoCode?: string;
   discountApplied?: number;
+  exempted?: boolean;
 }
 
 export const MODULE_PREFIXES: Record<string, string> = {
@@ -198,6 +199,18 @@ export const submissionService = {
       const docRef = doc(db, 'submissions', submissionId);
       await updateDoc(docRef, { 
         status,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+    }
+  },
+
+  async toggleExempted(submissionId: string, exempted: boolean) {
+    try {
+      const docRef = doc(db, 'submissions', submissionId);
+      await updateDoc(docRef, { 
+        exempted,
         updatedAt: serverTimestamp()
       });
     } catch (error) {

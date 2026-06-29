@@ -49,6 +49,7 @@ service cloud.firestore {
              (data.get('participantId', null) == null || data.participantId is string) &&
              (data.get('promoCode', null) == null || data.promoCode is string) &&
              (data.get('discountApplied', null) == null || data.discountApplied is number) &&
+             (data.get('exempted', null) == null || data.exempted is bool) &&
              data.status in ['pending', 'approved', 'rejected'];
     }
 
@@ -65,7 +66,7 @@ service cloud.firestore {
       allow update: if (
         isAdmin() && 
         isValidSubmission(incoming()) &&
-        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'exempted']) &&
         isServerTimestamp('updatedAt')
       );
 
