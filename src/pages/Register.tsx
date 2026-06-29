@@ -459,9 +459,9 @@ export default function Register() {
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-black text-gray-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Check Your Inbox</h4>
+                    <h4 className="text-[10px] font-black text-gray-400 dark:text-zinc-500 uppercase tracking-widest mb-1">Check Your Inbox & Spam Folder</h4>
                     <p className="text-sm text-gray-600 dark:text-zinc-300">
-                      Please check your inbox as you may have received the confirmation email at <span className="font-semibold text-gray-900 dark:text-white break-all">{watch('email')}</span>.
+                      Please check your mail in the inbox and spam folder, as you may have received the confirmation email at <span className="font-semibold text-gray-900 dark:text-white break-all">{watch('email')}</span>.
                     </p>
                   </div>
                 </div>
