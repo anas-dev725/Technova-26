@@ -351,9 +351,9 @@ export default function Admin() {
     // High precision event/financial statistics for the active view
     teams: targetSubmissions.length,
     participants: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0),
-    amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
-    amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
-    amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + (s.totalFee || 0), 0),
+    amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+    amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+    amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
   };
 
   if (loading) {
@@ -891,9 +891,9 @@ export default function Admin() {
                   });
 
                   // Add Finance Summary Section
-                  const totalSum = filteredSubmissions.filter(s => !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
-                  const approvedSum = submissions.filter(s => s.status === 'approved' && !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
-                  const pendingSum = submissions.filter(s => s.status === 'pending' && !s.exempted).reduce((acc, curr) => acc + (curr.totalFee || 0), 0);
+                  const totalSum = filteredSubmissions.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+                  const approvedSum = submissions.filter(s => s.status === 'approved' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+                  const pendingSum = submissions.filter(s => s.status === 'pending' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
 
                   aoaData.push([]); // Spacer
                   aoaData.push(['--- FINANCE REPORT SUMMARY ---']);
