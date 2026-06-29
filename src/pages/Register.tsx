@@ -51,7 +51,8 @@ const PAYMENT_DETAILS = {
   bank_transfer: {
     name: 'Standard Chartered Bank',
     accountTitle: 'Institute of Business Management',
-    accountNumber: '5501309900055576',
+    accountNumber: '5501309900055575',
+    iban: 'PK55SCBL5501309900055575',
   }
 };
 
@@ -926,10 +927,18 @@ export default function Register() {
                             <p className="text-lg font-bold text-gray-900 dark:text-white">{PAYMENT_DETAILS.bank_transfer.accountTitle}</p>
                           </div>
                           <div>
-                            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Account Number</p>
-                            <p className="text-lg font-mono font-bold text-blue-600 dark:text-blue-400">
-                              {PAYMENT_DETAILS.bank_transfer.accountNumber}
-                            </p>
+                            <div className="mb-4">
+                              <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Account Number</p>
+                              <p className="text-lg font-mono font-bold text-gray-900 dark:text-white">
+                                {PAYMENT_DETAILS.bank_transfer.accountNumber}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">IBAN</p>
+                              <p className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400 break-all">
+                                {PAYMENT_DETAILS.bank_transfer.iban}
+                              </p>
+                            </div>
                           </div>
                         </div>
                         <input type="hidden" value="bank_transfer" {...register('paymentMethod')} />

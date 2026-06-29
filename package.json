@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node generate-sitemap.js && vite --port=3000 --host=0.0.0.0",
-    "start": "node generate-sitemap.js && vite build && vite preview",
+    "start": "node generate-sitemap.js && vite build && vite preview --port=3000 --host=0.0.0.0",
     "build": "node generate-sitemap.js && vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port=3000 --host=0.0.0.0",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
