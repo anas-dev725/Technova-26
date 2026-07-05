@@ -211,7 +211,7 @@ export default function HeroV1({ timeLeft }: HeroProps) {
           >
             <div className="flex flex-col items-center gap-2">
               <Calendar className="w-6 h-6 text-blue-500" />
-              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">July 11-12, 2026</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">August 1, 2026</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <MapPin className="w-6 h-6 text-blue-500" />

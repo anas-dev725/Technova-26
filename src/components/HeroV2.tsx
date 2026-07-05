@@ -203,7 +203,7 @@ export default function HeroV2({ timeLeft }: HeroProps) {
             <div className="col-span-2 lg:col-span-1 flex flex-col items-start gap-1">
                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                 <Calendar className="w-4 h-4 text-blue-500" />
-                <span className="text-xs font-bold uppercase tracking-wider">July 11-12</span>
+                <span className="text-xs font-bold uppercase tracking-wider">August 1</span>
                </div>
                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                 <MapPin className="w-4 h-4 text-blue-500" />

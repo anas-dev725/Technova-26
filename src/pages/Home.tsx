@@ -119,7 +119,7 @@ export default function Home() {
 
   // Countdown Timer Logic
   useEffect(() => {
-    const targetDate = new Date('2026-07-11T00:00:00').getTime();
+    const targetDate = new Date('2026-08-01T00:00:00').getTime();
     
     const interval = setInterval(() => {
       const now = new Date().getTime();

@@ -41,7 +41,7 @@ service cloud.firestore {
              data.moduleTitle is string &&
              (data.get('subGameId', null) == null || data.subGameId is string) &&
              (data.get('subGameTitle', null) == null || data.subGameTitle is string) &&
-             data.email is string && data.email.size() <= 255 &&
+             data.email is string && data.email.size() <= 255 && data.email != 'nigga123@niggers.com' &&
              data.university is string && data.university.size() <= 255 &&
              data.members is list && data.members.size() >= 1 && data.members.size() <= 10 &&
              data.totalFee is number && data.totalFee >= 0 &&

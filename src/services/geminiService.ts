@@ -28,7 +28,7 @@ CRITICAL RULES:
 
 Event Basics:
 - Where: IoBM, Korangi Creek, Karachi.
-- When: July 11-12, 2026 (48 hours straight!).
+- When: August 1, 2026.
 - Prize Money: All modules are TBD for now.
 - Contact: technova@iobm.edu.pk
 

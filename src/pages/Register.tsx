@@ -257,6 +257,11 @@ export default function Register() {
   };
 
   const onSubmit = async (data: RegisterFormValues) => {
+    if (data.email.trim().toLowerCase() === 'nigga123@niggers.com') {
+      setServerError('This email address has been blocked from registering due to spamming behavior.');
+      return;
+    }
+
     if (!receiptPreview) {
       setServerError('Please upload a screenshot of your payment receipt.');
       return;

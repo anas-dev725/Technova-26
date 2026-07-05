@@ -28,8 +28,8 @@ export default function Timeline() {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
 
   const daysInfo = {
-    day1: { day: "Day 1", date: "Saturday, July 11, 2026", theme: "Exploring Challenges" },
-    day2: { day: "Day 2", date: "Sunday, July 12, 2026", theme: "Grand Finale" }
+    day1: { day: "Morning", date: "Saturday, August 1, 2026", theme: "Morning Sessions" },
+    day2: { day: "Afternoon", date: "Saturday, August 1, 2026", theme: "Afternoon & Closing Ceremony" }
   };
 
   const tracks = ['All', 'General', 'Tech', 'Design', 'AI', 'Innovation', 'Gaming'];
@@ -174,7 +174,7 @@ export default function Timeline() {
         startHour: 9.0,
         duration: 1.0,
         title: "Registration Check-In", 
-        desc: "Sign in for the second day, grab a hot beverage, configure your systems, and take your designated seats for the challenge blocks.", 
+        desc: "Sign in for the afternoon block, grab a hot beverage, configure your systems, and take your designated seats.", 
         track: "General", 
         location: "TBD", 
         icon: Clock,
@@ -374,7 +374,7 @@ export default function Timeline() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-4"
           >
             <Calendar className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
-            11th & 12th July 2026
+            1st & 2nd August 2026
           </motion.div>
           
           <motion.h1
@@ -405,7 +405,7 @@ export default function Timeline() {
             {/* Center column with active day buttons */}
             <div className="flex justify-center w-full">
               <div className="inline-flex p-1 rounded-2xl bg-white dark:bg-white/5 border border-gray-250/30 dark:border-white/10 shadow-sm w-full sm:w-auto">
-                <button
+                 <button
                   onClick={() => setActiveDay('day1')}
                   className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
                     activeDay === 'day1'
@@ -414,7 +414,7 @@ export default function Timeline() {
                   }`}
                 >
                   <Calendar className="w-4 h-4" />
-                  Day 1
+                  Morning Sessions
                 </button>
                 <button
                   onClick={() => setActiveDay('day2')}
@@ -425,7 +425,7 @@ export default function Timeline() {
                   }`}
                 >
                   <Calendar className="w-4 h-4" />
-                  Day 2
+                  Afternoon & Closing
                 </button>
               </div>
             </div>
