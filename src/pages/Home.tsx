@@ -165,7 +165,7 @@ export default function Home() {
               </h2>
               <div className="space-y-6 text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
                 <p>
-                  Technova'26 isn't just another tech event - it's a massive, 2-day festival celebrating code, creativity, and pure innovation. It's where the brightest minds on campus come to break things and build them better.
+                  Technova'26 isn't just another tech event - it's a festival celebrating code, creativity, and pure innovation. It's where the brightest minds on campus come to break things and build them better.
                 </p>
                 <p>
                   Whether you're a hardcore programmer, a pixel-perfect designer, a strategic gamer, or a visionary entrepreneur, we've got a playground set up just for you. Come test your limits, learn some crazy new skills, and vibe with industry pros.

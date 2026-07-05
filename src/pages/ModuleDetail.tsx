@@ -113,6 +113,7 @@ export default function ModuleDetail() {
     time: 'TBD (Will be Updated)',
     venue: 'TBD (Will be Shared Soon)'
   };
+  const isExcludedModule = ['capture-the-flag', 'startup-launchpad', 'fyp-warriors'].includes(module.id);
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
@@ -417,11 +418,11 @@ export default function ModuleDetail() {
                       <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white">Module Guidelines</h3>
                     </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                    <div className={`grid grid-cols-1 ${isExcludedModule ? 'md:grid-cols-2' : ''} gap-8 pt-2`}>
                       {/* Venue & Timing Column */}
                       <div className="space-y-4">
                         <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Venue & Timing</h4>
-                        <div className="space-y-4">
+                        <div className={!isExcludedModule ? 'grid grid-cols-1 md:grid-cols-3 gap-6' : 'space-y-4'}>
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
                               <MapPin className="w-4 h-4 text-blue-500" />
@@ -444,28 +445,30 @@ export default function ModuleDetail() {
                       </div>
 
                       {/* Requirements Column */}
-                      <div className="space-y-4">
-                        <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Requirements</h4>
+                      {isExcludedModule && (
                         <div className="space-y-4">
-                          {(module.id === 'startup-launchpad' || module.id === 'fyp-warriors' ? [
-                            'Valid University ID Card',
-                            'Own devices, standees, and socket extensions'
-                          ] : module.id === 'esports-competition' ? [
-                            'Valid University ID Card',
-                            'Own mobile device with PUBG Mobile'
-                          ] : [
-                            'Valid University ID Card',
-                            'Own laptop with required software'
-                          ]).map((req, rIdx) => (
-                            <div key={rIdx} className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
-                                <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                          <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Requirements</h4>
+                          <div className="space-y-4">
+                            {(module.id === 'startup-launchpad' || module.id === 'fyp-warriors' ? [
+                              'Valid University ID Card',
+                              'Own devices, standees, and socket extensions'
+                            ] : module.id === 'esports-competition' ? [
+                              'Valid University ID Card',
+                              'Own mobile device with PUBG Mobile'
+                            ] : [
+                              'Valid University ID Card',
+                              'Own laptop with required software'
+                            ]).map((req, rIdx) => (
+                              <div key={rIdx} className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
+                                  <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                                </div>
+                                <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">{req}</span>
                               </div>
-                              <span className="font-semibold text-sm text-gray-750 dark:text-gray-300">{req}</span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
