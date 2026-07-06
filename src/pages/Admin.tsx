@@ -34,6 +34,63 @@ import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import { emailService } from '../services/emailService';
 
+function normalizeUniversityName(name: string): string {
+  const clean = (name || '').trim().toLowerCase();
+  if (!clean) return 'Independent / Other';
+  
+  if (clean.includes('iobm') || clean.includes('business management') || clean.includes('ibm')) {
+    return 'IoBM';
+  }
+  if (clean.includes('sukkur iba') || clean.includes('iba sukkur')) {
+    return 'IBA Sukkur';
+  }
+  if (clean.includes('iba') || clean.includes('institute of business administration')) {
+    return 'IBA';
+  }
+  if (clean.includes('iqra')) {
+    return 'Iqra University';
+  }
+  if (clean.includes('fast') || clean.includes('nuces')) {
+    return 'FAST-NUCES';
+  }
+  if (clean.includes('ssuet') || clean.includes('sir syed') || clean.includes('sirsyed')) {
+    return 'SSUET';
+  }
+  if (clean.includes('nhu') || clean.includes('nazeer hussain')) {
+    return 'NHU';
+  }
+  if (clean.includes('ned')) {
+    return 'NED University';
+  }
+  if (clean.includes('ku') || clean.includes('karachi university') || clean.includes('university of karachi')) {
+    return 'Karachi University';
+  }
+  if (clean.includes('szabist')) {
+    return 'SZABIST';
+  }
+  if (clean.includes('habib') || clean.includes('salim habib') || clean.includes('shu')) {
+    return 'SHU';
+  }
+  if (clean.includes('bahria')) {
+    return 'Bahria University';
+  }
+  if (clean.includes('dawood') || clean.includes('duet')) {
+    return 'Dawood University (DUET)';
+  }
+  if (clean.includes('uit')) {
+    return 'UIT University';
+  }
+  if (clean.includes('dsu') || clean.includes('dha suffa')) {
+    return 'DHA Suffa University';
+  }
+  
+  // Title case/Acronym capitalization
+  if (clean.length <= 5) {
+    return clean.toUpperCase();
+  }
+  return clean.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -41,7 +98,9 @@ export default function Admin() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterModule, setFilterModule] = useState<string>('all');
+  const [filterUniversity, setFilterUniversity] = useState<string>('all');
   const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
+  const [isUniversityDropdownOpen, setIsUniversityDropdownOpen] = useState(false);
   const [isMigrating, setIsMigrating] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -311,13 +370,16 @@ export default function Admin() {
     .filter(sub => {
       const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
       const matchesModule = filterModule === 'all' || sub.moduleTitle === filterModule;
+      const normalizedSubUni = normalizeUniversityName(sub.university);
+      const matchesUniversity = filterUniversity === 'all' || normalizedSubUni === filterUniversity;
       const matchesSearch = 
         sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesStatus && matchesModule && matchesSearch;
+      return matchesStatus && matchesModule && matchesUniversity && matchesSearch;
     })
     .sort((a, b) => {
       if (!sortConfig) return 0;
@@ -336,10 +398,24 @@ export default function Admin() {
     count: submissions.filter(s => s.moduleTitle === m).length
   }));
 
-  // Dynamic calculations based on selected filterModule
-  const targetSubmissions = filterModule === 'all'
-    ? submissions
-    : submissions.filter(s => s.moduleTitle === filterModule);
+  // Get unique normalized universities and their participant & team stats
+  const universityStats = Array.from(
+    new Set(submissions.map(s => normalizeUniversityName(s.university)))
+  ).map(uniName => {
+    const uniSubmissions = submissions.filter(s => normalizeUniversityName(s.university) === uniName);
+    const teamCount = uniSubmissions.length;
+    const participantCount = uniSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0);
+    return {
+      name: uniName,
+      teams: teamCount,
+      participants: participantCount
+    };
+  }).sort((a, b) => b.participants - a.participants);
+
+  // Dynamic calculations based on selected filters (module and/or university)
+  const targetSubmissions = submissions
+    .filter(s => filterModule === 'all' || s.moduleTitle === filterModule)
+    .filter(s => filterUniversity === 'all' || normalizeUniversityName(s.university) === filterUniversity);
 
   const stats = {
     // Basic review queue stats
@@ -532,23 +608,39 @@ export default function Admin() {
         <div className="space-y-6">
           {/* Active View Title */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <span className="flex h-3 w-3 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
               </span>
               <p className="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
-                Active View: <span className="text-blue-500 font-extrabold">{filterModule === 'all' ? 'ALL MODULES COMBINED' : filterModule.toUpperCase()}</span>
+                Active View: <span className="text-blue-500 font-extrabold">{filterModule === 'all' ? 'ALL MODULES' : filterModule.toUpperCase()}</span>
+                {filterUniversity !== 'all' && (
+                  <>
+                    <span className="mx-2 text-gray-300 dark:text-gray-700">|</span>
+                    <span className="text-purple-500 font-extrabold">{filterUniversity.toUpperCase()}</span>
+                  </>
+                )}
               </p>
             </div>
-            {filterModule !== 'all' && (
-              <button 
-                onClick={() => setFilterModule('all')}
-                className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 hover:underline transition-colors cursor-pointer bg-blue-500/10 px-2.5 py-1 rounded"
-              >
-                Reset to All
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {filterModule !== 'all' && (
+                <button 
+                  onClick={() => setFilterModule('all')}
+                  className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 hover:underline transition-colors cursor-pointer bg-blue-500/10 px-2.5 py-1 rounded"
+                >
+                  Reset Module
+                </button>
+              )}
+              {filterUniversity !== 'all' && (
+                <button 
+                  onClick={() => setFilterUniversity('all')}
+                  className="text-[10px] font-black uppercase tracking-widest text-purple-500 hover:text-purple-400 hover:underline transition-colors cursor-pointer bg-purple-500/10 px-2.5 py-1 rounded"
+                >
+                  Reset University
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Core Event Metrics */}
@@ -663,6 +755,56 @@ export default function Admin() {
               ))}
             </div>
           </div>
+
+          {/* University Distribution & Filtering */}
+          <div className="p-6 md:p-8 bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full translate-x-12 -translate-y-12"></div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                <div className="w-6 h-[1px] bg-purple-500"></div>
+                University Distribution ({universityStats.length})
+              </h3>
+              {filterUniversity !== 'all' && (
+                <button 
+                  onClick={() => setFilterUniversity('all')}
+                  className="text-[10px] font-black uppercase tracking-widest text-purple-500 hover:text-purple-400 hover:underline transition-colors cursor-pointer bg-purple-500/10 px-2.5 py-1 rounded w-fit"
+                >
+                  Clear Filter
+                </button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+              {universityStats.map((uni) => (
+                <div key={uni.name} 
+                  onClick={() => setFilterUniversity(filterUniversity === uni.name ? 'all' : uni.name)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[90px] ${
+                    filterUniversity === uni.name 
+                      ? 'bg-purple-900 border-purple-900 shadow-xl scale-[1.02] text-white' 
+                      : 'bg-gray-50 dark:bg-black/20 border-gray-100 dark:border-white/5 hover:border-purple-500/30'
+                  }`}
+                >
+                  <div className={`text-[11px] font-black truncate leading-tight pr-4 ${
+                    filterUniversity === uni.name ? 'text-white' : 'text-gray-900 dark:text-white'
+                  }`} title={uni.name}>
+                    {uni.name}
+                  </div>
+                  <div className="flex flex-col gap-1 mt-2">
+                    <div className="flex items-center justify-between text-[9px]">
+                      <span className={filterUniversity === uni.name ? 'text-purple-200' : 'text-gray-400'}>Teams:</span>
+                      <span className="font-bold">{uni.teams}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[9px] border-t border-gray-200/20 dark:border-white/5 pt-1">
+                      <span className={filterUniversity === uni.name ? 'text-purple-200' : 'text-gray-400'}>Participants:</span>
+                      <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-black ${
+                        filterUniversity === uni.name ? 'bg-purple-500 text-white' : 'bg-purple-500/10 text-purple-500'
+                      }`}>{uni.participants}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Filters & Actions */}
@@ -739,6 +881,70 @@ export default function Admin() {
                                 }`}
                               >
                                 {m as string}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Custom University Dropdown */}
+                <div className="relative w-full sm:w-auto">
+                  <button
+                    onClick={() => setIsUniversityDropdownOpen(!isUniversityDropdownOpen)}
+                    className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4 px-5 py-3.5 bg-gray-900 dark:bg-purple-600 text-white rounded-2xl border-2 border-transparent hover:border-white/20 text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer shadow-xl relative min-w-[200px]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Filter className="w-3.5 h-3.5 text-purple-100" />
+                      <span>{filterUniversity === 'all' ? 'UNIVERSITY: ALL' : filterUniversity.toUpperCase()}</span>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isUniversityDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isUniversityDropdownOpen && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40" 
+                          onClick={() => setIsUniversityDropdownOpen(false)}
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 max-h-80 overflow-y-auto"
+                        >
+                          <div className="p-2 space-y-1">
+                            <button
+                              onClick={() => {
+                                setFilterUniversity('all');
+                                setIsUniversityDropdownOpen(false);
+                              }}
+                              className={`w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                filterUniversity === 'all' 
+                                  ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' 
+                                  : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                              }`}
+                            >
+                              All Universities
+                            </button>
+                            <div className="h-[1px] bg-gray-100 dark:bg-white/5 my-1" />
+                            {universityStats.map((u) => (
+                              <button
+                                key={u.name}
+                                onClick={() => {
+                                  setFilterUniversity(u.name);
+                                  setIsUniversityDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                  filterUniversity === u.name 
+                                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' 
+                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'
+                                }`}
+                              >
+                                {u.name} ({u.participants} pax)
                               </button>
                             ))}
                           </div>
