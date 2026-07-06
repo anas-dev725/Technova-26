@@ -374,7 +374,7 @@ export default function Timeline() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-4"
           >
             <Calendar className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
-            1st & 2nd August 2026
+            1st August, 2026
           </motion.div>
           
           <motion.h1
