@@ -223,7 +223,7 @@ export default function Home() {
             {[
               { label: 'Participants', value: 500, suffix: '+' },
               { label: 'Prize Pool', value: 150, prefix: 'PKR ', suffix: 'K+' },
-              { label: 'Hours Event', value: 48, suffix: 'hrs' },
+              { label: 'Hours Event', value: 24, suffix: 'hrs' },
               { label: 'Mentors & Pros', value: 50, suffix: '+' },
               { label: 'Edition', value: 2, suffix: 'nd' },
             ].map((stat, index) => (
