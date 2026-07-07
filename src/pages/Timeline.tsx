@@ -28,8 +28,8 @@ export default function Timeline() {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
 
   const daysInfo = {
-    day1: { day: "Morning", date: "Saturday, August 1, 2026", theme: "Morning Sessions" },
-    day2: { day: "Afternoon", date: "Saturday, August 1, 2026", theme: "Afternoon & Closing Ceremony" }
+    day1: { day: "Morning", date: "Saturday, 1st August, 2026", theme: "Morning Sessions" },
+    day2: { day: "Afternoon", date: "Saturday, 1st August, 2026", theme: "Afternoon & Closing Ceremony" }
   };
 
   const tracks = ['All', 'General', 'Tech', 'Design', 'AI', 'Innovation', 'Gaming'];
@@ -77,19 +77,6 @@ export default function Timeline() {
         durationLabel: "2.5 Hours"
       },
       { 
-        id: 'd1-webforces', 
-        time: "10:00 AM - 12:30 PM", 
-        startHour: 10.0,
-        duration: 2.5,
-        title: "Webforces", 
-        desc: "Showcase your modern developer skills by building an interactive landing page using clean responsive Tailwind standards.", 
-        track: "Design", 
-        location: "TBD", 
-        icon: Palette,
-        capacity: "Teams (2 - 3 members)",
-        durationLabel: "2.5 Hours"
-      },
-      { 
         id: 'd1-fyp', 
         time: "10:00 AM - 03:00 PM", 
         startHour: 10.0,
@@ -125,19 +112,6 @@ export default function Timeline() {
         location: "TBD", 
         icon: BrainCircuit,
         capacity: "Solo (1)",
-        durationLabel: "3 Hours"
-      },
-      { 
-        id: 'd1-digital-dash', 
-        time: "02:00 PM - 05:00 PM", 
-        startHour: 14.0,
-        duration: 3.0,
-        title: "Digital Dash (UI/UX Challenge)", 
-        desc: "Race against time to design a beautiful, responsive mobile app screen using your choice of standard Figma design systems.", 
-        track: "Design", 
-        location: "TBD", 
-        icon: Layout,
-        capacity: "Teams (2 - 3 members)",
         durationLabel: "3 Hours"
       },
       { 

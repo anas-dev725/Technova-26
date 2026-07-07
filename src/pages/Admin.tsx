@@ -177,7 +177,9 @@ export default function Admin() {
 
   const loadSubmissions = () => {
     return submissionService.subscribeToSubmissions((data) => {
-      setSubmissions(data);
+      // Exclude deactivated modules: webforces and digital-dash
+      const activeData = data.filter(sub => sub.moduleId !== 'webforces' && sub.moduleId !== 'digital-dash');
+      setSubmissions(activeData);
     });
   };
 

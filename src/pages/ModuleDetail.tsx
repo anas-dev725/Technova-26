@@ -26,57 +26,47 @@ const formatTextWithBold = (text: string) => {
 
 const moduleSchedules: Record<string, { day: string; time: string; venue: string }> = {
   'fyp-warriors': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 03:00 PM',
     venue: 'Main Seminar Hall & Presentation Cubicles'
   },
   'startup-launchpad': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 02:00 PM',
     venue: 'Venture Incubation Arena'
   },
   'capture-the-flag': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 12:30 PM',
     venue: 'Cyber Security Lab (Block A)'
   },
   'agentic-ai-arena': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 12:30 PM',
     venue: 'AI Research Wing'
   },
   'datathon': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 02:00 PM',
     venue: 'Data Analytics Center'
   },
   'prompt-engineering': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '02:00 PM - 05:05 PM',
     venue: 'Computing Lab 3'
   },
   'esports-competition': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 05:00 PM',
     venue: 'Technova Gaming Zone'
   },
-  'webforces': {
-    day: 'Saturday, August 1, 2026',
-    time: '10:00 AM - 12:30 PM',
-    venue: 'Web Development Lab'
-  },
-  'digital-dash': {
-    day: 'Saturday, August 1, 2026',
-    time: '02:00 PM - 05:00 PM',
-    venue: 'UI/UX Design Studio'
-  },
   'maths-mania': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '10:00 AM - 02:00 PM',
     venue: 'Mathematics Examination Hall'
   },
   'maths-mania-advanced': {
-    day: 'Saturday, August 1, 2026',
+    day: 'Saturday, 1st August, 2026',
     time: '02:00 PM - 05:00 PM',
     venue: 'Mathematics Examination Hall'
   }

@@ -231,62 +231,6 @@ export const modules: Module[] = [
     ]
   },
   {
-    id: 'webforces',
-    title: 'Webforces',
-    description: 'Love pretty things? Join us to craft stunning, responsive, and buttery-smooth user experiences that people actually enjoy using.',
-    icon: Palette,
-    category: 'Design',
-    mode: 'Duo',
-    prize: 'TBD',
-    challengeName: 'Digital Rescue Hunt',
-    longDescription: 'The internet has been corrupted. Web Force is a frontend development challenge where you and your team become digital rescue agents, deployed to restore a broken web. Broken pages and corrupted code. A digital network is on the edge of collapse, and only your skills can bring it back.\n\nFrom fixing shattered HTML and styling raw interfaces under pressure, to hunting clues across QR codes and APIs, every mission unlocks the next. The team with the sharpest build and the fastest hands wins.\n\nThe web is broken. You\'re the fix.',
-    skills: ['Web Development', 'UI Layout Design', 'System Troubleshooting', 'Creative Problem Solving'],
-    rulesList: [
-      'Teams of 2 to 3 participants.',
-      'AI tools and pre-built templates are strictly prohibited.',
-      'Mobile phone usage is not allowed during the competition.',
-      'Internet access is permitted for competition-related tasks only.',
-      'Cross-team collaboration is prohibited.',
-      'Late submissions may result in score penalties or disqualification.',
-      'Any form of plagiarism results in immediate disqualification.',
-      'Participants must maintain discipline and professionalism throughout the event.',
-      'Organizers reserve the right to modify rules if necessary.'
-    ],
-    heads: [
-      { name: 'Sidra Ali', role: 'Module Lead', designation: 'Software Engineer', linkedin: 'https://www.linkedin.com/in/sidraalisheer/' },
-      { name: 'Muneer Ahmed', role: 'Module Lead', designation: 'Senior Creative Developer', linkedin: 'https://linkedin.com' },
-      { name: 'Jawad', role: 'Module Lead', designation: 'Interaction Engineer', linkedin: 'https://linkedin.com' }
-    ]
-  },
-  {
-    id: 'digital-dash',
-    title: 'Digital Dash (UI/UX)',
-    description: 'Race against time to design the perfect user journey. Show us your intuition for design systems and user-centric flows.',
-    icon: Layout,
-    category: 'Design',
-    mode: 'Duo',
-    prize: 'TBD',
-    challengeName: 'Restore the Signal',
-    longDescription: 'THINK YOU HAVE WHAT IT TAKES TO DESIGN A WINNING EXPERIENCE?\n\nCONNECT YOUR IDEAS, CREATE EXPERIENCES, & CONQUER THE COMPETITION\n\nDigital Dash is a fast-paced UI/UX challenge where you become a signal architect tasked with fixing a city\'s broken digital systems. Research, wireframe, prototype, and adapt to a surprise challenge as you design a solution under pressure.\n\nSector Seven has gone silent. Citizens are struggling with disconnected apps and confusing interfaces. Enter the Grid, identify the problems, and create a smart dashboard to bring the city back online.\n\nDesign, Adapt, & Restore the Signal',
-    skills: ['Visual Design', 'User Experience Design', 'Digital Prototyping', 'Adaptability under Pressure'],
-    rulesList: [
-      'Teams of 2 to 3 participants.',
-      'All design work must be created live during the competition window. No pre-made files or assets may be imported on either day.',
-      'AI use is prohibited.',
-      'Free asset libraries (icons, images) are allowed with credit given in your presentation.',
-      'Pen and paper wireframes are allowed, must be photographed and submitted digitally before close.',
-      'Collaboration is permitted within your registered team only. No external assistance from any human outside your team.',
-      'Bring your own device on both days. Figma, Adobe XD, Pen and paper wireframes are supported.',
-      'Submitting pre-built, AI-generated, or externally sourced design files as original work results in immediate disqualification.',
-      'Judges decisions are final.'
-    ],
-    heads: [
-      { name: 'Rafia Ameen', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/rafiaameen/' },
-      { name: 'Shaeem Imran', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/shaeem-imran7' },
-      { name: 'Faiza Mustafa', role: 'Module Lead', designation: 'UI/UX Designer', linkedin: 'https://www.linkedin.com/in/faiza-mustafa-210a1829b/' }
-    ]
-  },
-  {
     id: 'maths-mania',
     title: 'Maths Mania (Advanced)',
     description: 'Face the ultimate analytical challenge. Prove your mastery over advanced mathematics, complex calculus, structural algebra, and stochastic logic.',

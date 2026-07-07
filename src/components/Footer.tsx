@@ -77,8 +77,8 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { name: 'Capture The Flag', path: '/modules/capture-the-flag' },
-                { name: 'Webforces', path: '/modules/webforces' },
-                { name: 'Digital Dash', path: '/modules/digital-dash' },
+                { name: 'Agentic AI Arena', path: '/modules/agentic-ai-arena' },
+                { name: 'Prompt Engineering', path: '/modules/prompt-engineering' },
                 { name: 'Startup Launchpad', path: '/modules/startup-launchpad' },
                 { name: 'Esports', path: '/modules/esports-competition' }
               ].map((link) => (

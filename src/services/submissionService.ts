@@ -51,8 +51,6 @@ export const MODULE_PREFIXES: Record<string, string> = {
   'datathon': 'DT',
   'prompt-engineering': 'PE',
   'esports-competition': 'ESP',
-  'webforces': 'WF',
-  'digital-dash': 'DD',
   'maths-mania': 'MM',
   'maths-mania-advanced': 'MMA'
 };
