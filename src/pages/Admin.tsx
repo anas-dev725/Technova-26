@@ -1522,7 +1522,7 @@ export default function Admin() {
                           <h3 className="text-[8px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 leading-none">TEAM LEAD</h3>
                           <div className="flex flex-col">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-none">{selectedSubmission.members[0].fullName}</span>
-                            <span className="text-[10px] text-blue-500 font-black mt-2 break-all uppercase tracking-wider">{selectedSubmission.email}</span>
+                            <span className="text-[10px] text-blue-500 font-black mt-2 break-all tracking-wider">{selectedSubmission.email}</span>
                           </div>
                         </section>
 

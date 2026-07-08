@@ -21,7 +21,7 @@ const EarlyBirdBanner = () => {
               </p>
             </div>
             <p className="text-[11px] sm:text-sm font-black text-white uppercase tracking-tighter">
-              USE PROMO CODE <span className="bg-white/20 px-2 py-0.5 rounded font-mono text-white border border-white/30">TECHNOVA30</span> TO AVAIL EARLY BIRD DISCOUNT — 30% OFF ENDS ON 8th JULY
+              AVAIL EARLY BIRD DISCOUNT — 30% OFF ENDS ON 15th JULY
             </p>
           </div>
         ))}
