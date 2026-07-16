@@ -5,7 +5,8 @@ import {
   ArrowLeft, Users, User, UsersRound, Trophy, 
   CreditCard, Clock, MapPin, CheckCircle2, 
   ShieldCheck, AlertCircle, Sparkles, Gamepad2,
-  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket, Calendar
+  ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket, Calendar,
+  FileText, Download, ExternalLink
 } from 'lucide-react';
 import { modules, getFees, TeamMode } from '../data/modules';
 
@@ -22,6 +23,31 @@ const formatTextWithBold = (text: string) => {
     }
     return part;
   });
+};
+
+const getRulebookFilename = (id: string): string => {
+  switch (id) {
+    case 'fyp-warriors':
+      return 'FYP_Warriors_Rule_Book.pdf';
+    case 'startup-launchpad':
+      return 'Startup_Launchpad_Rule_Book.pdf';
+    case 'capture-the-flag':
+      return 'Capture_The_Flag_Rule_Book.pdf';
+    case 'agentic-ai-arena':
+      return 'Agentic_AI_Rule_Book.pdf';
+    case 'prompt-engineering':
+      return 'Prompt_Engineering_Rule_Book.pdf';
+    case 'datathon':
+      return 'Datathon_Rule_Book.pdf';
+    case 'esports-competition':
+      return 'Esports_Competition_Rule_Book.pdf';
+    case 'maths-mania':
+      return 'Maths_Mania_Rule_Book.pdf';
+    case 'maths-mania-advanced':
+      return 'Maths_Mania_Advanced_Rule_Book.pdf';
+    default:
+      return `${id}_Rule_Book.pdf`;
+  }
 };
 
 const moduleSchedules: Record<string, { day: string; time: string; venue: string }> = {
@@ -528,6 +554,41 @@ export default function ModuleDetail() {
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Secure Registration Process
                 </p>
+              </div>
+
+              {/* Rulebook Download/View Section */}
+              <div className="bg-white dark:bg-[#111] rounded-[2rem] border border-gray-200 dark:border-white/5 p-6 shadow-xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">Official Rulebook</h4>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Rules & Guidelines PDF</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                  Please review the complete module instructions, code of conduct, and submission specifications before registering.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <a
+                    href={`/rulebooks/${getRulebookFilename(module.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-12 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-gray-100 dark:border-white/5 transition-all active:scale-[0.98]"
+                  >
+                    <ExternalLink className="w-4 h-4 text-blue-500" />
+                    View PDF
+                  </a>
+                  <a
+                    href={`/rulebooks/${getRulebookFilename(module.id)}`}
+                    download={getRulebookFilename(module.id)}
+                    className="h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm shadow-blue-600/10"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </a>
+                </div>
               </div>
 
               {/* Early Bird Promo Info */}

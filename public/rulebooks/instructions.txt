@@ -1,0 +1,15 @@
+Upload your module rulebook PDF files in this folder.
+For a seamless experience, name each PDF exactly as shown below:
+
+1. FYP Warriors: FYP_Warriors_Rule_Book.pdf
+2. Startup Launchpad: Startup_Launchpad_Rule_Book.pdf
+3. Capture The Flag: Capture_The_Flag_Rule_Book.pdf
+4. Agentic AI Arena: Agentic_AI_Rule_Book.pdf
+5. Prompt Engineering: Prompt_Engineering_Rule_Book.pdf
+6. Datathon: Datathon_Rule_Book.pdf
+7. Esports Competition: Esports_Competition_Rule_Book.pdf
+8. Maths Mania (Junior): Maths_Mania_Rule_Book.pdf
+9. Maths Mania (Advanced): Maths_Mania_Advanced_Rule_Book.pdf
+
+The application will dynamically look for these exact PDF filenames inside this folder (`public/rulebooks/`).
+Users will be able to view them in a new tab or download them directly from each module's detail page.
