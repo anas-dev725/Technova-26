@@ -370,6 +370,46 @@ export default function ModuleDetail() {
                     </div>
                   )}
 
+                  {/* Rulebook Download/View Section */}
+                  {!['esports-competition', 'maths-mania', 'maths-mania-advanced'].includes(module.id) && (
+                    <div className="bg-gray-50 dark:bg-[#0c0c0c] rounded-[2rem] border border-gray-200 dark:border-white/5 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-sm">
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+                      <div className="flex-1 space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">Official Rulebook</h4>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Rules & Guidelines PDF</p>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed max-w-xl">
+                          Please review the complete module instructions, code of conduct, and submission specifications before registering.
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
+                        <a
+                          href={`/rulebooks/${getRulebookFilename(module.id)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="h-12 px-6 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5 transition-all active:scale-[0.98] w-full sm:w-auto"
+                        >
+                          <ExternalLink className="w-4 h-4 text-blue-500" />
+                          View PDF
+                        </a>
+                        <a
+                          href={`/rulebooks/${getRulebookFilename(module.id)}`}
+                          download={getRulebookFilename(module.id)}
+                          className="h-12 px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm shadow-blue-600/10 w-full sm:w-auto"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
                   {module.heads && (
                     <div className="pt-4">
                       <div className="flex items-center gap-3 mb-6">
@@ -555,43 +595,6 @@ export default function ModuleDetail() {
                   Secure Registration Process
                 </p>
               </div>
-
-              {/* Rulebook Download/View Section */}
-              {!['esports-competition', 'maths-mania', 'maths-mania-advanced'].includes(module.id) && (
-                <div className="bg-white dark:bg-[#111] rounded-[2rem] border border-gray-200 dark:border-white/5 p-6 shadow-xl">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">Official Rulebook</h4>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Rules & Guidelines PDF</p>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                    Please review the complete module instructions, code of conduct, and submission specifications before registering.
-                  </p>
-                  <div className="grid grid-cols-2 gap-3">
-                    <a
-                      href={`/rulebooks/${getRulebookFilename(module.id)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-12 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-gray-100 dark:border-white/5 transition-all active:scale-[0.98]"
-                    >
-                      <ExternalLink className="w-4 h-4 text-blue-500" />
-                      View PDF
-                    </a>
-                    <a
-                      href={`/rulebooks/${getRulebookFilename(module.id)}`}
-                      download={getRulebookFilename(module.id)}
-                      className="h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm shadow-blue-600/10"
-                    >
-                      <Download className="w-4 h-4" />
-                      Download
-                    </a>
-                  </div>
-                </div>
-              )}
 
               {/* Early Bird Promo Info */}
               <div className="bg-amber-500/10 dark:bg-amber-500/5 rounded-3xl border border-amber-500/20 p-6">
