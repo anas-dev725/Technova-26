@@ -28,13 +28,13 @@ export default function Timeline() {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
 
   const daysInfo = {
-    day1: { day: "Morning", date: "Saturday, 1st August, 2026", theme: "Morning Sessions" },
-    day2: { day: "Afternoon", date: "Saturday, 1st August, 2026", theme: "Afternoon & Closing Ceremony" }
+    day1: { day: "Full Day", date: "Saturday, 1st August, 2026", theme: "Saturday Schedule" },
+    day2: { day: "Full Day", date: "Saturday, 1st August, 2026", theme: "Saturday Schedule" }
   };
 
   const tracks = ['All', 'General', 'Tech', 'Design', 'AI', 'Innovation', 'Gaming'];
 
-  // All 16 precise real modules mapped beautifully with user-friendly descriptions and locations set to TBD
+  // All precise modules mapped beautifully matching the user schedule
   const timelineData: Record<'day1' | 'day2', TimelineEvent[]> = {
     day1: [
       { 
@@ -42,206 +42,362 @@ export default function Timeline() {
         time: "09:00 AM - 10:00 AM", 
         startHour: 9.0,
         duration: 1.0,
-        title: "Registration & Badge Collection", 
-        desc: "Arrive at the campus, confirm your registration details, and collect your official TechNova event badges and student guide kit.", 
+        title: "Registration", 
+        desc: "Arrive at the campus, confirm your registration details, and collect your official event badges and student guide kit.", 
         track: "General", 
-        location: "TBD", 
+        location: "IT Main Building", 
         icon: Users,
         capacity: "All registered students",
         durationLabel: "1 Hour"
       },
       { 
-        id: 'd1-agentic-ai', 
-        time: "10:00 AM - 12:30 PM", 
+        id: 'd1-fyp', 
+        time: "10:00 AM - 01:00 PM", 
         startHour: 10.0,
-        duration: 2.5,
-        title: "Agentic AI Arena", 
-        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
-        track: "AI", 
-        location: "TBD", 
-        icon: BrainCircuit,
-        capacity: "Teams (2 - 3 members)",
-        durationLabel: "2.5 Hours"
+        duration: 3.0,
+        title: "FYP Warriors", 
+        desc: "Pitch your design projects and software prototypes in front of top local engineering recruiters and incubators.", 
+        track: "Innovation", 
+        location: "SSK Building Wing A", 
+        icon: Award,
+        capacity: "Squad teams (3 - 4)",
+        durationLabel: "3 Hours"
       },
       { 
         id: 'd1-ctf', 
-        time: "10:00 AM - 12:30 PM", 
+        time: "10:00 AM - 01:00 PM", 
         startHour: 10.0,
-        duration: 2.5,
-        title: "Capture The Flag (CTF)", 
+        duration: 3.0,
+        title: "Capture the Flag", 
         desc: "Join a fast cybersecurity sandbox. Decrypt keys, probe web sockets, and resolve server defense tasks with your team.", 
         track: "Tech", 
         location: "TBD", 
         icon: Shield,
         capacity: "Teams (2 - 3 members)",
-        durationLabel: "2.5 Hours"
-      },
-      { 
-        id: 'd1-fyp', 
-        time: "10:00 AM - 03:00 PM", 
-        startHour: 10.0,
-        duration: 5.0,
-        title: "FYP Warriors", 
-        desc: "Pitch your design projects and software prototypes in front of top local engineering recruiters and incubators.", 
-        track: "Innovation", 
-        location: "TBD", 
-        icon: Award,
-        capacity: "Squad teams (3 - 4)",
-        durationLabel: "5 Hours"
-      },
-      { 
-        id: 'd1-lunch', 
-        time: "12:30 PM - 02:00 PM", 
-        startHour: 12.5,
-        duration: 1.5,
-        title: "Lunch & Social Hour", 
-        desc: "Take a healthy break to enjoy hot meals, catch up with cohort peers, and share your module experiences.", 
-        track: "General", 
-        location: "TBD", 
-        icon: CoffeeIcon,
-        durationLabel: "1.5 Hours"
-      },
-      { 
-        id: 'd1-prompt-eng', 
-        time: "02:00 PM - 05:00 PM", 
-        startHour: 14.0,
-        duration: 3.0,
-        title: "Prompt Engineering", 
-        desc: "Coax generative models to build code, fix subtle bugs, and assemble creative layouts under complex constraint sheets.", 
-        track: "AI", 
-        location: "TBD", 
-        icon: BrainCircuit,
-        capacity: "Solo (1)",
         durationLabel: "3 Hours"
       },
       { 
         id: 'd1-maths-mania', 
-        time: "02:00 PM - 05:00 PM", 
-        startHour: 14.0,
-        duration: 3.0,
-        title: "Maths Mania (Junior)", 
-        desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
-        track: "Tech", 
-        location: "TBD", 
-        icon: BrainCircuit,
-        capacity: "Teams (2 - 3 members)",
-        durationLabel: "3 Hours"
-      },
-      { 
-        id: 'd1-esports', 
-        time: "02:00 PM - 05:00 PM", 
-        startHour: 14.0,
-        duration: 3.0,
-        title: "Esports Arena (PUBG Mobile)", 
-        desc: "Claim structural zone victories! Squad up for custom rooms, or watch real-time spectator screens with live casting.", 
-        track: "Gaming", 
-        location: "TBD", 
-        icon: Gamepad2,
-        capacity: "Squad members (3 - 4)",
-        durationLabel: "3 Hours"
-      }
-    ],
-    day2: [
-      { 
-        id: 'd2-welcome', 
-        time: "09:00 AM - 10:00 AM", 
-        startHour: 9.0,
-        duration: 1.0,
-        title: "Registration Check-In", 
-        desc: "Sign in for the afternoon block, grab a hot beverage, configure your systems, and take your designated seats.", 
-        track: "General", 
-        location: "TBD", 
-        icon: Clock,
-        durationLabel: "1 Hour"
-      },
-      { 
-        id: 'd2-agentic-ai', 
-        time: "10:00 AM - 12:30 PM", 
+        time: "10:00 AM - 01:00 PM", 
         startHour: 10.0,
-        duration: 2.5,
-        title: "Agentic AI Arena", 
-        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
-        track: "AI", 
-        location: "TBD", 
-        icon: BrainCircuit,
-        capacity: "Teams (2 - 3 members)",
-        durationLabel: "2.5 Hours"
-      },
-      { 
-        id: 'd2-maths-mania', 
-        time: "10:00 AM - 02:00 PM", 
-        startHour: 10.0,
-        duration: 4.0,
+        duration: 3.0,
         title: "Maths Mania (Advanced)", 
         desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
         track: "Tech", 
         location: "TBD", 
         icon: BrainCircuit,
         capacity: "Teams (2 - 3 members)",
-        durationLabel: "4 Hours"
+        durationLabel: "3 Hours"
       },
       { 
-        id: 'd2-datathon', 
-        time: "10:00 AM - 02:00 PM", 
+        id: 'd1-agentic-ai-r1', 
+        time: "10:00 AM - 01:00 PM", 
         startHour: 10.0,
-        duration: 4.0,
-        title: "Datathon", 
+        duration: 3.0,
+        title: "Agentic AI Arena (Round 1)", 
+        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd1-datathon-r1', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Datathon (Round 1)", 
         desc: "Analyze dataset streams to identify key features, draft clear insights, and visualize details on a stunning UI dashboard.", 
         track: "Tech", 
         location: "TBD", 
         icon: Code,
         capacity: "Teams (2 - 3 members)",
-        durationLabel: "4 Hours"
+        durationLabel: "3 Hours"
       },
       { 
-        id: 'd2-startup', 
-        time: "10:00 AM - 02:00 PM", 
+        id: 'd1-startup-r1', 
+        time: "10:00 AM - 01:00 PM", 
         startHour: 10.0,
-        duration: 4.0,
-        title: "Startup Launchpad", 
+        duration: 3.0,
+        title: "Startup Launchpad (Round 1)", 
         desc: "Propose high-potential venture solutions and draft interactive prototypes for scalable local consumer needs.", 
         track: "Innovation", 
         location: "TBD", 
         icon: Rocket,
         capacity: "Squad teams (3 - 4)",
-        durationLabel: "4 Hours"
+        durationLabel: "3 Hours"
       },
       { 
-        id: 'd2-esports', 
-        time: "10:00 AM - 02:00 PM", 
-        startHour: 10.0,
-        duration: 4.0,
-        title: "Esports Arena (PUBG Mobile)", 
-        desc: "Claim structural zone victories! Squad up for custom rooms, or watch real-time spectator screens with live casting.", 
-        track: "Gaming", 
-        location: "TBD", 
-        icon: Gamepad2,
-        capacity: "Squad members (3 - 4)",
-        durationLabel: "4 Hours"
-      },
-      { 
-        id: 'd2-lunch', 
-        time: "02:00 PM - 03:00 PM", 
-        startHour: 14.0,
+        id: 'd1-break', 
+        time: "01:00 PM - 02:00 PM", 
+        startHour: 13.0,
         duration: 1.0,
-        title: "Lunch & Prayer Interval", 
-        desc: "Unwind, complete your daily coordinates, or interact with recruiters at corporate booths.", 
+        title: "Break", 
+        desc: "Take a healthy break to enjoy hot meals, catch up with cohort peers, and share your module experiences.", 
         track: "General", 
         location: "TBD", 
         icon: CoffeeIcon,
         durationLabel: "1 Hour"
       },
       { 
-        id: 'd2-awards', 
-        time: "03:00 PM - 04:30 PM", 
-        startHour: 15.0,
-        duration: 1.5,
-        title: "Awards Ceremony & Closing", 
+        id: 'd1-agentic-ai-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Agentic AI Arena (Round 2)", 
+        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd1-datathon-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Datathon (Round 2)", 
+        desc: "Analyze dataset streams to identify key features, draft clear insights, and visualize details on a stunning UI dashboard.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: Code,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd1-startup-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Startup Launchpad (Round 2)", 
+        desc: "Propose high-potential venture solutions and draft interactive prototypes for scalable local consumer needs.", 
+        track: "Innovation", 
+        location: "TBD", 
+        icon: Rocket,
+        capacity: "Squad teams (3 - 4)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd1-prompt-eng', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Prompt Engineering", 
+        desc: "Coax generative models to build code, fix subtle bugs, and assemble creative layouts under complex constraint sheets.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Solo (1)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd1-maths-mania-jr', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Maths Mania (Junior)", 
+        desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd1-closing', 
+        time: "05:00 PM - 06:00 PM", 
+        startHour: 17.0,
+        duration: 1.0,
+        title: "Closing Ceremony", 
         desc: "Celebrate victorious achievements, distribute participation certificates, and record beautiful photography blocks.", 
         track: "General", 
         location: "TBD", 
         icon: Trophy,
-        durationLabel: "1.5 Hours"
+        durationLabel: "1 Hour"
+      }
+    ],
+    day2: [
+      { 
+        id: 'd2-reg', 
+        time: "09:00 AM - 10:00 AM", 
+        startHour: 9.0,
+        duration: 1.0,
+        title: "Registration", 
+        desc: "Arrive at the campus, confirm your registration details, and collect your official event badges and student guide kit.", 
+        track: "General", 
+        location: "IT Main Building", 
+        icon: Users,
+        capacity: "All registered students",
+        durationLabel: "1 Hour"
+      },
+      { 
+        id: 'd2-fyp', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "FYP Warriors", 
+        desc: "Pitch your design projects and software prototypes in front of top local engineering recruiters and incubators.", 
+        track: "Innovation", 
+        location: "SSK Building Wing A", 
+        icon: Award,
+        capacity: "Squad teams (3 - 4)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-ctf', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Capture the Flag", 
+        desc: "Join a fast cybersecurity sandbox. Decrypt keys, probe web sockets, and resolve server defense tasks with your team.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: Shield,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-maths-mania', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Maths Mania (Advanced)", 
+        desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-agentic-ai-r1', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Agentic AI Arena (Round 1)", 
+        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-datathon-r1', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Datathon (Round 1)", 
+        desc: "Analyze dataset streams to identify key features, draft clear insights, and visualize details on a stunning UI dashboard.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: Code,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-startup-r1', 
+        time: "10:00 AM - 01:00 PM", 
+        startHour: 10.0,
+        duration: 3.0,
+        title: "Startup Launchpad (Round 1)", 
+        desc: "Propose high-potential venture solutions and draft interactive prototypes for scalable local consumer needs.", 
+        track: "Innovation", 
+        location: "TBD", 
+        icon: Rocket,
+        capacity: "Squad teams (3 - 4)",
+        durationLabel: "3 Hours"
+      },
+      { 
+        id: 'd2-break', 
+        time: "01:00 PM - 02:00 PM", 
+        startHour: 13.0,
+        duration: 1.0,
+        title: "Break", 
+        desc: "Take a healthy break to enjoy hot meals, catch up with cohort peers, and share your module experiences.", 
+        track: "General", 
+        location: "TBD", 
+        icon: CoffeeIcon,
+        durationLabel: "1 Hour"
+      },
+      { 
+        id: 'd2-agentic-ai-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Agentic AI Arena (Round 2)", 
+        desc: "Program self-governing multi-agent workflows to play custom games and complete data mapping objectives.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd2-datathon-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Datathon (Round 2)", 
+        desc: "Analyze dataset streams to identify key features, draft clear insights, and visualize details on a stunning UI dashboard.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: Code,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd2-startup-r2', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Startup Launchpad (Round 2)", 
+        desc: "Propose high-potential venture solutions and draft interactive prototypes for scalable local consumer needs.", 
+        track: "Innovation", 
+        location: "TBD", 
+        icon: Rocket,
+        capacity: "Squad teams (3 - 4)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd2-prompt-eng', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Prompt Engineering", 
+        desc: "Coax generative models to build code, fix subtle bugs, and assemble creative layouts under complex constraint sheets.", 
+        track: "AI", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Solo (1)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd2-maths-mania-jr', 
+        time: "02:00 PM - 04:00 PM", 
+        startHour: 14.0,
+        duration: 2.0,
+        title: "Maths Mania (Junior)", 
+        desc: "Put your logical reasoning to the test with fun brain teasers, analytical calculations, and quantitative questions.", 
+        track: "Tech", 
+        location: "TBD", 
+        icon: BrainCircuit,
+        capacity: "Teams (2 - 3 members)",
+        durationLabel: "2 Hours"
+      },
+      { 
+        id: 'd2-closing', 
+        time: "05:00 PM - 06:00 PM", 
+        startHour: 17.0,
+        duration: 1.0,
+        title: "Closing Ceremony", 
+        desc: "Celebrate victorious achievements, distribute participation certificates, and record beautiful photography blocks.", 
+        track: "General", 
+        location: "TBD", 
+        icon: Trophy,
+        durationLabel: "1 Hour"
       }
     ]
   };
@@ -264,15 +420,16 @@ export default function Timeline() {
   };
 
   const hourHeaders = [
-    { label: "09:00 AM", hour: 9.0 },
-    { label: "10:00 AM", hour: 10.0 },
-    { label: "11:00 AM", hour: 11.0 },
-    { label: "12:00 PM", hour: 12.0 },
-    { label: "01:00 PM", hour: 13.0 },
-    { label: "02:00 PM", hour: 14.0 },
-    { label: "03:00 PM", hour: 15.0 },
-    { label: "04:00 PM", hour: 16.0 },
-    { label: "05:00 PM", hour: 17.0 }
+    { label: "9 AM", hour: 9.0 },
+    { label: "10 AM", hour: 10.0 },
+    { label: "11 AM", hour: 11.0 },
+    { label: "12 PM", hour: 12.0 },
+    { label: "1 PM", hour: 13.0 },
+    { label: "2 PM", hour: 14.0 },
+    { label: "3 PM", hour: 15.0 },
+    { label: "4 PM", hour: 16.0 },
+    { label: "5 PM", hour: 17.0 },
+    { label: "6 PM", hour: 18.0 }
   ];
 
   const getTrackColor = (track: string) => {
@@ -372,36 +529,11 @@ export default function Timeline() {
         <div className="flex flex-col gap-6 mb-8 bg-gray-50/50 dark:bg-white/[0.02] p-4 sm:p-6 rounded-3xl border border-gray-200/50 dark:border-white/5">
           
           {/* Day Selection Slider */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 w-full">
-            {/* Left column spacer */}
-            <div className="hidden sm:block" />
-            
-            {/* Center column with active day buttons */}
-            <div className="flex justify-center w-full">
-              <div className="inline-flex p-1 rounded-2xl bg-white dark:bg-white/5 border border-gray-250/30 dark:border-white/10 shadow-sm w-full sm:w-auto">
-                 <button
-                  onClick={() => setActiveDay('day1')}
-                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                    activeDay === 'day1'
-                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
-                  }`}
-                >
-                  <Calendar className="w-4 h-4" />
-                  Morning Sessions
-                </button>
-                <button
-                  onClick={() => setActiveDay('day2')}
-                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                    activeDay === 'day2'
-                      ? "bg-blue-600 text-white shadow-xl shadow-blue-500/20"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
-                  }`}
-                >
-                  <Calendar className="w-4 h-4" />
-                  Afternoon & Closing
-                </button>
-              </div>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+            {/* Date Tag */}
+            <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400">
+              <Calendar className="w-4 h-4 text-blue-500" />
+              <span>Saturday, 1st August 2026</span>
             </div>
 
             {/* Right column with view switches */}
@@ -511,7 +643,7 @@ export default function Timeline() {
                   {/* Absolute positioning container for background vertical dotted grid lines */}
                   <div className="absolute left-6 lg:left-8 right-6 lg:right-8 top-16 bottom-16 pointer-events-none z-0">
                     {hourHeaders.map((header, index) => {
-                      const pct = (index / 8) * 100;
+                      const pct = (index / (hourHeaders.length - 1)) * 100;
                       return (
                         <div 
                           key={index} 
@@ -525,7 +657,7 @@ export default function Timeline() {
                   {/* Absolute Time Grids Column markings */}
                   <div className="relative h-10 border-b border-gray-200 dark:border-white/5 mb-6 z-10">
                     {hourHeaders.map((header, index) => {
-                      const pct = (index / 8) * 100;
+                      const pct = (index / (hourHeaders.length - 1)) * 100;
                       return (
                         <div 
                           key={index} 
@@ -552,9 +684,9 @@ export default function Timeline() {
                         const isPinned = pinnedEvents.includes(event.id);
                         const EventIcon = event.icon;
 
-                        // Linear math conversion to percentage offsets spanning 8 hour duration (from 9:00 AM to 5:00 PM)
-                        const startPct = ((event.startHour - 9.0) / 8.0) * 100;
-                        const durationPct = (event.duration / 8.0) * 100;
+                        // Linear math conversion to percentage offsets spanning 9 hour duration (from 9:00 AM to 6:00 PM)
+                        const startPct = ((event.startHour - 9.0) / 9.0) * 100;
+                        const durationPct = (event.duration / 9.0) * 100;
 
                         return (
                           <motion.div
@@ -639,7 +771,7 @@ export default function Timeline() {
 
                   {/* Horizontal timetable footer markings */}
                   <div className="mt-6 border-t border-gray-200 dark:border-white/5 pt-4 flex items-center justify-between text-xs text-gray-450 dark:text-gray-400 font-bold">
-                    <span>9:00 AM — 5:00 PM Schedule Horizon</span>
+                    <span>9:00 AM — 6:00 PM Schedule Horizon</span>
                     <span>All Core Campus Modules Plotted</span>
                   </div>
 
