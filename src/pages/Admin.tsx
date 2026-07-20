@@ -176,6 +176,11 @@ export default function Admin() {
   }, []);
 
   const loadSubmissions = () => {
+    // Silently auto-migrate Maths Mania prefixes for existing registrations
+    submissionService.migrateMathsManiaPrefixes().catch(err => {
+      console.error('Failed to auto-migrate Maths Mania prefixes:', err);
+    });
+
     return submissionService.subscribeToSubmissions((data) => {
       // Exclude deactivated modules: webforces and digital-dash
       const activeData = data.filter(sub => sub.moduleId !== 'webforces' && sub.moduleId !== 'digital-dash');

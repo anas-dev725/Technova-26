@@ -65,7 +65,7 @@ service cloud.firestore {
 
       allow update: if (
         isAdmin() && 
-        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'exempted']) &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'exempted', 'participantId', 'moduleId', 'moduleTitle']) &&
         isServerTimestamp('updatedAt')
       );
 

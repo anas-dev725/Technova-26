@@ -51,8 +51,8 @@ export const MODULE_PREFIXES: Record<string, string> = {
   'datathon': 'DT',
   'prompt-engineering': 'PE',
   'esports-competition': 'ESP',
-  'maths-mania': 'MM',
-  'maths-mania-advanced': 'MMA'
+  'maths-mania': 'MMA',
+  'maths-mania-advanced': 'MMJ'
 };
 
 function getParticipantPrefix(moduleId: string): string {
@@ -334,6 +334,38 @@ export const submissionService = {
       return count;
     } catch (error) {
       handleFirestoreError(error, 'write', 'shiftMathsMania');
+    }
+  },
+
+  async migrateMathsManiaPrefixes() {
+    try {
+      const q = query(collection(db, 'submissions'));
+      const snapshot = await getDocs(q);
+      
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data() as Submission;
+        const moduleId = data.moduleId;
+        const participantId = data.participantId;
+        
+        if (participantId) {
+          let updatedId = participantId;
+          if (moduleId === 'maths-mania' && participantId.startsWith('MM-')) {
+            updatedId = participantId.replace('MM-', 'MMA-');
+          } else if (moduleId === 'maths-mania-advanced' && participantId.startsWith('MMA-')) {
+            updatedId = participantId.replace('MMA-', 'MMJ-');
+          }
+          
+          if (updatedId !== participantId) {
+            const docRef = doc(db, 'submissions', docSnap.id);
+            await updateDoc(docRef, {
+              participantId: updatedId,
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error migrating Maths Mania prefixes:', error);
     }
   }
 }
