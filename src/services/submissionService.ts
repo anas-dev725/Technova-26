@@ -303,5 +303,37 @@ export const submissionService = {
     } catch (error) {
       handleFirestoreError(error, 'write', `counters/${moduleId}`);
     }
+  },
+
+  async shiftMathsManiaParticipants() {
+    try {
+      const q = query(collection(db, 'submissions'));
+      const snapshot = await getDocs(q);
+      let count = 0;
+      
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data() as Submission;
+        const currentTitle = data.moduleTitle ? data.moduleTitle.trim() : '';
+        const currentModuleId = data.moduleId;
+        
+        // Match "Maths Mania" exactly or case-insensitive, but NOT "Maths Mania (Advanced)" and NOT "Maths Mania (Junior)"
+        const isOldMathsMania = 
+          (currentTitle.toLowerCase() === 'maths mania') || 
+          (currentModuleId === 'maths-mania' && currentTitle !== 'Maths Mania (Advanced)');
+          
+        if (isOldMathsMania) {
+          const docRef = doc(db, 'submissions', docSnap.id);
+          await updateDoc(docRef, {
+            moduleId: 'maths-mania',
+            moduleTitle: 'Maths Mania (Advanced)',
+            updatedAt: serverTimestamp()
+          });
+          count++;
+        }
+      }
+      return count;
+    } catch (error) {
+      handleFirestoreError(error, 'write', 'shiftMathsMania');
+    }
   }
 }
