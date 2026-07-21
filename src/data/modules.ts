@@ -239,7 +239,7 @@ export const modules: Module[] = [
     mode: 'Duo',
     prize: 'TBD',
     challengeName: 'The Variable Matrix (Advanced)',
-    skills: ['Advanced Calculus', 'Higher Algebra', 'Stochastic Logic', 'Abstract Reasoning'],
+    skills: ['Algebra', 'Number Theory', 'Statistics and Probability', 'Calculus'],
     longDescription: 'Step up to the advanced tier of Maths Mania. Designed for seasoned problem solvers, this module pushes the boundaries of your mathematical intellect. Test your capabilities against high-difficulty proof-oriented structures, differential paradigms, advanced probability distributions, and structural matrix algebra under strict speed limits.\n\n**Topics Covered**\nThe following topics will be part of the competition:\n\n• **Algebra**: Arithmetic, fractions, linear and quadratic equations, inequalities, sequences and series, functions and their properties.\n\n• **Number theory**: Divisibility, prime numbers, GCD and LCM, counting principle, and Sudoku.\n\n• **Statistics and Probability**: Descriptive Statistics, permutations and combinations, elementary probability\n\n• **Calculus**: Differentiation, integration, and related theorems.\n\n**Competition format**\n\nThe competition consists of multiple rounds, conducted through both computer-based and paper-based formats. The details are as follows:\n\n**Round 1**: First Round: Computer-based\n**Round 2**: Second Round: Computer-based\n**Round 3**: Third Round (Sudoku): Paper-based\n**Round 4**: Fourth Round: Computer-based\n**Round 5**: Final Round: Computer-based',
     rulesList: [
       'Teams of 2 to 3 members are allowed.',
