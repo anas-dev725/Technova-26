@@ -29,6 +29,7 @@ import {
 import { auth, signInWithGoogle } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
 import { submissionService, Submission, MODULE_PREFIXES } from '../services/submissionService';
+import { modules } from '../data/modules';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -376,16 +377,28 @@ export default function Admin() {
   const filteredSubmissions = submissions
     .filter(sub => {
       const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
-      const matchesModule = filterModule === 'all' || sub.moduleTitle === filterModule;
+      
+      const targetModule = modules.find(m => m.title === filterModule);
+      const matchesModule = filterModule === 'all' || 
+        sub.moduleTitle === filterModule || 
+        (targetModule && sub.moduleId === targetModule.id);
+
       const normalizedSubUni = normalizeUniversityName(sub.university);
       const matchesUniversity = filterUniversity === 'all' || normalizedSubUni === filterUniversity;
-      const matchesSearch = 
+      
+      const cleanId = sub.participantId ? sub.participantId.toLowerCase().replace(/[\s-]/g, '') : '';
+      const cleanSearch = searchQuery.toLowerCase().replace(/[\s-]/g, '');
+      const matchesId = cleanId && cleanSearch && cleanId.includes(cleanSearch);
+
+      const matchesSearch = !searchQuery ||
+        matchesId ||
         sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
         normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+        
       return matchesStatus && matchesModule && matchesUniversity && matchesSearch;
     })
     .sort((a, b) => {
@@ -398,18 +411,54 @@ export default function Admin() {
       return 0;
     });
 
-  const uniqueModules = Array.from(new Set(submissions.map(s => s.moduleTitle))).sort();
+  const uniqueModules = Array.from(new Set([
+    ...modules.map(m => m.title),
+    ...submissions.map(s => s.moduleTitle)
+  ])).filter(Boolean).sort();
 
-  const moduleStats = uniqueModules.map(m => ({
-    name: m,
-    count: submissions.filter(s => s.moduleTitle === m).length
-  }));
+  const moduleStats = uniqueModules.map(m => {
+    const targetModule = modules.find(mod => mod.title === m);
+    const count = submissions.filter(s => 
+      s.moduleTitle === m || (targetModule && s.moduleId === targetModule.id)
+    ).length;
+    return {
+      name: m,
+      count
+    };
+  });
+
+  // Compute a filtered list of submissions for the university distribution stats (excluding university filter itself)
+  const submissionsForUniversityDistribution = submissions.filter(sub => {
+    const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
+    
+    const targetModule = modules.find(m => m.title === filterModule);
+    const matchesModule = filterModule === 'all' || 
+      sub.moduleTitle === filterModule || 
+      (targetModule && sub.moduleId === targetModule.id);
+
+    const normalizedSubUni = normalizeUniversityName(sub.university);
+
+    const cleanId = sub.participantId ? sub.participantId.toLowerCase().replace(/[\s-]/g, '') : '';
+    const cleanSearch = searchQuery.toLowerCase().replace(/[\s-]/g, '');
+    const matchesId = cleanId && cleanSearch && cleanId.includes(cleanSearch);
+
+    const matchesSearch = !searchQuery ||
+      matchesId ||
+      sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+    return matchesStatus && matchesModule && matchesSearch;
+  });
 
   // Get unique normalized universities and their participant & team stats
   const universityStats = Array.from(
-    new Set(submissions.map(s => normalizeUniversityName(s.university)))
+    new Set(submissionsForUniversityDistribution.map(s => normalizeUniversityName(s.university)))
   ).map(uniName => {
-    const uniSubmissions = submissions.filter(s => normalizeUniversityName(s.university) === uniName);
+    const uniSubmissions = submissionsForUniversityDistribution.filter(s => normalizeUniversityName(s.university) === uniName);
     const teamCount = uniSubmissions.length;
     const participantCount = uniSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0);
     return {
@@ -421,7 +470,10 @@ export default function Admin() {
 
   // Dynamic calculations based on selected filters (module and/or university)
   const targetSubmissions = submissions
-    .filter(s => filterModule === 'all' || s.moduleTitle === filterModule)
+    .filter(s => {
+      const targetModule = modules.find(m => m.title === filterModule);
+      return filterModule === 'all' || s.moduleTitle === filterModule || (targetModule && s.moduleId === targetModule.id);
+    })
     .filter(s => filterUniversity === 'all' || normalizeUniversityName(s.university) === filterUniversity);
 
   const stats = {
