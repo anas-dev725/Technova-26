@@ -204,33 +204,6 @@ export const modules: Module[] = [
     ]
   },
   {
-    id: 'esports-competition',
-    title: 'Esports Competition',
-    description: 'Unleash your gaming passion. Join fellow enthusiasts to showcase your strategy and skills in PUBGM in a lively, community-focused arena.',
-    icon: Gamepad2,
-    category: 'Gaming',
-    mode: 'Squad',
-    prize: 'TBD',
-    challengeName: 'PUBG Mobile',
-    longDescription: 'Welcome to the Technova Esports Arena! This is where passion meets play. For Technova\'26, the battleground is set exclusively for PUBG Mobile. Prepare to navigate the map with your full Squad, showcase your tactical strategy, reflexes, and team coordination to become the ultimate champions.',
-    skills: ['Tactical Strategy', 'Team Coordination', 'Reflexes and Combat', 'Map Awareness'],
-    rulesList: [
-      'Squad (4 players) registration is required.',
-      'All players must use their own mobile devices. Tablets, iPads, and Emulators are strictly prohibited.',
-      'No hacks, third-party plug-ins, or modified game clients may be used. Violations will result in immediate disqualification.',
-      'Standard PUBG Mobile competitive map settings and tournament rulebooks will be enforced.',
-      'Teams must be fully registered and present in the lobby at least 15 minutes before the match start time.',
-      'In case of any internet or technical issues on the player\'s side, the lobby will not be restarted.',
-      'Any form of teaming up or unsportsmanlike behavior will result in a ban.',
-      'The organizers reserve the right to modify rules. All decisions on disputes, scores, and standings are final.'
-    ],
-    heads: [
-      { name: 'Arsalan', role: 'Module Lead', designation: 'Esports Tournament Director', linkedin: 'https://linkedin.com' },
-      { name: 'Zainab', role: 'Module Lead', designation: 'Esports Operations Manager', linkedin: 'https://linkedin.com' },
-      { name: 'Mustajab', role: 'Module Lead', designation: 'Chief Referee & Coordinator', linkedin: 'https://linkedin.com' }
-    ]
-  },
-  {
     id: 'maths-mania',
     title: 'Maths Mania (Advanced)',
     description: 'Face the ultimate analytical challenge. Prove your mastery over advanced mathematics, complex calculus, structural algebra, and stochastic logic.',

@@ -39,8 +39,6 @@ const getRulebookFilename = (id: string): string => {
       return 'Prompt_Engineering_Rule_Book.pdf';
     case 'datathon':
       return 'Datathon_Rule_Book.pdf';
-    case 'esports-competition':
-      return 'Esports_Competition_Rule_Book.pdf';
     case 'maths-mania':
       return 'Maths_Mania_Rule_Book.pdf';
     case 'maths-mania-advanced':
@@ -80,11 +78,6 @@ const moduleSchedules: Record<string, { day: string; time: string; venue: string
     day: 'Saturday, 1st August, 2026',
     time: '02:00 PM - 05:05 PM',
     venue: 'Computing Lab 3'
-  },
-  'esports-competition': {
-    day: 'Saturday, 1st August, 2026',
-    time: '10:00 AM - 05:00 PM',
-    venue: 'Technova Gaming Zone'
   },
   'maths-mania': {
     day: 'Saturday, 1st August, 2026',
@@ -371,7 +364,7 @@ export default function ModuleDetail() {
                   )}
 
                   {/* Rulebook Download/View Section */}
-                  {!['esports-competition', 'maths-mania-advanced'].includes(module.id) && (
+                  {module.id !== 'maths-mania-advanced' && (
                     <div className="bg-gray-50 dark:bg-[#0c0c0c] rounded-[2rem] border border-gray-200 dark:border-white/5 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-sm">
                       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
                       <div className="flex-1 space-y-3">

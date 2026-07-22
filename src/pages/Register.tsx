@@ -83,24 +83,10 @@ export default function Register() {
 
   const dynamicSchema = React.useMemo(() => {
     return registerSchema.superRefine((data, ctx) => {
-      // Require teamName for Esports (PUBG / team games)
-      if (selectedModule?.id === 'esports-competition') {
-        if (!data.teamName || data.teamName.trim().length < 2) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['teamName'],
-            message: 'Team Name is required for Esports Competition'
-          });
-        }
-      }
-
       // 3 mandatory for innovation/squad, 2 mandatory for 2-3 team (Duo), otherwise all mandatory
-      // BUT for PUBG Esports Competition, all 4 members of the Squad are strictly mandatory!
-      const minRequired = selectedModule?.id === 'esports-competition'
-        ? 4
-        : (isInnovationModule || activeMode === 'Squad')
-          ? 3 
-          : (activeMode === 'Duo' ? 2 : data.members.length);
+      const minRequired = (isInnovationModule || activeMode === 'Squad')
+        ? 3 
+        : (activeMode === 'Duo' ? 2 : data.members.length);
 
       data.members.forEach((m, idx) => {
         const isMandatory = idx < minRequired;
