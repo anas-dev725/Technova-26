@@ -1001,6 +1001,10 @@ export default function Register() {
                       )}
                     </AnimatePresence>
 
+                    <p className="text-center text-xs text-gray-500 dark:text-gray-400 font-medium max-w-md mx-auto leading-relaxed">
+                      Make sure to check your <strong className="font-bold text-gray-800 dark:text-white">inbox and spam folder</strong> after submitting the form as you'll receive the automated confirmation email.
+                    </p>
+
                     <button
                       type="submit"
                       disabled={isSubmitting}
