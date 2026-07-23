@@ -32,6 +32,7 @@ export interface Module {
   rulesList?: string[];
   heads?: ModuleHead[];
   subGames?: SubGame[];
+  isFilled?: boolean;
 }
 
 export const modules: Module[] = [
@@ -129,6 +130,7 @@ export const modules: Module[] = [
     category: 'AI',
     mode: 'Duo',
     prize: 'Upto 70K PKR',
+    isFilled: true,
     challengeName: 'The Trust Arena',
     longDescription: 'Build agents that think. Let them compete. Watch trust emerge. The Trust Arena is a multi-agent strategy tournament built on the Prisoner\'s Dilemma, focusing on the foundational problems of cooperation, deception, and emergent trust in AI systems.\n\nYou design and engineer an intelligent agent that perceives its environment, reasons autonomously, communicates with opponents, and decides when to cooperate and when to betray.\n\nEvery round, every decision, every message shapes the outcome. The arena rewards those who read the room.\n\nPerceive, Reason, Communicate, and Act.',
     skills: ['Logic and Automation', 'Strategic Decision Making', 'Game Theory', 'Behavioral Design'],

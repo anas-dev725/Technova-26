@@ -351,6 +351,42 @@ export default function Register() {
 
   if (!selectedModule) return null;
 
+  if (selectedModule.isFilled) {
+    return (
+      <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
+        <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <button 
+            onClick={() => navigate(`/modules/${selectedModule.id}`)}
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-8 group mx-auto"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            Back to Module Details
+          </button>
+          
+          <div className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-[3rem] p-12 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-red-500/5 rounded-full blur-2xl" />
+            
+            <div className="w-20 h-20 bg-red-500/10 dark:bg-red-500/20 rounded-[1.5rem] border border-red-500/20 flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="w-10 h-10 text-red-500" />
+            </div>
+            
+            <h2 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-4">REGISTRATIONS CLOSED</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-8 leading-relaxed">
+              We are sorry, but all registration spots for <strong className="font-bold text-gray-800 dark:text-white">{selectedModule.title}</strong> have been completely filled up. We hope to see you in our other modules!
+            </p>
+            
+            <button
+              onClick={() => navigate('/modules')}
+              className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold flex items-center justify-center transition-all shadow-lg shadow-blue-600/20"
+            >
+              Explore Other Modules
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentModuleTitle = selectedModule.subGames && selectedSubGameId 
     ? (selectedModule.subGames.find(g => g.id === selectedSubGameId)?.title || selectedModule.title)
     : selectedModule.title;

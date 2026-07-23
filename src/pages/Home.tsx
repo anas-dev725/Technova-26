@@ -258,13 +258,21 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="relative w-full overflow-hidden group/slider">
-            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite] hover:[animation-play-state:paused]">
+          <div className="relative w-full overflow-hidden group/slider py-2">
+            <div className="flex gap-6 w-max animate-[slide_30s_linear_infinite] hover:[animation-play-state:paused] pt-3 pb-2">
               {[...modules, ...modules].map((mod, i) => {
                 const Icon = mod.icon;
                 const TeamIcon = mod.mode === 'Individual' ? User : mod.mode === 'Duo' ? Users : UsersRound;
                 return (
-                  <div key={`${mod.id}-${i}`} className="w-[350px] shrink-0 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
+                  <div key={`${mod.id}-${i}`} className="w-[350px] shrink-0 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group relative">
+                    {mod.isFilled && (
+                      <div className="absolute top-0 left-6 z-10">
+                        <span className="px-3.5 py-1 rounded-b-xl bg-red-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-red-600/30 flex items-center gap-1.5 border-b border-x border-red-400/30">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          Slots Filled
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
