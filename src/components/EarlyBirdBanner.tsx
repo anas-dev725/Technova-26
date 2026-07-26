@@ -21,7 +21,7 @@ const EarlyBirdBanner = () => {
               </p>
             </div>
             <p className="text-[11px] sm:text-sm font-black text-white uppercase tracking-tighter">
-              AVAIL EARLY BIRD DISCOUNT — 30% OFF ENDS ON 25th JULY
+              AVAIL EARLY BIRD DISCOUNT — 30% OFF ENDS ON 26th JULY till 11:59 PM
             </p>
           </div>
         ))}
