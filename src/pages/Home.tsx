@@ -23,7 +23,7 @@ import { bBraunLogo, telecLogo, expressNewsLogo, texitechLogo } from '../assets/
 import alMeezanLogo from '../assets/al meezan.png';
 import beencoLabsLogo from '../assets/Beenco labs.png';
 import { modules } from '../data/modules';
-import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock, X } from 'lucide-react';
+import { ChevronRight, Calendar, MapPin, Users, Trophy, Code, Shield, Zap, ArrowRight, CheckCircle2, User, UsersRound, Github, Linkedin, Globe, Handshake, Mail, Award, Clock, X, GraduationCap } from 'lucide-react';
 
 function CountUp({ end, suffix = '', prefix = '', duration = 2 }: { end: number, suffix?: string, prefix?: string, duration?: number }) {
   const [count, setCount] = useState(0);
@@ -270,6 +270,14 @@ export default function Home() {
                         <span className="px-3.5 py-1 rounded-b-xl bg-red-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-red-600/30 flex items-center gap-1.5 border-b border-x border-red-400/30">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                           Slots Filled
+                        </span>
+                      </div>
+                    )}
+                    {mod.targetAudience && (
+                      <div className="absolute top-0 right-6 z-10">
+                        <span className="px-3.5 py-1 rounded-b-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-indigo-600/30 flex items-center gap-1.5 border-b border-x border-indigo-400/30">
+                          <GraduationCap className="w-3.5 h-3.5" />
+                          {mod.targetAudience}
                         </span>
                       </div>
                     )}

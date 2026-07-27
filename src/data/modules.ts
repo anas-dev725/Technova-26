@@ -33,6 +33,7 @@ export interface Module {
   heads?: ModuleHead[];
   subGames?: SubGame[];
   isFilled?: boolean;
+  targetAudience?: string;
 }
 
 export const modules: Module[] = [
@@ -213,6 +214,7 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Duo',
     prize: 'TBD',
+    targetAudience: 'For University Students',
     challengeName: 'The Variable Matrix (Advanced)',
     skills: ['Algebra', 'Number Theory', 'Statistics and Probability', 'Calculus'],
     longDescription: 'Step up to the advanced tier of Maths Mania. Designed for seasoned problem solvers, this module pushes the boundaries of your mathematical intellect. Test your capabilities against high-difficulty proof-oriented structures, differential paradigms, advanced probability distributions, and structural matrix algebra under strict speed limits.\n\n**Topics Covered**\nThe following topics will be part of the competition:\n\n• **Algebra**: Arithmetic, fractions, linear and quadratic equations, inequalities, sequences and series, functions and their properties.\n\n• **Number theory**: Divisibility, prime numbers, GCD and LCM, counting principle, and Sudoku.\n\n• **Statistics and Probability**: Descriptive Statistics, permutations and combinations, elementary probability\n\n• **Calculus**: Differentiation, integration, and related theorems.\n\n**Competition format**\n\nThe competition consists of multiple rounds, conducted through both computer-based and paper-based formats. The details are as follows:\n\n**Round 1**: First Round: Computer-based\n**Round 2**: Second Round: Computer-based\n**Round 3**: Third Round (Sudoku): Paper-based\n**Round 4**: Fourth Round: Computer-based\n**Round 5**: Final Round: Computer-based',
@@ -233,6 +235,7 @@ export const modules: Module[] = [
     category: 'Tech',
     mode: 'Duo',
     prize: 'TBD',
+    targetAudience: 'For College Students',
     challengeName: 'The Variable Matrix (Junior)',
     skills: ['Arithmetic', 'Basic Algebra', 'Geometry & Measurement', 'Number Systems'],
     longDescription: 'Enter the world of numbers where logic is king. Challenge your brain with puzzles that require more than just a calculator: they require a spark of genius. Ready to prove you\'re the master of the variable?\n\nTOPICS COVERED\nThe following mathematical topics will be tested during the competition:\n• **Arithmetic**: Fractions and Decimals, Percentage, Ratio and Proportion, Averages, Simple and Compound Interest.\n• **Algebra**: Simplifying expressions, Solving equations and inequalities, Word problems involving unknowns.\n• **Geometry and Measurement**: Properties of shapes, Perimeter, Area, Volume, Angles and Theorems.\n• **Number Systems**: Even/Odd, Prime/Composite numbers, Factors and Multiples, HCF and LCM.\n• **Data Interpretations and Analysis**: Reading Graphs, Tables, Calculating Averages, Trends, Ratios from Data, Understanding and Comparing data sets.\n• **Word Problems**: Real life problems solving, Time, Speed and Distance, Work and wages, Age Problems.\n• **Logical and Analytical Reasoning (Quant-Based)**: Pattern Recognition, Sequences and Series, Deductive logic using numbers.\n\nCOMPETITION ROUNDS\n• **Round 1**: Mathematical Foundations\n• **Round 2**: Algebra and Problem Solving\n• **Round 3**: Geometry and Data Analysis\n• **Round 4**: Logical Reasoning and Championship Round',

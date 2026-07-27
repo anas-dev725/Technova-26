@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2, Check, Server } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2, Check, Server, GraduationCap } from 'lucide-react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -536,7 +536,15 @@ export default function Register() {
                       Registration Summary
                     </div>
                     <h2 className="text-4xl font-display font-bold mb-2">{currentModuleTitle}</h2>
-                    <p className="text-blue-100 font-medium">Technova '26 Competition Entry</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-blue-100 font-medium">Technova '26 Competition Entry</p>
+                      {selectedModule.targetAudience && (
+                        <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider border border-white/30 backdrop-blur-md">
+                          <GraduationCap className="w-3.5 h-3.5" />
+                          {selectedModule.targetAudience}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-2 md:flex gap-6 md:gap-12">

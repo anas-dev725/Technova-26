@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Users, User, UsersRound, Trophy } from 'lucide-react';
+import { ArrowRight, Users, User, UsersRound, Trophy, GraduationCap } from 'lucide-react';
 import { modules } from '../data/modules';
 
 const categories = ['All', ...Array.from(new Set(modules.map(m => m.category)))];
@@ -118,6 +118,15 @@ export default function Modules() {
                     </div>
                   )}
 
+                  {mod.targetAudience && (
+                    <div className="absolute top-0 left-0 z-20">
+                      <div className="bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest py-1.5 px-4 rounded-br-2xl rounded-tl-[2.5rem] shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 border-b border-r border-indigo-400/30">
+                        <GraduationCap className="w-3.5 h-3.5" />
+                        {mod.targetAudience}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="absolute top-6 right-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500">
                     <ArrowRight className="w-6 h-6 text-blue-500 -rotate-45" />
                   </div>
@@ -137,6 +146,12 @@ export default function Modules() {
                         {getTeamIcon(mod.mode)}
                         {mod.mode === 'Duo' ? '2-3 Team' : mod.mode}
                       </span>
+                      {mod.targetAudience && (
+                        <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest border border-indigo-500/20 flex items-center gap-1">
+                          <GraduationCap className="w-3.5 h-3.5" />
+                          {mod.targetAudience}
+                        </span>
+                      )}
                       {mod.isFilled && (
                         <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-500/20 flex items-center gap-1">
                           Slots Filled

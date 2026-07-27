@@ -6,7 +6,7 @@ import {
   CreditCard, Clock, MapPin, CheckCircle2, 
   ShieldCheck, AlertCircle, Sparkles, Gamepad2,
   ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket, Calendar,
-  FileText, Download, ExternalLink
+  FileText, Download, ExternalLink, GraduationCap
 } from 'lucide-react';
 import { modules, getFees, TeamMode } from '../data/modules';
 
@@ -170,6 +170,12 @@ export default function ModuleDetail() {
                   <div className="px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold uppercase tracking-widest">
                     {module.category}
                   </div>
+                  {module.targetAudience && (
+                    <div className="px-4 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 shadow-md shadow-indigo-600/20">
+                      <GraduationCap className="w-3.5 h-3.5" />
+                      {module.targetAudience}
+                    </div>
+                  )}
                   <div className="px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                     <Trophy className="w-3.5 h-3.5" />
                     Winning Prize: {module.prize}
