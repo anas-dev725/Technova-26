@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import confetti from 'canvas-confetti';
-import { modules, getFees, TeamMode } from '../data/modules';
+import { modules, getFees, isDiscountEligible, TeamMode } from '../data/modules';
 import { submissionService } from '../services/submissionService';
 import { emailService } from '../services/emailService';
 
@@ -71,10 +71,24 @@ export default function Register() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
-  const [promoCode, setPromoCode] = useState('TECHNOVA30');
-  const [isPromoApplied, setIsPromoApplied] = useState(true);
-
   const selectedModule = modules.find(m => m.id === moduleId);
+  const isEligibleForDiscount = selectedModule ? isDiscountEligible(selectedModule.id, selectedModule.title) : false;
+
+  const [promoCode, setPromoCode] = useState(() => isEligibleForDiscount ? 'TECHNOVA30' : '');
+  const [isPromoApplied, setIsPromoApplied] = useState(() => isEligibleForDiscount);
+
+  useEffect(() => {
+    if (selectedModule) {
+      const eligible = isDiscountEligible(selectedModule.id, selectedModule.title);
+      if (eligible) {
+        setPromoCode('TECHNOVA30');
+        setIsPromoApplied(true);
+      } else {
+        setPromoCode('');
+        setIsPromoApplied(false);
+      }
+    }
+  }, [selectedModule?.id]);
   const INNOVATION_MODULES = ['fyp-warriors', 'startup-launchpad'];
   const isInnovationModule = selectedModule && INNOVATION_MODULES.includes(selectedModule.id);
   const activeMode = selectedModule
@@ -401,7 +415,7 @@ export default function Register() {
     const uc = code.toUpperCase();
     if (uc === '35TECHNO') return 0.35;
     if (uc === 'TECHALUM35') return 0.35;
-    if (uc === 'TECHNOVA30') return 0.30;
+    if (uc === 'TECHNOVA30' && selectedModule && isDiscountEligible(selectedModule.id, selectedModule.title)) return 0.30;
     return 0;
   };
 
@@ -413,7 +427,8 @@ export default function Register() {
     const code = val.toUpperCase();
     setPromoCode(val);
     
-    if (code === '35TECHNO' || code === 'TECHALUM35' || code === 'TECHNOVA30') {
+    const canUseTechnova30 = selectedModule && isDiscountEligible(selectedModule.id, selectedModule.title);
+    if (code === '35TECHNO' || code === 'TECHALUM35' || (code === 'TECHNOVA30' && canUseTechnova30)) {
       if (!isPromoApplied) {
         confetti({
           particleCount: 150,
@@ -551,10 +566,10 @@ export default function Register() {
                     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 min-w-[140px] relative">
                       <p className="text-blue-100 text-[10px] font-bold uppercase tracking-widest mb-1">Fee Amount</p>
                       <div className="flex flex-col">
-                        <p className={`text-2xl font-bold ${isPromoApplied ? 'text-blue-200 text-sm line-through opacity-60' : ''}`}>
+                        <p className={`text-2xl font-bold ${isPromoApplied && discountAmount > 0 ? 'text-blue-200 text-sm line-through opacity-60' : ''}`}>
                           Rs. {currentModuleFee.toLocaleString()}
                         </p>
-                        {isPromoApplied && (
+                        {isPromoApplied && discountAmount > 0 && (
                           <motion.p 
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -564,7 +579,7 @@ export default function Register() {
                           </motion.p>
                         )}
                       </div>
-                      {isPromoApplied && (
+                      {isPromoApplied && discountAmount > 0 && (
                         <div className="absolute -top-2 -right-2 bg-yellow-400 text-blue-900 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter animate-bounce">
                           {Math.round(discountPercentage * 100)}% OFF
                         </div>
@@ -896,24 +911,35 @@ export default function Register() {
                         <div className="relative z-10">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest">Pricing & Billing Summary</label>
-                            <div className="bg-green-500/10 text-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider w-fit">
-                              30% Early Bird Discount Auto-Applied
-                            </div>
+                            {isPromoApplied && discountAmount > 0 && (
+                              <div className="bg-green-500/10 text-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider w-fit">
+                                {Math.round(discountPercentage * 100)}% Discount Applied
+                              </div>
+                            )}
                           </div>
                           
                           <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Original Fee</span>
-                              <span className="text-sm text-gray-400 font-bold line-through">Rs. {currentModuleFee.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs font-bold text-green-500 uppercase tracking-widest">Technova '26 Special Promo</span>
-                              <span className="text-sm font-bold text-green-500">- Rs. {discountAmount.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between items-center py-4 px-6 rounded-2xl bg-blue-600/10 border border-blue-600/20 mt-2">
-                              <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Final Payable</span>
-                              <span className="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">Rs. {finalFee.toLocaleString()}</span>
-                            </div>
+                            {isPromoApplied && discountAmount > 0 ? (
+                              <>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Original Fee</span>
+                                  <span className="text-sm text-gray-400 font-bold line-through">Rs. {currentModuleFee.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs font-bold text-green-500 uppercase tracking-widest">Technova '26 Special Promo ({promoCode})</span>
+                                  <span className="text-sm font-bold text-green-500">- Rs. {discountAmount.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center py-4 px-6 rounded-2xl bg-blue-600/10 border border-blue-600/20 mt-2">
+                                  <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Final Payable</span>
+                                  <span className="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">Rs. {finalFee.toLocaleString()}</span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex justify-between items-center py-4 px-6 rounded-2xl bg-blue-600/10 border border-blue-600/20">
+                                <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Total Payable</span>
+                                <span className="text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">Rs. {currentModuleFee.toLocaleString()}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1122,7 +1148,7 @@ function SubmitOverlay({
 
   const steps = [
     { title: "Roster Credentials", desc: "Parsing & verifying team information", minPercent: 0, maxPercent: 25 },
-    { title: "Discount Verification", desc: "Applying 30% automatic rate discount", minPercent: 26, maxPercent: 40 },
+    { title: "Rate Verification", desc: "Verifying registration rate and fee parameters", minPercent: 26, maxPercent: 40 },
     { title: "Receipt Compactor", desc: "Compressing screenshot & proof checks", minPercent: 41, maxPercent: 65 },
     { title: "Cloud Database Sync", desc: "Writing registration node logs to Firestore", minPercent: 66, maxPercent: 80 },
     { title: "Slot Hardlock", desc: "Acquiring permanent seed allocation", minPercent: 81, maxPercent: 92 },
@@ -1179,7 +1205,7 @@ function SubmitOverlay({
     { min: 23, text: `ROSTER: Representing seat cluster: "${university || 'N/A'}"` },
     { min: 25, text: `ROSTER: Roster count validated with ${numMembers} active participant slot(s).` },
     { min: 28, text: "DISCOUNT: Validating promotional eligibility markers..." },
-    { min: 32, text: `DISCOUNT: 30% Early Bird Discount applied automatically! Processing with custom event rate.` },
+    { min: 32, text: isPromoApplied ? `DISCOUNT: Promotional discount applied! Processing with custom event rate.` : `RATE: Standard registration fee confirmed. Proceeding to verification.` },
     { min: 41, text: "IMAGE: Running CanvasCompactor engine on receipt screenshot..." },
     { min: 46, text: "IMAGE: Analyzing base64 pixel vectors for financial signatures..." },
     { min: 51, text: "IMAGE: Downscaling and optimizing image canvas compression parameters..." },

@@ -257,3 +257,10 @@ export const getFees = (mode: TeamMode, moduleId?: string) => {
     default: return 0;
   }
 };
+
+export const isDiscountEligible = (moduleId?: string, moduleTitle?: string): boolean => {
+  if (!moduleId && !moduleTitle) return false;
+  if (moduleId === 'maths-mania-advanced') return true;
+  if (moduleTitle && moduleTitle.toLowerCase().includes('junior')) return true;
+  return false;
+};

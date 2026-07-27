@@ -8,7 +8,7 @@ import {
   ArrowRight, ChevronDown, Fingerprint, Terminal, Award, Linkedin, Ticket, Calendar,
   FileText, Download, ExternalLink, GraduationCap
 } from 'lucide-react';
-import { modules, getFees, TeamMode } from '../data/modules';
+import { modules, getFees, isDiscountEligible, TeamMode } from '../data/modules';
 
 const formatTextWithBold = (text: string) => {
   if (!text) return '';
@@ -116,7 +116,8 @@ export default function ModuleDetail() {
   }
 
   const fees = getFees(selectedMode, module.id);
-  const discountedFees = Math.floor(fees * 0.7);
+  const isEligibleForDiscount = isDiscountEligible(module.id, module.title);
+  const discountedFees = isEligibleForDiscount ? Math.floor(fees * 0.7) : fees;
   const Icon = module.icon;
   const schedule = moduleSchedules[module.id] || {
     day: 'Day 1 & Day 2',
@@ -573,12 +574,16 @@ export default function ModuleDetail() {
                 <div className="mb-8">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-gray-500 dark:text-gray-400 font-medium">Registration Fee</p>
-                    <span className="px-2 py-0.5 text-[9px] font-black text-green-500 bg-green-500/10 border border-green-500/20 rounded-full uppercase tracking-wider">30% OFF</span>
+                    {isEligibleForDiscount && (
+                      <span className="px-2 py-0.5 text-[9px] font-black text-green-500 bg-green-500/10 border border-green-500/20 rounded-full uppercase tracking-wider">30% OFF</span>
+                    )}
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-display font-bold text-blue-600 dark:text-blue-400">Rs. {discountedFees.toLocaleString()}</span>
-                      <span className="text-sm font-semibold text-gray-400 line-through">Rs. {fees.toLocaleString()}</span>
+                      <span className="text-4xl font-display font-bold text-blue-600 dark:text-blue-400">Rs. {(isEligibleForDiscount ? discountedFees : fees).toLocaleString()}</span>
+                      {isEligibleForDiscount && (
+                        <span className="text-sm font-semibold text-gray-400 line-through">Rs. {fees.toLocaleString()}</span>
+                      )}
                     </div>
                     <span className="text-xs text-gray-500">/ per {selectedMode === 'Individual' ? 'person' : 'team'}</span>
                   </div>
@@ -632,17 +637,19 @@ export default function ModuleDetail() {
               </div>
 
               {/* Early Bird Promo Info */}
-              <div className="bg-amber-500/10 dark:bg-amber-500/5 rounded-3xl border border-amber-500/20 p-6">
-                <div className="flex items-start gap-3">
-                  <Ticket className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
-                  <div>
-                    <h4 className="text-sm font-black text-amber-800 dark:text-amber-400 uppercase tracking-wider mb-1">Join Us Early!</h4>
-                    <p className="text-xs text-amber-700 dark:text-gray-300 leading-relaxed font-semibold">
-                      We are excited to welcome your team to Technova&apos;26. To help your squad get started, a <span className="font-bold text-amber-600 dark:text-amber-400">30% Early Bird Discount</span> is applied automatically during registration for a friendlier entry rate. This discount ends on <span className="underline font-black text-amber-600 dark:text-amber-400">15th July</span>.
-                    </p>
+              {isEligibleForDiscount && (
+                <div className="bg-amber-500/10 dark:bg-amber-500/5 rounded-3xl border border-amber-500/20 p-6">
+                  <div className="flex items-start gap-3">
+                    <Ticket className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 animate-pulse" />
+                    <div>
+                      <h4 className="text-sm font-black text-amber-800 dark:text-amber-400 uppercase tracking-wider mb-1">Join Us Early!</h4>
+                      <p className="text-xs text-amber-700 dark:text-gray-300 leading-relaxed font-semibold">
+                        We are excited to welcome your team to Technova&apos;26. To help your squad get started, a <span className="font-bold text-amber-600 dark:text-amber-400">30% Early Bird Discount</span> is applied automatically during registration for a friendlier entry rate. This discount ends on <span className="underline font-black text-amber-600 dark:text-amber-400">26th July</span>.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           </div>
         </div>

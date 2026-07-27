@@ -24,7 +24,11 @@ import {
   RefreshCw,
   Settings,
   Trash2,
-  Minus
+  Minus,
+  UserCheck,
+  QrCode,
+  Ticket,
+  Check
 } from 'lucide-react';
 import { auth, signInWithGoogle } from '../lib/firebase';
 import { onAuthStateChanged, signOut, User, signInWithEmailAndPassword } from 'firebase/auth';
@@ -98,6 +102,8 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterCheckIn, setFilterCheckIn] = useState<'all' | 'checked-in' | 'not-checked-in'>('all');
+  const [activeTab, setActiveTab] = useState<'submissions' | 'venue-desk'>('submissions');
   const [filterModule, setFilterModule] = useState<string>('all');
   const [filterUniversity, setFilterUniversity] = useState<string>('all');
   const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
@@ -280,6 +286,32 @@ export default function Admin() {
     }
   };
 
+  const handleToggleCheckedIn = async (id: string, currentCheckedIn: boolean) => {
+    try {
+      const now = new Date();
+      await submissionService.toggleCheckIn(id, !currentCheckedIn);
+      setSubmissions(prev => prev.map(sub => {
+        if (sub.id === id) {
+          return {
+            ...sub,
+            checkedIn: !currentCheckedIn,
+            checkedInAt: !currentCheckedIn ? now : null
+          };
+        }
+        return sub;
+      }));
+      if (selectedSubmission?.id === id) {
+        setSelectedSubmission({ 
+          ...selectedSubmission, 
+          checkedIn: !currentCheckedIn,
+          checkedInAt: !currentCheckedIn ? now : null 
+        });
+      }
+    } catch (error) {
+      console.error('Check-in toggle error:', error);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!id) return;
     setConfirmDialog({
@@ -378,6 +410,10 @@ export default function Admin() {
     .filter(sub => {
       const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
       
+      const matchesCheckIn = activeTab !== 'venue-desk' || filterCheckIn === 'all' || 
+        (filterCheckIn === 'checked-in' && !!sub.checkedIn) || 
+        (filterCheckIn === 'not-checked-in' && !sub.checkedIn);
+
       const targetModule = modules.find(m => m.title === filterModule);
       const matchesModule = filterModule === 'all' || 
         sub.moduleTitle === filterModule || 
@@ -397,9 +433,9 @@ export default function Admin() {
         normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
         sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+        sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (m.cnic && m.cnic.toLowerCase().includes(searchQuery.toLowerCase())));
         
-      return matchesStatus && matchesModule && matchesUniversity && matchesSearch;
+      return matchesStatus && matchesCheckIn && matchesModule && matchesUniversity && matchesSearch;
     })
     .sort((a, b) => {
       if (!sortConfig) return 0;
@@ -418,12 +454,14 @@ export default function Admin() {
 
   const moduleStats = uniqueModules.map(m => {
     const targetModule = modules.find(mod => mod.title === m);
-    const count = submissions.filter(s => 
+    const moduleSubs = submissions.filter(s => 
       s.moduleTitle === m || (targetModule && s.moduleId === targetModule.id)
-    ).length;
+    );
     return {
       name: m,
-      count
+      count: moduleSubs.length,
+      checkedInTeams: moduleSubs.filter(s => s.checkedIn).length,
+      checkedInParticipants: moduleSubs.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0)
     };
   });
 
@@ -431,6 +469,10 @@ export default function Admin() {
   const submissionsForUniversityDistribution = submissions.filter(sub => {
     const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
     
+    const matchesCheckIn = activeTab !== 'venue-desk' || filterCheckIn === 'all' || 
+      (filterCheckIn === 'checked-in' && !!sub.checkedIn) || 
+      (filterCheckIn === 'not-checked-in' && !sub.checkedIn);
+
     const targetModule = modules.find(m => m.title === filterModule);
     const matchesModule = filterModule === 'all' || 
       sub.moduleTitle === filterModule || 
@@ -449,9 +491,9 @@ export default function Admin() {
       normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
       sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()));
+      sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (m.cnic && m.cnic.toLowerCase().includes(searchQuery.toLowerCase())));
       
-    return matchesStatus && matchesModule && matchesSearch;
+    return matchesStatus && matchesCheckIn && matchesModule && matchesSearch;
   });
 
   // Get unique normalized universities and their participant & team stats
@@ -461,10 +503,14 @@ export default function Admin() {
     const uniSubmissions = submissionsForUniversityDistribution.filter(s => normalizeUniversityName(s.university) === uniName);
     const teamCount = uniSubmissions.length;
     const participantCount = uniSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0);
+    const checkedInTeams = uniSubmissions.filter(s => s.checkedIn).length;
+    const checkedInParticipants = uniSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0);
     return {
       name: uniName,
       teams: teamCount,
-      participants: participantCount
+      participants: participantCount,
+      checkedInTeams,
+      checkedInParticipants
     };
   }).sort((a, b) => b.participants - a.participants);
 
@@ -489,6 +535,18 @@ export default function Admin() {
     amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
     amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
     amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+
+    // Live Event Day Check-In Venue Stats
+    checkedInTeams: targetSubmissions.filter(s => s.checkedIn).length,
+    checkedInParticipants: targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
+    checkInTeamPercentage: targetSubmissions.length ? Math.round((targetSubmissions.filter(s => s.checkedIn).length / targetSubmissions.length) * 100) : 0,
+    checkInParticipantPercentage: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0) ? Math.round((targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0) / targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0)) * 100) : 0,
+    
+    // Approved-only Check-in stats
+    approvedTeams: targetSubmissions.filter(s => s.status === 'approved').length,
+    approvedParticipants: targetSubmissions.filter(s => s.status === 'approved').reduce((sum, s) => sum + (s.members?.length || 0), 0),
+    approvedCheckedInTeams: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).length,
+    approvedCheckedInParticipants: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
   };
 
   if (loading) {
@@ -638,30 +696,158 @@ export default function Admin() {
       <div className="max-w-7xl mx-auto space-y-10">
         
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div className="text-center sm:text-left">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="text-center md:text-left">
             <div className="inline-flex items-center gap-2 text-blue-500 font-bold tracking-[0.2em] text-[9px] uppercase mb-2">
               <span className="w-4 h-[1px] bg-blue-500"></span>
-              Novamin Dashboard
+              Novamin Management & Venue Desk
               <span className="w-4 h-[1px] bg-blue-500"></span>
             </div>
             <h1 className="text-3xl md:text-5xl font-display font-black text-gray-900 dark:text-white tracking-tighter uppercase">
-              Submissions <span className="text-blue-500">Live</span>
+              {activeTab === 'venue-desk' ? (
+                <>Event Day <span className="text-emerald-500">Venue Desk</span></>
+              ) : (
+                <>Submissions <span className="text-blue-500">Live</span></>
+              )}
             </h1>
           </div>
-          <div className="flex items-center justify-between sm:justify-end gap-3 bg-white dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 backdrop-blur-md shadow-xl">
-            <div className="px-3 border-r border-gray-100 dark:border-white/5">
-              <div className="text-[8px] text-gray-500 font-black uppercase tracking-widest mb-0.5">Authorized As</div>
-              <div className="text-xs font-black text-gray-900 dark:text-white truncate max-w-[120px] md:max-w-none">{user.email?.split('@')[0]}</div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            {/* View Mode Switcher */}
+            <div className="flex items-center gap-1.5 p-1.5 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 shadow-lg w-full sm:w-auto">
+              <button
+                onClick={() => { setActiveTab('submissions'); setFilterCheckIn('all'); }}
+                className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none ${
+                  activeTab === 'submissions'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                    : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                Registrations
+              </button>
+              <button
+                onClick={() => setActiveTab('venue-desk')}
+                className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-1 sm:flex-none relative ${
+                  activeTab === 'venue-desk'
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                    : 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20'
+                }`}
+              >
+                <UserCheck className="w-4 h-4" />
+                Venue Check-In
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ml-1">
+                  {stats.checkedInTeams}/{stats.teams}
+                </span>
+              </button>
             </div>
-            <button 
-              onClick={handleLogout}
-              className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20 group"
-            >
-              <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-            </button>
+
+            <div className="flex items-center justify-between sm:justify-end gap-3 bg-white dark:bg-white/5 p-2 rounded-2xl border border-gray-200 dark:border-white/10 backdrop-blur-md shadow-xl w-full sm:w-auto">
+              <div className="px-3 border-r border-gray-100 dark:border-white/5">
+                <div className="text-[8px] text-gray-500 font-black uppercase tracking-widest mb-0.5">Authorized As</div>
+                <div className="text-xs font-black text-gray-900 dark:text-white truncate max-w-[120px] md:max-w-none">{user.email?.split('@')[0]}</div>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20 group"
+              >
+                <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Live Venue Desk Banner & Quick Stats */}
+        {activeTab === 'venue-desk' && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-6 md:p-8 rounded-[2.5rem] bg-gradient-to-br from-emerald-950/40 via-emerald-900/20 to-black border-2 border-emerald-500/30 shadow-2xl relative overflow-hidden space-y-6"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-20 translate-x-20 pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-emerald-500/20 pb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                  <UserCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-2 text-emerald-400 font-bold text-[10px] uppercase tracking-widest">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    Live Event Day Desk Statistics
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight font-display">
+                    Check-In Counter
+                  </h2>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 rounded-xl text-emerald-300 font-mono text-xs font-bold">
+                <Ticket className="w-4 h-4 text-emerald-400" />
+                Total Issued Cards: <span className="text-white font-black text-sm">{stats.checkedInParticipants}</span>
+              </div>
+            </div>
+
+            {/* 4 Live Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-2xl bg-black/40 border border-emerald-500/20 flex flex-col justify-between space-y-3">
+                <div className="flex items-center justify-between text-xs font-black uppercase text-gray-400">
+                  <span>Checked-In Teams</span>
+                  <span className="text-emerald-400">{stats.checkInTeamPercentage}%</span>
+                </div>
+                <div className="text-3xl font-black text-white font-display">
+                  {stats.checkedInTeams} <span className="text-sm font-normal text-gray-400">/ {stats.teams}</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-emerald-950 overflow-hidden">
+                  <div 
+                    className="h-full bg-emerald-500 transition-all duration-500" 
+                    style={{ width: `${stats.checkInTeamPercentage}%` }} 
+                  />
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-black/40 border border-emerald-500/20 flex flex-col justify-between space-y-3">
+                <div className="flex items-center justify-between text-xs font-black uppercase text-gray-400">
+                  <span>Checked-In Participants</span>
+                  <span className="text-emerald-400">{stats.checkInParticipantPercentage}%</span>
+                </div>
+                <div className="text-3xl font-black text-white font-display">
+                  {stats.checkedInParticipants} <span className="text-sm font-normal text-gray-400">/ {stats.participants}</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-emerald-950 overflow-hidden">
+                  <div 
+                    className="h-full bg-emerald-400 transition-all duration-500" 
+                    style={{ width: `${stats.checkInParticipantPercentage}%` }} 
+                  />
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-black/40 border border-amber-500/20 flex flex-col justify-between space-y-3">
+                <div className="text-xs font-black uppercase text-amber-400">
+                  Pending Venue Desk Check-In
+                </div>
+                <div className="text-3xl font-black text-white font-display">
+                  {stats.teams - stats.checkedInTeams} <span className="text-sm font-normal text-gray-400">Teams</span>
+                </div>
+                <div className="text-[10px] text-gray-400 font-semibold">
+                  {stats.participants - stats.checkedInParticipants} members awaiting physical ID cards
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-black/40 border border-blue-500/20 flex flex-col justify-between space-y-3">
+                <div className="text-xs font-black uppercase text-blue-400">
+                  Approved Teams Checked-In
+                </div>
+                <div className="text-3xl font-black text-white font-display">
+                  {stats.approvedCheckedInTeams} <span className="text-sm font-normal text-gray-400">/ {stats.approvedTeams}</span>
+                </div>
+                <div className="text-[10px] text-gray-400 font-semibold">
+                  Verified payments & checked in
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Quick Stats */}
         <div className="space-y-6">
@@ -884,7 +1070,7 @@ export default function Admin() {
               </div>
               
               {/* Dropdown + Tab filter group */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 flex-wrap">
                 {/* Custom Module Dropdown */}
                 <div className="relative w-full sm:w-auto">
                   <button
@@ -909,9 +1095,9 @@ export default function Admin() {
                           initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden"
+                          className="absolute left-0 mt-2 w-full sm:w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden"
                         >
-                          <div className="p-2 space-y-1">
+                          <div className="p-2 space-y-1 max-h-72 overflow-y-auto">
                             <button
                               onClick={() => {
                                 setFilterModule('all');
@@ -973,7 +1159,7 @@ export default function Admin() {
                           initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 max-h-80 overflow-y-auto"
+                          className="absolute right-0 mt-2 w-full sm:w-64 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 max-h-80 overflow-y-auto"
                         >
                           <div className="p-2 space-y-1">
                             <button
@@ -1013,8 +1199,31 @@ export default function Admin() {
                   </AnimatePresence>
                 </div>
 
+                {/* Check-In Desk Filter Tabs */}
+                {activeTab === 'venue-desk' && (
+                  <div className="flex items-center gap-1.5 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5 overflow-x-auto max-w-full shrink-0">
+                    {[
+                      { id: 'all', label: 'All Desk' },
+                      { id: 'checked-in', label: `✓ Checked In (${stats.checkedInTeams})` },
+                      { id: 'not-checked-in', label: `Pending (${stats.teams - stats.checkedInTeams})` },
+                    ].map(checkIn => (
+                      <button
+                        key={checkIn.id}
+                        onClick={() => setFilterCheckIn(checkIn.id as any)}
+                        className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap ${
+                          filterCheckIn === checkIn.id 
+                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                        }`}
+                      >
+                        {checkIn.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 {/* Status Tabs */}
-                <div className="flex items-center gap-1.5 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5">
+                <div className="flex items-center gap-1.5 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/5 overflow-x-auto max-w-full shrink-0">
                   {[
                     { id: 'all', label: 'All' },
                     { id: 'pending', label: 'Pending' },
@@ -1024,7 +1233,7 @@ export default function Admin() {
                     <button
                       key={status.id}
                       onClick={() => setFilterStatus(status.id)}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                      className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                         filterStatus === status.id 
                           ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
                           : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
@@ -1112,7 +1321,9 @@ export default function Admin() {
                     'Promo Code',
                     'Discount (PKR)',
                     'Status',
-                    'Exempted'
+                    'Exempted',
+                    'Check-In Status',
+                    'Check-In Time'
                   ];
 
                   for (let i = 1; i <= maxMembers; i++) {
@@ -1123,6 +1334,7 @@ export default function Admin() {
 
                   filteredSubmissions.forEach(s => {
                     const date = s.submittedAt?.toDate ? s.submittedAt.toDate().toLocaleString() : 'N/A';
+                    const checkInTime = s.checkedInAt?.toDate ? s.checkedInAt.toDate().toLocaleString() : (s.checkedIn ? 'Yes' : 'N/A');
                     const row: any[] = [
                       s.participantId || 'N/A',
                       s.id,
@@ -1136,7 +1348,9 @@ export default function Admin() {
                       s.promoCode || 'NONE',
                       s.discountApplied || 0,
                       s.status.toUpperCase(),
-                      s.exempted ? 'YES' : 'NO'
+                      s.exempted ? 'YES' : 'NO',
+                      s.checkedIn ? 'CHECKED IN' : 'NOT CHECKED IN',
+                      checkInTime
                     ];
 
                     for (let i = 0; i < maxMembers; i++) {
@@ -1318,7 +1532,7 @@ export default function Admin() {
                   onClick={() => setSelectedSubmission(sub)}
                   className="p-5 rounded-[2rem] bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 active:scale-[0.98] transition-all shadow-sm flex flex-col gap-4"
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] font-mono font-black text-gray-400">#{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
                       <div className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight break-all leading-tight">
@@ -1326,13 +1540,16 @@ export default function Admin() {
                       </div>
                       <span className="text-[10px] font-black text-blue-500 font-mono tracking-widest">{sub.participantId || 'N/A'}</span>
                     </div>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-sm
-                      ${sub.status === 'approved' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
-                        sub.status === 'rejected' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
-                        'bg-amber-500 text-white shadow-amber-500/20'}
-                    `}>
-                      {sub.status}
-                    </span>
+
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-sm
+                        ${sub.status === 'approved' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
+                          sub.status === 'rejected' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
+                          'bg-amber-500 text-white shadow-amber-500/20'}
+                      `}>
+                        {sub.status}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 py-4 border-y border-gray-100 dark:border-white/5">
@@ -1340,10 +1557,31 @@ export default function Admin() {
                       <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Module</div>
                       <div className="text-[10px] font-bold text-gray-700 dark:text-blue-100 uppercase truncate">{sub.moduleTitle}</div>
                     </div>
-                    <div>
-                      <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Date</div>
-                      <div className="text-[10px] font-bold text-gray-700 dark:text-gray-300">{sub.submittedAt?.toDate().toLocaleDateString('en-GB')}</div>
-                    </div>
+                    {activeTab === 'venue-desk' ? (
+                      <div>
+                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Desk Status</div>
+                        <div className={`text-[10px] font-black uppercase flex items-center gap-1 ${sub.checkedIn ? 'text-emerald-500' : 'text-amber-500'}`}>
+                          {sub.checkedIn ? '✓ Checked In' : 'Pending Desk'}
+                        </div>
+                        {sub.checkedIn && (
+                          <div className="text-[9px] font-mono font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-1">
+                            <Clock className="w-3 h-3 shrink-0" />
+                            {sub.checkedInAt?.toDate 
+                              ? `${sub.checkedInAt.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` 
+                              : (sub.checkedInAt instanceof Date 
+                                  ? `${sub.checkedInAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` 
+                                  : 'Just Now')}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Date</div>
+                        <div className="text-[10px] font-bold text-gray-700 dark:text-gray-300 font-mono">
+                          {sub.submittedAt?.toDate ? sub.submittedAt.toDate().toLocaleDateString('en-GB') : 'N/A'}
+                        </div>
+                      </div>
+                    )}
                     <div className="col-span-2">
                       <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Institution</div>
                       <div className="text-[10px] font-bold text-gray-700 dark:text-gray-300 truncate">{sub.university}</div>
@@ -1351,43 +1589,58 @@ export default function Admin() {
                   </div>
 
                   <div className="flex items-center justify-between gap-3" onClick={e => e.stopPropagation()}>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
-                      className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 transition-all ${
-                        sub.exempted 
-                          ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' 
-                          : 'bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-gray-200 shadow-sm hover:bg-gray-300 dark:hover:bg-white/15'
-                      }`}
-                      title={sub.exempted ? "Fee Compensated (Click to Include)" : "Exclude Fee (Compensate)"}
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                      {sub.exempted ? "Exempted" : "Exempt Fee"}
-                    </button>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
-                        disabled={sub.status === 'approved'}
-                        className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-emerald-500/20"
-                        title="Approve"
+                    {activeTab === 'venue-desk' ? (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleToggleCheckedIn(sub.id!, !!sub.checkedIn); }}
+                        className={`w-full py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 transition-all ${
+                          sub.checkedIn
+                            ? 'bg-emerald-600 text-white shadow-emerald-600/20 hover:bg-emerald-700'
+                            : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white'
+                        }`}
                       >
-                        <CheckCircle2 className="w-4 h-4" />
+                        {sub.checkedIn ? <UserCheck className="w-3.5 h-3.5" /> : <Ticket className="w-3.5 h-3.5" />}
+                        {sub.checkedIn ? "Checked In" : "Check In Desk"}
                       </button>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
-                        disabled={sub.status === 'rejected'}
-                        className="p-3 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-rose-500/20"
-                        title="Reject"
-                      >
-                        <XCircle className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
-                        className="p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm border border-rose-500/20"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
+                          className={`py-3 px-3 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm flex items-center justify-center transition-all ${
+                            sub.exempted 
+                              ? 'bg-amber-600 text-white' 
+                              : 'bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-gray-200 hover:bg-gray-300'
+                          }`}
+                          title={sub.exempted ? "Fee Compensated" : "Exempt Fee"}
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <div className="flex gap-1.5">
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
+                            disabled={sub.status === 'approved'}
+                            className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-emerald-500/20"
+                            title="Approve"
+                          >
+                            <CheckCircle2 className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
+                            disabled={sub.status === 'rejected'}
+                            className="p-3 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all disabled:opacity-20 shadow-sm border border-rose-500/20"
+                            title="Reject"
+                          >
+                            <XCircle className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
+                            className="p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm border border-rose-500/20"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -1403,9 +1656,15 @@ export default function Admin() {
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Leader</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Module</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">University</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    {activeTab === 'venue-desk' ? 'Venue Check-In' : 'Date'}
+                  </th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                  {activeTab === 'venue-desk' ? (
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Check-In Timestamp</th>
+                  ) : (
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1451,11 +1710,35 @@ export default function Admin() {
                       <td className="px-6 py-4">
                         <div className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[150px]">{sub.university}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-gray-500 dark:text-gray-400 font-bold text-[10px] flex flex-col">
-                          <span>{sub.submittedAt?.toDate().toLocaleDateString('en-GB')}</span>
-                          <span className="text-[9px] opacity-60 mt-0.5">{sub.submittedAt?.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
+                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        {activeTab === 'venue-desk' ? (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleToggleCheckedIn(sub.id!, !!sub.checkedIn); }}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm ${
+                              sub.checkedIn
+                                ? 'bg-emerald-500 text-white shadow-emerald-500/20 hover:bg-emerald-600'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white'
+                            }`}
+                            title={sub.checkedIn ? "Checked In - Click to Undo" : "Click to Check In Team & Issue ID Cards"}
+                          >
+                            {sub.checkedIn ? (
+                              <>
+                                <UserCheck className="w-3.5 h-3.5" />
+                                Checked In
+                              </>
+                            ) : (
+                              <>
+                                <Ticket className="w-3.5 h-3.5" />
+                                Check In
+                              </>
+                            )}
+                          </button>
+                        ) : (
+                          <div className="text-gray-500 dark:text-gray-400 font-bold text-[10px] flex flex-col">
+                            <span>{sub.submittedAt?.toDate ? sub.submittedAt.toDate().toLocaleDateString('en-GB') : 'N/A'}</span>
+                            <span className="text-[9px] opacity-60 mt-0.5">{sub.submittedAt?.toDate ? sub.submittedAt.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider
@@ -1471,44 +1754,72 @@ export default function Admin() {
                           {sub.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
-                            className={`p-2 rounded-lg transition-all shadow-sm ${
-                              sub.exempted 
-                                ? 'bg-amber-500 text-white hover:bg-amber-600' 
-                                : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-amber-500 hover:text-white'
-                            }`}
-                            title={sub.exempted ? "Fee Compensated (Click to Include)" : "Exclude Fee (Compensate)"}
-                          >
-                            <Minus className="w-3.5 h-3.5" />
-                          </button>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
-                            disabled={sub.status === 'approved'}
-                            className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
-                            title="Approve"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
-                            disabled={sub.status === 'rejected'}
-                            className="p-2 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
-                            title="Reject"
-                          >
-                            <XCircle className="w-3.5 h-3.5" />
-                          </button>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
-                            className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
+                      {activeTab === 'venue-desk' ? (
+                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                          {sub.checkedIn ? (
+                            <div className="inline-flex flex-col items-end">
+                              <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1 justify-end">
+                                <Clock className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                                {sub.checkedInAt?.toDate 
+                                  ? sub.checkedInAt.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+                                  : (sub.checkedInAt instanceof Date 
+                                      ? sub.checkedInAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+                                      : 'Just Now')}
+                              </span>
+                              <span className="text-[9px] font-bold text-gray-400">
+                                {sub.checkedInAt?.toDate 
+                                  ? sub.checkedInAt.toDate().toLocaleDateString('en-GB') 
+                                  : (sub.checkedInAt instanceof Date 
+                                      ? sub.checkedInAt.toLocaleDateString('en-GB') 
+                                      : '')}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-xs font-mono text-gray-400 dark:text-gray-600 font-bold">
+                              —
+                            </span>
+                          )}
+                        </td>
+                      ) : (
+                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleToggleExempted(sub.id!, !!sub.exempted); }}
+                              className={`p-2 rounded-lg transition-all shadow-sm ${
+                                sub.exempted 
+                                  ? 'bg-amber-500 text-white hover:bg-amber-600' 
+                                  : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white hover:bg-amber-500 hover:text-white'
+                              }`}
+                              title={sub.exempted ? "Fee Compensated (Click to Include)" : "Exclude Fee (Compensate)"}
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'approved'); }}
+                              disabled={sub.status === 'approved'}
+                              className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                              title="Approve"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleStatusUpdate(sub.id!, 'rejected'); }}
+                              disabled={sub.status === 'rejected'}
+                              className="p-2 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                              title="Reject"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleDelete(sub.id!); }}
+                              className="p-2 rounded-lg bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-all shadow-sm"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      )}
                     </motion.tr>
                   ))}
                 </AnimatePresence>
@@ -1569,6 +1880,66 @@ export default function Admin() {
               <div className="flex-grow overflow-y-auto custom-scrollbar">
                 <div className="p-5 md:p-8 space-y-8 md:space-y-12">
                   
+                  {/* Event Day Desk Check-In Banner */}
+                  {activeTab === 'venue-desk' && (
+                    <div className={`p-6 rounded-[2rem] border transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ${
+                      selectedSubmission.checkedIn 
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-100' 
+                        : 'bg-amber-500/10 border-amber-500/30 text-amber-950 dark:text-amber-100'
+                    }`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border ${
+                          selectedSubmission.checkedIn 
+                            ? 'bg-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-500/20' 
+                            : 'bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-500/20'
+                        }`}>
+                          {selectedSubmission.checkedIn ? <UserCheck className="w-7 h-7" /> : <Ticket className="w-7 h-7" />}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Event Day Desk Status</span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                              selectedSubmission.checkedIn ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'
+                            }`}>
+                              {selectedSubmission.checkedIn ? 'Checked In' : 'Pending Check-In'}
+                            </span>
+                          </div>
+                          <h3 className="text-xl font-black uppercase tracking-tight mt-1">
+                            {selectedSubmission.checkedIn 
+                              ? 'Team Marked as Arrived at Venue' 
+                              : 'Team Has Not Checked In Yet'}
+                          </h3>
+                          <p className="text-xs font-semibold opacity-80 mt-1">
+                            {selectedSubmission.checkedIn 
+                              ? `Checked in at desk on ${selectedSubmission.checkedInAt?.toDate ? selectedSubmission.checkedInAt.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : 'today'}. Volunteers issued ${selectedSubmission.members.length} Participant ID cards.`
+                              : `Volunteer instructions: Verify lead CNIC, click button below to check in, and hand over ${selectedSubmission.members.length} physical ID cards.`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => handleToggleCheckedIn(selectedSubmission.id!, !!selectedSubmission.checkedIn)}
+                        className={`px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shrink-0 flex items-center gap-3 w-full md:w-auto justify-center ${
+                          selectedSubmission.checkedIn
+                            ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90'
+                            : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/30 hover:scale-[1.02] active:scale-[0.98]'
+                        }`}
+                      >
+                        {selectedSubmission.checkedIn ? (
+                          <>
+                            <XCircle className="w-4 h-4" />
+                            Undo Desk Check-In
+                          </>
+                        ) : (
+                          <>
+                            <UserCheck className="w-5 h-5" />
+                            Check-In Team & Issue Cards
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
                   {/* Top Info Grid */}
                   <div className="grid lg:grid-cols-2 gap-8 md:gap-10">
                     

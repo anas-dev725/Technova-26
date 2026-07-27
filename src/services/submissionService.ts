@@ -41,6 +41,8 @@ export interface Submission {
   promoCode?: string;
   discountApplied?: number;
   exempted?: boolean;
+  checkedIn?: boolean;
+  checkedInAt?: any;
 }
 
 export const MODULE_PREFIXES: Record<string, string> = {
@@ -209,6 +211,19 @@ export const submissionService = {
       const docRef = doc(db, 'submissions', submissionId);
       await updateDoc(docRef, { 
         exempted,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+    }
+  },
+
+  async toggleCheckIn(submissionId: string, checkedIn: boolean) {
+    try {
+      const docRef = doc(db, 'submissions', submissionId);
+      await updateDoc(docRef, { 
+        checkedIn,
+        checkedInAt: checkedIn ? serverTimestamp() : null,
         updatedAt: serverTimestamp()
       });
     } catch (error) {

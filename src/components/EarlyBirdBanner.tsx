@@ -17,11 +17,11 @@ const EarlyBirdBanner = () => {
             <div className="flex items-center gap-2">
               <Zap className="h-3 w-3 text-yellow-300 fill-yellow-300" />
               <p className="text-[10px] sm:text-xs font-black text-white uppercase tracking-widest">
-                Early Bird Live
+                REGISTRATION CLOSING SOON
               </p>
             </div>
             <p className="text-[11px] sm:text-sm font-black text-white uppercase tracking-tighter">
-              AVAIL EARLY BIRD DISCOUNT — 30% OFF ENDS ON 26th JULY till 11:59 PM
+              REGULAR REGISTRATION WILL CLOSE ON 30TH JULY AT 11:59 PM
             </p>
           </div>
         ))}
