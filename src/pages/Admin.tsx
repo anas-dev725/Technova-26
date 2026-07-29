@@ -1323,47 +1323,10 @@ export default function Admin() {
                     aoaData.push(row);
                   });
 
-                  // Add Module Participants Count Breakdown Section
+                  // Add Module Participants Count Breakdown Section (Only when viewing all modules)
                   const totalSum = filteredSubmissions.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
                   const approvedSum = submissions.filter(s => s.status === 'approved' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
                   const pendingSum = submissions.filter(s => s.status === 'pending' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
-
-                  aoaData.push([]); // Spacer
-                  aoaData.push(['--- MODULE BREAKDOWN & PARTICIPANTS COUNT ---']);
-                  aoaData.push([
-                    'Module Name', 
-                    'Teams Count', 
-                    'Total Participants Count', 
-                    'Approved Teams', 
-                    'Approved Participants Count',
-                    'Checked-In Teams', 
-                    'Checked-In Participants Count',
-                    'Total Revenue (PKR)'
-                  ]);
-
-                  modules.forEach(m => {
-                    const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
-                    const teamsCount = modSubs.length;
-                    const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
-                    const approvedSubs = modSubs.filter(s => s.status === 'approved');
-                    const approvedTeams = approvedSubs.length;
-                    const approvedParticipants = approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
-                    const checkedInSubs = modSubs.filter(s => s.checkedIn);
-                    const checkedInTeams = checkedInSubs.length;
-                    const checkedInParticipants = checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
-                    const totalRevenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
-
-                    aoaData.push([
-                      m.title,
-                      teamsCount,
-                      participantsCount,
-                      approvedTeams,
-                      approvedParticipants,
-                      checkedInTeams,
-                      checkedInParticipants,
-                      `PKR ${totalRevenue.toLocaleString()}`
-                    ]);
-                  });
 
                   const grandTeams = filteredSubmissions.length;
                   const grandParticipants = filteredSubmissions.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
@@ -1374,25 +1337,69 @@ export default function Admin() {
                   const grandCheckedInTeams = grandCheckedInSubs.length;
                   const grandCheckedInParticipants = grandCheckedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
 
-                  aoaData.push([
-                    'TOTAL ALL MODULES',
-                    grandTeams,
-                    grandParticipants,
-                    grandApprovedTeams,
-                    grandApprovedParticipants,
-                    grandCheckedInTeams,
-                    grandCheckedInParticipants,
-                    `PKR ${totalSum.toLocaleString()}`
-                  ]);
+                  if (filterModule === 'all') {
+                    aoaData.push([]); // Spacer
+                    aoaData.push(['--- MODULE BREAKDOWN & PARTICIPANTS COUNT ---']);
+                    aoaData.push([
+                      'Module Name', 
+                      'Teams Count', 
+                      'Total Participants Count', 
+                      'Approved Teams', 
+                      'Approved Participants Count',
+                      'Checked-In Teams', 
+                      'Checked-In Participants Count',
+                      'Total Revenue (PKR)'
+                    ]);
+
+                    modules.forEach(m => {
+                      const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
+                      const teamsCount = modSubs.length;
+                      const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                      const approvedSubs = modSubs.filter(s => s.status === 'approved');
+                      const approvedTeams = approvedSubs.length;
+                      const approvedParticipants = approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                      const checkedInSubs = modSubs.filter(s => s.checkedIn);
+                      const checkedInTeams = checkedInSubs.length;
+                      const checkedInParticipants = checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                      const totalRevenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+
+                      aoaData.push([
+                        m.title,
+                        teamsCount,
+                        participantsCount,
+                        approvedTeams,
+                        approvedParticipants,
+                        checkedInTeams,
+                        checkedInParticipants,
+                        `PKR ${totalRevenue.toLocaleString()}`
+                      ]);
+                    });
+
+                    aoaData.push([
+                      'TOTAL ALL MODULES',
+                      grandTeams,
+                      grandParticipants,
+                      grandApprovedTeams,
+                      grandApprovedParticipants,
+                      grandCheckedInTeams,
+                      grandCheckedInParticipants,
+                      `PKR ${totalSum.toLocaleString()}`
+                    ]);
+                  }
 
                   // Add Finance Summary Section
+                  const totalParticipantsSum = submissions.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                  const filteredParticipantsSum = filteredSubmissions.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+
                   aoaData.push([]); // Spacer
                   aoaData.push(['--- FINANCE REPORT SUMMARY ---']);
                   aoaData.push(['Current View Total (Filtered)', `PKR ${totalSum.toLocaleString()}`]);
                   aoaData.push(['Approved Submissions Total', `PKR ${approvedSum.toLocaleString()}`]);
                   aoaData.push(['Pending Submissions Total', `PKR ${pendingSum.toLocaleString()}`]);
-                  aoaData.push(['Total Entries Count', submissions.length.toString()]);
-                  aoaData.push(['Filtered Entries Count', filteredSubmissions.length.toString()]);
+                  aoaData.push(['Total Entries Count (Teams)', submissions.length.toString()]);
+                  aoaData.push(['Filtered Entries Count (Teams)', filteredSubmissions.length.toString()]);
+                  aoaData.push(['Total Participants Count', totalParticipantsSum.toString()]);
+                  aoaData.push(['Filtered Participants Count', filteredParticipantsSum.toString()]);
                   aoaData.push(['Generated At', new Date().toLocaleString()]);
                   
                   const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
@@ -1424,51 +1431,154 @@ export default function Admin() {
                   const workbook = XLSX.utils.book_new();
                   XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
 
-                  // Create dedicated Module Summary Sheet
-                  const moduleSummaryAoa = [
-                    ['Module ID', 'Module Name', 'Category', 'Teams Count', 'Total Participants Count', 'Approved Teams', 'Approved Participants Count', 'Checked-In Teams', 'Checked-In Participants Count', 'Total Fee Collected (PKR)'],
-                    ...modules.map(m => {
-                      const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
-                      const teamsCount = modSubs.length;
-                      const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
-                      const approvedSubs = modSubs.filter(s => s.status === 'approved');
-                      const checkedInSubs = modSubs.filter(s => s.checkedIn);
-                      const revenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
-                      return [
-                        m.id,
-                        m.title,
-                        m.category,
-                        teamsCount,
-                        participantsCount,
-                        approvedSubs.length,
-                        approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
-                        checkedInSubs.length,
-                        checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
-                        `PKR ${revenue.toLocaleString()}`
-                      ];
-                    }),
-                    [
-                      'ALL',
-                      'TOTAL ALL MODULES',
-                      '-',
-                      grandTeams,
-                      grandParticipants,
-                      grandApprovedTeams,
-                      grandApprovedParticipants,
-                      grandCheckedInTeams,
-                      grandCheckedInParticipants,
-                      `PKR ${totalSum.toLocaleString()}`
-                    ]
-                  ];
+                  // Create dedicated Module Summary Sheet (Only when viewing all modules)
+                  if (filterModule === 'all') {
+                    const moduleSummaryAoa = [
+                      ['Module ID', 'Module Name', 'Category', 'Teams Count', 'Total Participants Count', 'Approved Teams', 'Approved Participants Count', 'Checked-In Teams', 'Checked-In Participants Count', 'Total Fee Collected (PKR)'],
+                      ...modules.map(m => {
+                        const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
+                        const teamsCount = modSubs.length;
+                        const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                        const approvedSubs = modSubs.filter(s => s.status === 'approved');
+                        const checkedInSubs = modSubs.filter(s => s.checkedIn);
+                        const revenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+                        return [
+                          m.id,
+                          m.title,
+                          m.category,
+                          teamsCount,
+                          participantsCount,
+                          approvedSubs.length,
+                          approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
+                          checkedInSubs.length,
+                          checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
+                          `PKR ${revenue.toLocaleString()}`
+                        ];
+                      }),
+                      [
+                        'ALL',
+                        'TOTAL ALL MODULES',
+                        '-',
+                        grandTeams,
+                        grandParticipants,
+                        grandApprovedTeams,
+                        grandApprovedParticipants,
+                        grandCheckedInTeams,
+                        grandCheckedInParticipants,
+                        `PKR ${totalSum.toLocaleString()}`
+                      ]
+                    ];
 
-                  const moduleWorksheet = XLSX.utils.aoa_to_sheet(moduleSummaryAoa);
-                  XLSX.utils.book_append_sheet(workbook, moduleWorksheet, "Module Summary");
+                    const moduleWorksheet = XLSX.utils.aoa_to_sheet(moduleSummaryAoa);
+                    XLSX.utils.book_append_sheet(workbook, moduleWorksheet, "Module Summary");
+                  }
 
                   XLSX.writeFile(workbook, `technova_submissions_${new Date().toISOString().slice(0,10)}.xlsx`);
                 }}
               >
                 <FileText className="w-4 h-4" />
                 Export Excel
+              </button>
+              <button 
+                onClick={() => {
+                  const createSecuritySheetData = (subs: Submission[]) => {
+                    const secHeaders = [
+                      'Participant / Team ID',
+                      'Module Enrolled',
+                      'University / Institution',
+                      'Role',
+                      'Full Name',
+                      'CNIC Number',
+                      'Contact Number',
+                      'Email',
+                      'Status',
+                      'Check-In Status'
+                    ];
+
+                    const secAoaData = [secHeaders];
+
+                    subs.forEach(s => {
+                      const moduleName = s.subGameTitle && s.subGameTitle !== 'N/A' 
+                        ? `${s.moduleTitle} (${s.subGameTitle})` 
+                        : (s.moduleTitle || 'N/A');
+                        
+                      (s.members || []).forEach((member, idx) => {
+                        secAoaData.push([
+                          s.participantId || 'N/A',
+                          moduleName,
+                          s.university || 'N/A',
+                          idx === 0 ? 'Team Lead' : `Member ${idx + 1}`,
+                          member.fullName || 'N/A',
+                          member.cnic || 'N/A',
+                          member.contactNumber || 'N/A',
+                          s.email || 'N/A',
+                          s.status ? s.status.toUpperCase() : 'PENDING',
+                          s.checkedIn ? 'CHECKED IN' : 'NOT CHECKED IN'
+                        ]);
+                      });
+                    });
+
+                    secAoaData.push([]);
+                    secAoaData.push(['TOTAL TEAMS', subs.length.toString()]);
+                    secAoaData.push(['TOTAL INDIVIDUAL PARTICIPANTS', subs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0).toString()]);
+
+                    const ws = XLSX.utils.aoa_to_sheet(secAoaData);
+                    ws['!cols'] = [
+                      { wch: 22 }, // Participant / Team ID
+                      { wch: 28 }, // Module Enrolled
+                      { wch: 32 }, // University
+                      { wch: 15 }, // Role
+                      { wch: 28 }, // Full Name
+                      { wch: 20 }, // CNIC Number
+                      { wch: 18 }, // Contact Number
+                      { wch: 28 }, // Email
+                      { wch: 14 }, // Status
+                      { wch: 18 }  // Check-In Status
+                    ];
+                    return ws;
+                  };
+
+                  const secWorkbook = XLSX.utils.book_new();
+                  const existingSheetNames = new Set<string>();
+
+                  const getCleanSheetName = (rawName: string) => {
+                    let cleaned = rawName.replace(/[\\/?*:[\]]/g, '').trim().slice(0, 30);
+                    if (!cleaned) cleaned = 'Sheet';
+                    let finalName = cleaned;
+                    let counter = 1;
+                    while (existingSheetNames.has(finalName.toLowerCase())) {
+                      finalName = `${cleaned.slice(0, 26)}_${counter}`;
+                      counter++;
+                    }
+                    existingSheetNames.add(finalName.toLowerCase());
+                    return finalName;
+                  };
+
+                  const securityBaseSubmissions = submissions.filter(s => {
+                    return filterUniversity === 'all' || normalizeUniversityName(s.university) === filterUniversity;
+                  });
+
+                  // 1. Overall / All Participants Sheet
+                  const allWs = createSecuritySheetData(securityBaseSubmissions);
+                  XLSX.utils.book_append_sheet(secWorkbook, allWs, getCleanSheetName("All Participants"));
+
+                  // 2. Individual Module Sheets
+                  modules.forEach(m => {
+                    const modSubs = securityBaseSubmissions.filter(s => 
+                      s.moduleId === m.id || 
+                      s.moduleTitle === m.title || 
+                      (s.moduleTitle && s.moduleTitle.toLowerCase().includes(m.title.toLowerCase()))
+                    );
+                    const modWs = createSecuritySheetData(modSubs);
+                    XLSX.utils.book_append_sheet(secWorkbook, modWs, getCleanSheetName(m.title));
+                  });
+
+                  XLSX.writeFile(secWorkbook, `technova_security_roster_${new Date().toISOString().slice(0,10)}.xlsx`);
+                }}
+                className="px-6 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+              >
+                <Shield className="w-4 h-4" />
+                Security Sheet
               </button>
               <button 
                 onClick={async () => {

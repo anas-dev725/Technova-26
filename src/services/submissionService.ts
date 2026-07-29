@@ -103,14 +103,19 @@ export function isUniversityStudent(institutionName: string): boolean {
   if (!institutionName) return true;
   const clean = institutionName.toLowerCase().trim();
 
+  // Specific check for Pace / Pace College
+  if (clean.includes('pace')) {
+    return false;
+  }
+
   // Known school/college indicators that are NOT universities
   const schoolCollegeKeywords = [
-    'school', 'lyceum', 'grammar', 'high school', 'intermediate', 'inter', 
-    'matric', 'o level', 'a level', 'o/a level', 'o-level', 'a-level', 'cadet', 
-    'secondary', 'beaconhouse', 'city school', 'army public', 'aps', 'whales', 
-    'cordoba', 'cedar', 'alpha', 'adamjee', 'commecs', 'dj science', 
+    'pace', 'pace college', 'college', 'school', 'lyceum', 'grammar', 'high school', 
+    'intermediate', 'inter', 'matric', 'o level', 'a level', 'o/a level', 'o-level', 
+    'a-level', 'cadet', 'secondary', 'beaconhouse', 'city school', 'army public', 
+    'aps', 'whales', 'cordoba', 'cedar', 'alpha', 'adamjee', 'commecs', 'dj science', 
     'st. patrick', 'st. joseph', 'st. paul', 'habib public', 'bamm', 'degree college',
-    'khalid', 'forman christian college school'
+    'khalid', 'forman christian college school', 'academy'
   ];
 
   // University indicators
@@ -130,9 +135,19 @@ export function isUniversityStudent(institutionName: string): boolean {
     return clean.includes(k);
   });
 
-  if (hasUniKeyword) return true;
+  const hasSchoolKeyword = schoolCollegeKeywords.some(k => {
+    if (k.length <= 4) {
+      const regex = new RegExp(`\\b${k}\\b`, 'i');
+      return regex.test(clean);
+    }
+    return clean.includes(k);
+  });
 
-  const hasSchoolKeyword = schoolCollegeKeywords.some(k => clean.includes(k));
+  if (hasSchoolKeyword && !clean.includes('university') && !clean.includes('iobm')) {
+    return false;
+  }
+
+  if (hasUniKeyword) return true;
   if (hasSchoolKeyword) return false;
 
   return true;
@@ -434,34 +449,57 @@ export const submissionService = {
         const currentTitle = data.moduleTitle ? data.moduleTitle.trim() : '';
         const currentModuleId = data.moduleId;
         const uniName = data.university || '';
+        const isUni = isUniversityStudent(uniName);
 
-        // Check if this submission belongs to Maths Mania Junior
+        // Case 1: Registered in Junior, but is actually a University student -> Shift to Advanced
         const isJuniorModule = 
           currentModuleId === 'maths-mania-advanced' || 
           currentTitle.toLowerCase().includes('junior') ||
           (data.participantId && data.participantId.startsWith('MMJ-'));
 
-        if (isJuniorModule) {
-          // Check if registered as a university student
-          if (isUniversityStudent(uniName)) {
-            const docRef = doc(db, 'submissions', docSnap.id);
-            let updatedParticipantId = data.participantId;
-            if (updatedParticipantId) {
-              if (updatedParticipantId.startsWith('MMJ-')) {
-                updatedParticipantId = updatedParticipantId.replace('MMJ-', 'MMA-');
-              } else if (updatedParticipantId.startsWith('MM-')) {
-                updatedParticipantId = updatedParticipantId.replace('MM-', 'MMA-');
-              }
+        if (isJuniorModule && isUni) {
+          const docRef = doc(db, 'submissions', docSnap.id);
+          let updatedParticipantId = data.participantId;
+          if (updatedParticipantId) {
+            if (updatedParticipantId.startsWith('MMJ-')) {
+              updatedParticipantId = updatedParticipantId.replace('MMJ-', 'MMA-');
+            } else if (updatedParticipantId.startsWith('MM-')) {
+              updatedParticipantId = updatedParticipantId.replace('MM-', 'MMA-');
             }
-
-            await updateDoc(docRef, {
-              moduleId: 'maths-mania',
-              moduleTitle: 'Maths Mania (Advanced)',
-              ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
-              updatedAt: serverTimestamp()
-            });
-            count++;
           }
+
+          await updateDoc(docRef, {
+            moduleId: 'maths-mania',
+            moduleTitle: 'Maths Mania (Advanced)',
+            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
+            updatedAt: serverTimestamp()
+          });
+          count++;
+        }
+
+        // Case 2: Registered or shifted to Advanced, but is actually a School/College/Pace College student -> Shift back to Junior
+        const isAdvancedModule = 
+          currentModuleId === 'maths-mania' || 
+          currentTitle.toLowerCase().includes('advanced');
+
+        if (isAdvancedModule && !isUni) {
+          const docRef = doc(db, 'submissions', docSnap.id);
+          let updatedParticipantId = data.participantId;
+          if (updatedParticipantId) {
+            if (updatedParticipantId.startsWith('MMA-')) {
+              updatedParticipantId = updatedParticipantId.replace('MMA-', 'MMJ-');
+            } else if (updatedParticipantId.startsWith('MM-')) {
+              updatedParticipantId = updatedParticipantId.replace('MM-', 'MMJ-');
+            }
+          }
+
+          await updateDoc(docRef, {
+            moduleId: 'maths-mania-advanced',
+            moduleTitle: 'Maths Mania (Junior)',
+            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
+            updatedAt: serverTimestamp()
+          });
+          count++;
         }
       }
       return count;
