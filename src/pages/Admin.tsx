@@ -96,6 +96,186 @@ function normalizeUniversityName(name: string): string {
   return clean.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+export interface PersonOccurrence {
+  fullName: string;
+  cnic: string;
+  contactNumber: string;
+  email: string;
+  university: string;
+  submissionId: string;
+  participantId: string;
+  moduleId: string;
+  moduleTitle: string;
+  role: string;
+  status: string;
+  checkedIn: boolean;
+  cleanName: string;
+  cleanCNIC: string;
+  cleanPhone: string;
+  cleanEmail: string;
+}
+
+export interface MultiModulePerson {
+  key: string;
+  fullName: string;
+  cnic: string;
+  contactNumber: string;
+  email: string;
+  university: string;
+  occurrences: PersonOccurrence[];
+  uniqueModules: string[];
+  totalRegistrations: number;
+}
+
+export function isSamePerson(a: PersonOccurrence, b: PersonOccurrence): boolean {
+  // 1. If both have valid CNICs and CNICs match, definitely same person
+  if (a.cleanCNIC && b.cleanCNIC && a.cleanCNIC === b.cleanCNIC) {
+    return true;
+  }
+
+  // 2. If both have valid CNICs and they are DIFFERENT, definitely DIFFERENT people
+  if (a.cleanCNIC && b.cleanCNIC && a.cleanCNIC !== b.cleanCNIC) {
+    return false;
+  }
+
+  // 3. Check Name match
+  if (a.cleanName && b.cleanName && a.cleanName === b.cleanName) {
+    const phoneConflict = a.cleanPhone && b.cleanPhone && a.cleanPhone !== b.cleanPhone;
+    const emailConflict = a.cleanEmail && b.cleanEmail && a.cleanEmail !== b.cleanEmail;
+
+    // If both phone and email exist on both and are different, they are different people
+    if (phoneConflict && emailConflict) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // 4. Phone and Email match even if name spelling slightly differs
+  if (a.cleanPhone && b.cleanPhone && a.cleanPhone === b.cleanPhone && a.cleanEmail && b.cleanEmail && a.cleanEmail === b.cleanEmail) {
+    return true;
+  }
+
+  return false;
+}
+
+export function createDummyOccurrence(fullName: string, cnic?: string, contactNumber?: string, email?: string): PersonOccurrence {
+  const fName = (fullName || '').trim();
+  const c = (cnic || '').trim();
+  const phone = (contactNumber || '').trim();
+  const em = (email || '').trim();
+
+  const cleanName = fName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanCNIC = c.replace(/\D/g, '');
+  const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+  const cleanEmail = em.toLowerCase().trim();
+
+  return {
+    fullName: fName || 'N/A',
+    cnic: c || 'N/A',
+    contactNumber: phone || 'N/A',
+    email: em || 'N/A',
+    university: 'N/A',
+    submissionId: '',
+    participantId: '',
+    moduleId: '',
+    moduleTitle: '',
+    role: '',
+    status: '',
+    checkedIn: false,
+    cleanName: (cleanName.length >= 3 && cleanName !== 'na') ? cleanName : '',
+    cleanCNIC: cleanCNIC.length >= 8 ? cleanCNIC : '',
+    cleanPhone: cleanPhone.length >= 9 ? cleanPhone : '',
+    cleanEmail: (cleanEmail.length >= 5 && cleanEmail.includes('@')) ? cleanEmail : ''
+  };
+}
+
+export function detectMultiModuleParticipants(submissionsList: Submission[]): MultiModulePerson[] {
+  const occurrences: PersonOccurrence[] = [];
+
+  submissionsList.forEach(s => {
+    const moduleName = s.subGameTitle && s.subGameTitle !== 'N/A' 
+      ? `${s.moduleTitle} (${s.subGameTitle})` 
+      : (s.moduleTitle || 'N/A');
+
+    (s.members || []).forEach((member, idx) => {
+      const fullName = (member.fullName || '').trim();
+      const cnic = (member.cnic || '').trim();
+      const contactNumber = (member.contactNumber || '').trim();
+      const email = idx === 0 && s.email ? s.email.trim() : (((member as any).email) || '').trim();
+
+      const occ = createDummyOccurrence(fullName, cnic, contactNumber, email);
+      occ.university = s.university || 'N/A';
+      occ.submissionId = s.id || '';
+      occ.participantId = s.participantId || 'N/A';
+      occ.moduleId = s.moduleId || '';
+      occ.moduleTitle = moduleName;
+      occ.role = idx === 0 ? 'Team Lead' : `Member ${idx + 1}`;
+      occ.status = s.status || 'pending';
+      occ.checkedIn = !!s.checkedIn;
+
+      occurrences.push(occ);
+    });
+  });
+
+  const parent = Array.from({ length: occurrences.length }, (_, i) => i);
+  function find(i: number): number {
+    if (parent[i] === i) return i;
+    parent[i] = find(parent[i]);
+    return parent[i];
+  }
+  function union(i: number, j: number) {
+    const rootI = find(i);
+    const rootJ = find(j);
+    if (rootI !== rootJ) parent[rootI] = rootJ;
+  }
+
+  for (let i = 0; i < occurrences.length; i++) {
+    for (let j = i + 1; j < occurrences.length; j++) {
+      if (isSamePerson(occurrences[i], occurrences[j])) {
+        union(i, j);
+      }
+    }
+  }
+
+  const groups = new Map<number, PersonOccurrence[]>();
+  occurrences.forEach((occ, idx) => {
+    const root = find(idx);
+    if (!groups.has(root)) groups.set(root, []);
+    groups.get(root)!.push(occ);
+  });
+
+  const results: MultiModulePerson[] = [];
+
+  groups.forEach((occList, root) => {
+    const uniqueModulesSet = new Set(occList.map(o => o.moduleTitle));
+    const uniqueModules = Array.from(uniqueModulesSet);
+
+    if (uniqueModules.length > 1 || occList.length > 1) {
+      const primary = occList.find(o => o.fullName !== 'N/A') || occList[0];
+      const bestName = occList.find(o => o.fullName && o.fullName !== 'N/A')?.fullName || primary.fullName;
+      const bestCnic = occList.find(o => o.cnic && o.cnic !== 'N/A')?.cnic || primary.cnic;
+      const bestPhone = occList.find(o => o.contactNumber && o.contactNumber !== 'N/A')?.contactNumber || primary.contactNumber;
+      const bestEmail = occList.find(o => o.email && o.email !== 'N/A')?.email || primary.email;
+      const bestUni = occList.find(o => o.university && o.university !== 'N/A')?.university || primary.university;
+
+      results.push({
+        key: `multi_${root}_${primary.cleanName || bestName}`,
+        fullName: bestName,
+        cnic: bestCnic,
+        contactNumber: bestPhone,
+        email: bestEmail,
+        university: bestUni,
+        occurrences: occList,
+        uniqueModules,
+        totalRegistrations: occList.length
+      });
+    }
+  });
+
+  return results.sort((a, b) => b.uniqueModules.length - a.uniqueModules.length || b.totalRegistrations - a.totalRegistrations);
+}
+
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -111,6 +291,8 @@ export default function Admin() {
   const [isMigrating, setIsMigrating] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showMultiModuleModal, setShowMultiModuleModal] = useState(false);
+  const [multiModuleSearch, setMultiModuleSearch] = useState('');
   const [resetModuleId, setResetModuleId] = useState('maths-mania');
   const [resetCounterValue, setResetCounterValue] = useState(0);
   const [isResettingCounter, setIsResettingCounter] = useState(false);
@@ -449,6 +631,10 @@ export default function Admin() {
       if (valA > valB) return direction === 'asc' ? 1 : -1;
       return 0;
     });
+
+  const multiModuleParticipants = React.useMemo(() => {
+    return detectMultiModuleParticipants(submissions);
+  }, [submissions]);
 
   const uniqueModules = Array.from(new Set([
     ...modules.map(m => m.title),
@@ -1481,6 +1667,15 @@ export default function Admin() {
               </button>
               <button 
                 onClick={() => {
+                  const baseMultiModuleMap = detectMultiModuleParticipants(submissions);
+                  const lookupMultiPerson = (fullName: string, cnic?: string, contactNumber?: string, email?: string) => {
+                    if (!fullName) return undefined;
+                    const dummy = createDummyOccurrence(fullName, cnic, contactNumber, email);
+                    return baseMultiModuleMap.find(p => 
+                      p.occurrences.some(o => isSamePerson(o, dummy))
+                    );
+                  };
+
                   const createSecuritySheetData = (subs: Submission[]) => {
                     const secHeaders = [
                       'Participant / Team ID',
@@ -1492,7 +1687,9 @@ export default function Admin() {
                       'Contact Number',
                       'Email',
                       'Status',
-                      'Check-In Status'
+                      'Check-In Status',
+                      'Registered Modules Count',
+                      'All Enrolled Modules'
                     ];
 
                     const secAoaData = [secHeaders];
@@ -1503,6 +1700,12 @@ export default function Admin() {
                         : (s.moduleTitle || 'N/A');
                         
                       (s.members || []).forEach((member, idx) => {
+                        const mEmail = idx === 0 && s.email ? s.email.trim() : (((member as any).email) || '');
+                        const multiMatch = lookupMultiPerson(member.fullName || '', member.cnic || '', member.contactNumber || '', mEmail);
+                        
+                        const enrolledModsList = multiMatch ? multiMatch.uniqueModules.join(', ') : moduleName;
+                        const enrolledCount = multiMatch ? multiMatch.uniqueModules.length.toString() : '1';
+
                         secAoaData.push([
                           s.participantId || 'N/A',
                           moduleName,
@@ -1513,7 +1716,9 @@ export default function Admin() {
                           member.contactNumber || 'N/A',
                           s.email || 'N/A',
                           s.status ? s.status.toUpperCase() : 'PENDING',
-                          s.checkedIn ? 'CHECKED IN' : 'NOT CHECKED IN'
+                          s.checkedIn ? 'CHECKED IN' : 'NOT CHECKED IN',
+                          enrolledCount,
+                          enrolledModsList
                         ]);
                       });
                     });
@@ -1533,7 +1738,9 @@ export default function Admin() {
                       { wch: 18 }, // Contact Number
                       { wch: 28 }, // Email
                       { wch: 14 }, // Status
-                      { wch: 18 }  // Check-In Status
+                      { wch: 18 }, // Check-In Status
+                      { wch: 22 }, // Registered Modules Count
+                      { wch: 38 }  // All Enrolled Modules
                     ];
                     return ws;
                   };
@@ -1573,12 +1780,43 @@ export default function Admin() {
                     XLSX.utils.book_append_sheet(secWorkbook, modWs, getCleanSheetName(m.title));
                   });
 
+                  // 3. Dedicated Multi-Module Roster Sheet
+                  const securityMultiList = detectMultiModuleParticipants(securityBaseSubmissions);
+                  if (securityMultiList.length > 0) {
+                    const mmAoa = [
+                      ['Full Name', 'CNIC Number', 'Contact Number', 'Email', 'University', 'Total Modules Count', 'All Enrolled Modules', 'Participant / Team IDs', 'Roles & Statuses']
+                    ];
+                    securityMultiList.forEach(p => {
+                      mmAoa.push([
+                        p.fullName,
+                        p.cnic,
+                        p.contactNumber,
+                        p.email,
+                        p.university,
+                        p.uniqueModules.length.toString(),
+                        p.uniqueModules.join(', '),
+                        p.occurrences.map(o => o.participantId).join(', '),
+                        p.occurrences.map(o => `${o.moduleTitle} (${o.role} - ${o.status.toUpperCase()})`).join('; ')
+                      ]);
+                    });
+                    const mmWs = XLSX.utils.aoa_to_sheet(mmAoa);
+                    mmWs['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 18 }, { wch: 28 }, { wch: 30 }, { wch: 18 }, { wch: 38 }, { wch: 25 }, { wch: 45 }];
+                    XLSX.utils.book_append_sheet(secWorkbook, mmWs, getCleanSheetName("Multi-Module Roster"));
+                  }
+
                   XLSX.writeFile(secWorkbook, `technova_security_roster_${new Date().toISOString().slice(0,10)}.xlsx`);
                 }}
                 className="px-6 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
               >
                 <Shield className="w-4 h-4" />
                 Security Sheet
+              </button>
+              <button 
+                onClick={() => setShowMultiModuleModal(true)}
+                className="px-6 py-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg"
+              >
+                <Users className="w-4 h-4 text-amber-500" />
+                Multi-Module ({multiModuleParticipants.length})
               </button>
               <button 
                 onClick={async () => {
@@ -2326,6 +2564,187 @@ export default function Admin() {
                 >
                   {confirmDialog.confirmText}
                 </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Multi-Module / Cross-Registration Modal */}
+      <AnimatePresence>
+        {showMultiModuleModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              key="multi-module-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMultiModuleModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            />
+            
+            {/* Modal Drawer/Dialog */}
+            <motion.div 
+              key="multi-module-modal"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl max-h-[85vh] bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl z-[101] overflow-hidden flex flex-col p-6 sm:p-8 text-left"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-white/5 shrink-0">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center shrink-0">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                      Cross-Module Registrations
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black">
+                        {multiModuleParticipants.length} Individuals
+                      </span>
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                      Participants registered in 2 or more modules or teams matched via CNIC, Contact Number, or Email.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const mmData = [
+                        ['Full Name', 'CNIC Number', 'Contact Number', 'Email', 'University', 'Modules Count', 'Enrolled Modules', 'Participant / Team IDs', 'Roles & Statuses']
+                      ];
+                      multiModuleParticipants.forEach(p => {
+                        mmData.push([
+                          p.fullName,
+                          p.cnic,
+                          p.contactNumber,
+                          p.email,
+                          p.university,
+                          p.uniqueModules.length.toString(),
+                          p.uniqueModules.join(', '),
+                          p.occurrences.map(o => o.participantId).join(', '),
+                          p.occurrences.map(o => `${o.moduleTitle} (${o.role} - ${o.status.toUpperCase()})`).join('; ')
+                        ]);
+                      });
+                      const mmWs = XLSX.utils.aoa_to_sheet(mmData);
+                      mmWs['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 18 }, { wch: 28 }, { wch: 30 }, { wch: 15 }, { wch: 35 }, { wch: 25 }, { wch: 45 }];
+                      const mmWb = XLSX.utils.book_new();
+                      XLSX.utils.book_append_sheet(mmWb, mmWs, "Multi-Module Participants");
+                      XLSX.writeFile(mmWb, `technova_multi_module_participants_${new Date().toISOString().slice(0,10)}.xlsx`);
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Export Excel
+                  </button>
+
+                  <button
+                    onClick={() => setShowMultiModuleModal(false)}
+                    className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-all"
+                  >
+                    <XCircle className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Search Bar inside Modal */}
+              <div className="py-4 border-b border-gray-100 dark:border-white/5 flex items-center gap-3 shrink-0">
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search multi-module participants by name, CNIC, contact, email, or module..."
+                    value={multiModuleSearch}
+                    onChange={e => setMultiModuleSearch(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-2xl text-xs font-semibold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  />
+                  {multiModuleSearch && (
+                    <button
+                      onClick={() => setMultiModuleSearch('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xs font-bold"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Participant Cards / Table List */}
+              <div className="flex-1 overflow-y-auto pt-4 pr-1 space-y-4">
+                {multiModuleParticipants.filter(p => {
+                  if (!multiModuleSearch) return true;
+                  const q = multiModuleSearch.toLowerCase();
+                  return (
+                    p.fullName.toLowerCase().includes(q) ||
+                    p.cnic.toLowerCase().includes(q) ||
+                    p.contactNumber.toLowerCase().includes(q) ||
+                    p.email.toLowerCase().includes(q) ||
+                    p.university.toLowerCase().includes(q) ||
+                    p.uniqueModules.some(m => m.toLowerCase().includes(q))
+                  );
+                }).map((person) => (
+                  <div
+                    key={person.key}
+                    className="p-5 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200/80 dark:border-white/5 hover:border-amber-500/30 dark:hover:border-amber-500/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  >
+                    <div className="space-y-1.5 flex-1">
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        <span className="text-sm font-black text-gray-900 dark:text-white">
+                          {person.fullName}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">
+                          {person.uniqueModules.length} Modules ({person.totalRegistrations} Registrations)
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400 flex-wrap font-medium">
+                        {person.cnic !== 'N/A' && <span>🪪 CNIC: <strong className="text-gray-700 dark:text-gray-200 font-bold">{person.cnic}</strong></span>}
+                        {person.contactNumber !== 'N/A' && <span>📱 Phone: <strong className="text-gray-700 dark:text-gray-200 font-bold">{person.contactNumber}</strong></span>}
+                        {person.email !== 'N/A' && <span>✉️ {person.email}</span>}
+                        <span>🏫 {person.university}</span>
+                      </div>
+                    </div>
+
+                    {/* Occurrences / Enrolled Modules List */}
+                    <div className="flex items-center gap-2 flex-wrap md:max-w-md justify-start md:justify-end shrink-0">
+                      {person.occurrences.map((occ, idx) => (
+                        <div
+                          key={idx}
+                          className="px-3 py-2 rounded-xl bg-white dark:bg-black/50 border border-gray-200 dark:border-white/10 text-left"
+                        >
+                          <div className="text-[11px] font-black text-gray-900 dark:text-white flex items-center gap-1.5">
+                            <span className="text-amber-500">#{occ.participantId}</span>
+                            <span>{occ.moduleTitle}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-0.5 text-[9px] uppercase tracking-wider font-bold">
+                            <span className="text-gray-400">{occ.role}</span>
+                            <span className={`px-1.5 py-0.2 rounded ${
+                              occ.status === 'approved' ? 'bg-emerald-500/15 text-emerald-500' :
+                              occ.status === 'rejected' ? 'bg-rose-500/15 text-rose-500' :
+                              'bg-amber-500/15 text-amber-500'
+                            }`}>
+                              {occ.status}
+                            </span>
+                            {occ.checkedIn && (
+                              <span className="text-emerald-500 font-black">✓ Checked In</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {multiModuleParticipants.length === 0 && (
+                  <div className="text-center py-12 text-gray-400 dark:text-gray-500">
+                    <Users className="w-10 h-10 mx-auto opacity-30 mb-2" />
+                    <p className="text-sm font-semibold">No multi-module or duplicate participant registrations detected.</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </>
