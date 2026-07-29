@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import confetti from 'canvas-confetti';
 import { modules, getFees, isDiscountEligible, TeamMode } from '../data/modules';
-import { submissionService } from '../services/submissionService';
+import { submissionService, isUniversityStudent } from '../services/submissionService';
 import { emailService } from '../services/emailService';
 
 import { auth } from '../lib/firebase';
@@ -295,10 +295,21 @@ export default function Register() {
         m.fullName.trim() !== '' || m.cnic.trim() !== '' || m.contactNumber.trim() !== ''
       );
 
+      let effectiveModuleId = selectedModule.id;
+      let effectiveModuleTitle = selectedModule.title;
+
+      if (
+        (selectedModule.id === 'maths-mania-advanced' || selectedModule.title.toLowerCase().includes('junior')) &&
+        isUniversityStudent(data.university)
+      ) {
+        effectiveModuleId = 'maths-mania';
+        effectiveModuleTitle = 'Maths Mania (Advanced)';
+      }
+
       // STEP 1: Save to Database (THE ONLY BLOCKING STEP)
       const result = await submissionService.createSubmission({
-        moduleId: selectedModule.id,
-        moduleTitle: selectedModule.title,
+        moduleId: effectiveModuleId,
+        moduleTitle: effectiveModuleTitle,
         subGameId: data.subGameId || null,
         subGameTitle: subGame?.title || null,
         email: data.email,

@@ -183,9 +183,12 @@ export default function Admin() {
   }, []);
 
   const loadSubmissions = () => {
-    // Silently auto-migrate Maths Mania prefixes for existing registrations
+    // Silently auto-migrate Maths Mania prefixes and shift Junior university participants to Advanced module
     submissionService.migrateMathsManiaPrefixes().catch(err => {
       console.error('Failed to auto-migrate Maths Mania prefixes:', err);
+    });
+    submissionService.shiftMathsManiaJuniorUniversityParticipants().catch(err => {
+      console.error('Failed to shift Maths Mania Junior university participants:', err);
     });
 
     return submissionService.subscribeToSubmissions((data) => {
@@ -1249,61 +1252,10 @@ export default function Admin() {
             {/* Separator line */}
             <div className="h-[1px] bg-gray-100 dark:bg-white/5" />
 
-            {/* Row 2: Management/Diagnostic Controls & Bulk Exports */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6">
-              {/* Management Tools (Sync / Diagnostics) */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <button 
-                  onClick={handleMigrateIds}
-                  disabled={isMigrating}
-                  className="px-5 py-3.5 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {isMigrating ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      Fixing...
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="w-3.5 h-3.5 text-orange-500" />
-                      Fix IDs
-                    </>
-                  )}
-                </button>
-
-                <button 
-                  onClick={handleSyncCounters}
-                  disabled={isSyncing}
-                  className="px-5 py-3.5 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {isSyncing ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      Syncing...
-                    </>
-                  ) : (
-                    <>
-                      <ArrowUpDown className="w-3.5 h-3.5 text-emerald-500" />
-                      Sync Counters
-                    </>
-                  )}
-                </button>
-
-                <button 
-                  onClick={() => setShowCounterOverride(prev => !prev)}
-                  className={`px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center justify-center gap-2 ${
-                    showCounterOverride 
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20 hover:bg-blue-700' 
-                      : 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/20'
-                  }`}
-                >
-                  <Settings className="w-3.5 h-3.5" />
-                  Reset Counter
-                </button>
-              </div>
-
+            {/* Row 2: Bulk Exports */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               {/* Data Export Options */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full md:w-auto">
                 <button 
                   className="px-6 py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
                   onClick={() => {
@@ -1317,6 +1269,7 @@ export default function Admin() {
                     'Module',
                     'Sub-Game',
                     'University',
+                    'Team Members Count',
                     'Total Fee (PKR)',
                     'Promo Code',
                     'Discount (PKR)',
@@ -1344,6 +1297,7 @@ export default function Admin() {
                       s.moduleTitle || '',
                       s.subGameTitle || 'N/A',
                       s.university || '',
+                      s.members?.length || 0,
                       s.exempted ? 0 : (s.totalFee || 0),
                       s.promoCode || 'NONE',
                       s.discountApplied || 0,
@@ -1369,11 +1323,69 @@ export default function Admin() {
                     aoaData.push(row);
                   });
 
-                  // Add Finance Summary Section
+                  // Add Module Participants Count Breakdown Section
                   const totalSum = filteredSubmissions.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
                   const approvedSum = submissions.filter(s => s.status === 'approved' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
                   const pendingSum = submissions.filter(s => s.status === 'pending' && !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
 
+                  aoaData.push([]); // Spacer
+                  aoaData.push(['--- MODULE BREAKDOWN & PARTICIPANTS COUNT ---']);
+                  aoaData.push([
+                    'Module Name', 
+                    'Teams Count', 
+                    'Total Participants Count', 
+                    'Approved Teams', 
+                    'Approved Participants Count',
+                    'Checked-In Teams', 
+                    'Checked-In Participants Count',
+                    'Total Revenue (PKR)'
+                  ]);
+
+                  modules.forEach(m => {
+                    const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
+                    const teamsCount = modSubs.length;
+                    const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                    const approvedSubs = modSubs.filter(s => s.status === 'approved');
+                    const approvedTeams = approvedSubs.length;
+                    const approvedParticipants = approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                    const checkedInSubs = modSubs.filter(s => s.checkedIn);
+                    const checkedInTeams = checkedInSubs.length;
+                    const checkedInParticipants = checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                    const totalRevenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+
+                    aoaData.push([
+                      m.title,
+                      teamsCount,
+                      participantsCount,
+                      approvedTeams,
+                      approvedParticipants,
+                      checkedInTeams,
+                      checkedInParticipants,
+                      `PKR ${totalRevenue.toLocaleString()}`
+                    ]);
+                  });
+
+                  const grandTeams = filteredSubmissions.length;
+                  const grandParticipants = filteredSubmissions.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                  const grandApprovedSubs = filteredSubmissions.filter(s => s.status === 'approved');
+                  const grandApprovedTeams = grandApprovedSubs.length;
+                  const grandApprovedParticipants = grandApprovedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                  const grandCheckedInSubs = filteredSubmissions.filter(s => s.checkedIn);
+                  const grandCheckedInTeams = grandCheckedInSubs.length;
+                  const grandCheckedInParticipants = grandCheckedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+
+                  aoaData.push([
+                    'TOTAL ALL MODULES',
+                    grandTeams,
+                    grandParticipants,
+                    grandApprovedTeams,
+                    grandApprovedParticipants,
+                    grandCheckedInTeams,
+                    grandCheckedInParticipants,
+                    `PKR ${totalSum.toLocaleString()}`
+                  ]);
+
+                  // Add Finance Summary Section
                   aoaData.push([]); // Spacer
                   aoaData.push(['--- FINANCE REPORT SUMMARY ---']);
                   aoaData.push(['Current View Total (Filtered)', `PKR ${totalSum.toLocaleString()}`]);
@@ -1387,6 +1399,7 @@ export default function Admin() {
                   
                   // Configure column widths
                   const wscols = [
+                    {wch: 18}, // Participant ID
                     {wch: 25}, // Submission ID
                     {wch: 20}, // Date
                     {wch: 25}, // Lead Name
@@ -1394,8 +1407,14 @@ export default function Admin() {
                     {wch: 25}, // Module
                     {wch: 20}, // Sub-Game
                     {wch: 30}, // University
+                    {wch: 20}, // Team Members Count
                     {wch: 15}, // Total Fee
+                    {wch: 15}, // Promo Code
+                    {wch: 15}, // Discount
                     {wch: 15}, // Status
+                    {wch: 12}, // Exempted
+                    {wch: 18}, // Check-In Status
+                    {wch: 20}, // Check-In Time
                   ];
                   for (let i = 0; i < maxMembers; i++) {
                     wscols.push({wch: 25}, {wch: 20}, {wch: 15});
@@ -1404,6 +1423,47 @@ export default function Admin() {
 
                   const workbook = XLSX.utils.book_new();
                   XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
+
+                  // Create dedicated Module Summary Sheet
+                  const moduleSummaryAoa = [
+                    ['Module ID', 'Module Name', 'Category', 'Teams Count', 'Total Participants Count', 'Approved Teams', 'Approved Participants Count', 'Checked-In Teams', 'Checked-In Participants Count', 'Total Fee Collected (PKR)'],
+                    ...modules.map(m => {
+                      const modSubs = filteredSubmissions.filter(s => s.moduleId === m.id || s.moduleTitle === m.title);
+                      const teamsCount = modSubs.length;
+                      const participantsCount = modSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0);
+                      const approvedSubs = modSubs.filter(s => s.status === 'approved');
+                      const checkedInSubs = modSubs.filter(s => s.checkedIn);
+                      const revenue = modSubs.filter(s => !s.exempted).reduce((acc, curr) => acc + Number(curr.totalFee || 0), 0);
+                      return [
+                        m.id,
+                        m.title,
+                        m.category,
+                        teamsCount,
+                        participantsCount,
+                        approvedSubs.length,
+                        approvedSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
+                        checkedInSubs.length,
+                        checkedInSubs.reduce((acc, curr) => acc + (curr.members?.length || 0), 0),
+                        `PKR ${revenue.toLocaleString()}`
+                      ];
+                    }),
+                    [
+                      'ALL',
+                      'TOTAL ALL MODULES',
+                      '-',
+                      grandTeams,
+                      grandParticipants,
+                      grandApprovedTeams,
+                      grandApprovedParticipants,
+                      grandCheckedInTeams,
+                      grandCheckedInParticipants,
+                      `PKR ${totalSum.toLocaleString()}`
+                    ]
+                  ];
+
+                  const moduleWorksheet = XLSX.utils.aoa_to_sheet(moduleSummaryAoa);
+                  XLSX.utils.book_append_sheet(workbook, moduleWorksheet, "Module Summary");
+
                   XLSX.writeFile(workbook, `technova_submissions_${new Date().toISOString().slice(0,10)}.xlsx`);
                 }}
               >
@@ -1451,71 +1511,6 @@ export default function Admin() {
                 Export Receipts
               </button>
             </div>
-
-            {/* Manual Counter Override Panel */}
-            <AnimatePresence>
-              {showCounterOverride && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full"
-                >
-                  <div className="p-6 mt-4 rounded-3xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 space-y-4">
-                    <div>
-                      <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Manual Counter Override</h4>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">Directly set the registration count (e.g. Maths Mania start point).</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-4">
-                      <div>
-                        <label className="block text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">Module</label>
-                        <select
-                          value={resetModuleId}
-                          onChange={(e) => setResetModuleId(e.target.value)}
-                          className="w-full bg-white dark:bg-zinc-950 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-gray-800 dark:text-gray-100 outline-none focus:border-blue-500 transition-colors"
-                        >
-                          {Object.keys(MODULE_PREFIXES).map((id) => (
-                            <option key={id} value={id}>
-                              {id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} ({MODULE_PREFIXES[id]})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">New Counter Value</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={resetCounterValue}
-                          onChange={(e) => setResetCounterValue(Math.max(0, parseInt(e.target.value) || 0))}
-                          className="w-full bg-white dark:bg-zinc-950 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-gray-800 dark:text-gray-100 outline-none focus:border-blue-500 transition-colors"
-                        />
-                      </div>
-
-                      <div>
-                        <button
-                          onClick={handleResetCounter}
-                          disabled={isResettingCounter}
-                          className="w-full px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-blue-500/15"
-                        >
-                          {isResettingCounter ? (
-                            <>
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                              Resetting...
-                            </>
-                          ) : (
-                            'Set Counter Value'
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
 

@@ -99,6 +99,45 @@ function handleFirestoreError(error: any, operationType: FirestoreErrorInfo['ope
   throw new Error(JSON.stringify(errorInfo));
 }
 
+export function isUniversityStudent(institutionName: string): boolean {
+  if (!institutionName) return true;
+  const clean = institutionName.toLowerCase().trim();
+
+  // Known school/college indicators that are NOT universities
+  const schoolCollegeKeywords = [
+    'school', 'lyceum', 'grammar', 'high school', 'intermediate', 'inter', 
+    'matric', 'o level', 'a level', 'o/a level', 'o-level', 'a-level', 'cadet', 
+    'secondary', 'beaconhouse', 'city school', 'army public', 'aps', 'whales', 
+    'cordoba', 'cedar', 'alpha', 'adamjee', 'commecs', 'dj science', 
+    'st. patrick', 'st. joseph', 'st. paul', 'habib public', 'bamm', 'degree college',
+    'khalid', 'forman christian college school'
+  ];
+
+  // University indicators
+  const uniKeywords = [
+    'university', 'uni', 'iobm', 'cbm', 'ccsis', 'fast', 'nuces', 'ned', 'ssuet', 
+    'szabist', 'iba', 'nust', 'lums', 'comsats', 'nhu', 'uit', 'dsu', 'bahria', 
+    'karachi university', 'ku', 'ubit', 'duet', 'dawood', 'indus', 'hamdard', 
+    'greenwich', 'iqra', 'kiet', 'paf-kiet', 'ziauddin', 'aku', 'pnec', 'giki', 
+    'cust', 'pieas', 'umt', 'uol', 'ucl', 'ucp', 'bnu', 'fccu', 'institute'
+  ];
+
+  const hasUniKeyword = uniKeywords.some(k => {
+    if (k.length <= 4) {
+      const regex = new RegExp(`\\b${k}\\b`, 'i');
+      return regex.test(clean);
+    }
+    return clean.includes(k);
+  });
+
+  if (hasUniKeyword) return true;
+
+  const hasSchoolKeyword = schoolCollegeKeywords.some(k => clean.includes(k));
+  if (hasSchoolKeyword) return false;
+
+  return true;
+}
+
 export const submissionService = {
   async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt' | 'participantId'>) {
     try {
@@ -381,6 +420,54 @@ export const submissionService = {
       }
     } catch (error) {
       console.error('Error migrating Maths Mania prefixes:', error);
+    }
+  },
+
+  async shiftMathsManiaJuniorUniversityParticipants() {
+    try {
+      const q = query(collection(db, 'submissions'));
+      const snapshot = await getDocs(q);
+      let count = 0;
+      
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data() as Submission;
+        const currentTitle = data.moduleTitle ? data.moduleTitle.trim() : '';
+        const currentModuleId = data.moduleId;
+        const uniName = data.university || '';
+
+        // Check if this submission belongs to Maths Mania Junior
+        const isJuniorModule = 
+          currentModuleId === 'maths-mania-advanced' || 
+          currentTitle.toLowerCase().includes('junior') ||
+          (data.participantId && data.participantId.startsWith('MMJ-'));
+
+        if (isJuniorModule) {
+          // Check if registered as a university student
+          if (isUniversityStudent(uniName)) {
+            const docRef = doc(db, 'submissions', docSnap.id);
+            let updatedParticipantId = data.participantId;
+            if (updatedParticipantId) {
+              if (updatedParticipantId.startsWith('MMJ-')) {
+                updatedParticipantId = updatedParticipantId.replace('MMJ-', 'MMA-');
+              } else if (updatedParticipantId.startsWith('MM-')) {
+                updatedParticipantId = updatedParticipantId.replace('MM-', 'MMA-');
+              }
+            }
+
+            await updateDoc(docRef, {
+              moduleId: 'maths-mania',
+              moduleTitle: 'Maths Mania (Advanced)',
+              ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
+              updatedAt: serverTimestamp()
+            });
+            count++;
+          }
+        }
+      }
+      return count;
+    } catch (error) {
+      console.error('Error shifting Maths Mania Junior university participants:', error);
+      handleFirestoreError(error, 'write', 'shiftMathsManiaJuniorUniversity');
     }
   }
 }

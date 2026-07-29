@@ -6,14 +6,15 @@ import firebaseConfig from '../../firebase-applet-config.json';
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-// Set Firebase Firestore log level to 'error' to prevent noisy connection warning messages in sandboxed/iframe development environments
+// Suppress non-critical connection warning logs in sandboxed/iframe environments
 setLogLevel('error');
 
 export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
+  experimentalAutoDetectLongPolling: true,
 }, firebaseConfig.firestoreDatabaseId);
 
 export const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+
 
