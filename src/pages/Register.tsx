@@ -397,7 +397,7 @@ export default function Register() {
             
             <h2 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-4">REGISTRATIONS CLOSED</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-8 leading-relaxed">
-              We are sorry, but registrations for <strong className="font-bold text-gray-800 dark:text-white">{selectedModule.title}</strong> have been officially closed as we have received the maximum response. Thank you for your overwhelming interest!
+              We are sorry, but all registration spots for <strong className="font-bold text-gray-800 dark:text-white">{selectedModule.title}</strong> have been completely filled up. We hope to see you in our other modules!
             </p>
             
             <button
