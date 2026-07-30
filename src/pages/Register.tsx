@@ -397,14 +397,14 @@ export default function Register() {
             
             <h2 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-4">REGISTRATIONS CLOSED</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-8 leading-relaxed">
-              We are sorry, but all registration spots for <strong className="font-bold text-gray-800 dark:text-white">{selectedModule.title}</strong> have been completely filled up. We hope to see you in our other modules!
+              Registrations for TechNova '26 are now officially closed as we have received maximum responses across all modules. Thank you for the overwhelming support and enthusiasm!
             </p>
             
             <button
               onClick={() => navigate('/modules')}
               className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold flex items-center justify-center transition-all shadow-lg shadow-blue-600/20"
             >
-              Explore Other Modules
+              View Modules Overview
             </button>
           </div>
         </div>

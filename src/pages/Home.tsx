@@ -583,17 +583,17 @@ export default function Home() {
             <div className="absolute -bottom-12 -right-12 w-72 h-72 bg-white/5 rounded-full blur-3xl pointer-events-none" />
             
             <div className="relative z-10 flex flex-col items-center">
-              {/* Ready to blow some minds? Title */}
+              {/* Registrations Closed Title */}
               <h2 className="text-3xl sm:text-5xl lg:text-6xl font-sans font-black text-white mb-6 tracking-tight leading-tight select-none">
-                Ready to blow some minds?
+                Registrations Closed!
               </h2>
 
               {/* Description Paragraph */}
               <p className="text-blue-50/90 text-sm sm:text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed font-medium select-none">
-                Join thousands of students in the ultimate test of skill, creativity, and innovation. Don't sleep on this - spots are filling up fast!
+                Registrations for TechNova '26 are officially closed as we have received maximum responses across all modules. Thank you to everyone who registered!
               </p>
 
-              {/* Lock In Your Spot Now Button */}
+              {/* View Modules Button */}
               <div className="w-full flex justify-center">
                 <motion.div
                   whileHover={{ scale: 1.03, y: -2 }}
@@ -604,7 +604,7 @@ export default function Home() {
                     to="/modules"
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 rounded-full bg-white text-[#1052ff] font-extrabold text-sm sm:text-base hover:bg-white/95 transition-all shadow-lg font-sans"
                   >
-                    Lock In Your Spot Now
+                    Explore Modules
                     <ArrowRight className="w-5 h-5 stroke-[2.5]" />
                   </Link>
                 </motion.div>

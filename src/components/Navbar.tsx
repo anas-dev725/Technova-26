@@ -122,16 +122,16 @@ export default function Navbar() {
                 </AnimatePresence>
               </button>
 
-              {/* Dynamic Register Now CTA button reinstated */}
+              {/* Dynamic Registrations Closed CTA button */}
               <Link
                 to="/modules"
-                className="relative flex items-center gap-1.5 h-10 px-5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_4px_15px_rgba(59,130,246,0.2)] hover:shadow-[0_8px_25px_rgba(59,130,246,0.34)] active:scale-95 group overflow-hidden"
+                className="relative flex items-center gap-1.5 h-10 px-5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_4px_15px_rgba(225,29,72,0.25)] hover:shadow-[0_8px_25px_rgba(225,29,72,0.4)] active:scale-95 group overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-1.5">
-                  Register Now
+                  Registrations Closed
                   <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Link>
             </div>
 
@@ -197,10 +197,10 @@ export default function Navbar() {
                 
                 <Link
                   to="/modules"
-                  className="mt-3 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center font-bold text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(59,130,246,0.3)] hover:shadow-lg transition-all"
+                  className="mt-3 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white text-center font-bold text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(225,29,72,0.3)] hover:shadow-lg transition-all"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Register Now
+                  Registrations Closed
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

@@ -292,13 +292,19 @@ export default function ModuleDetail() {
                                 <Trophy className="w-4 h-4 text-amber-500" />
                                 <span className="text-xs font-bold text-amber-500 uppercase tracking-widest">{game.prize} Prize Pool</span>
                               </div>
-                              <Link 
-                                to={`/register/${module.id}?game=${game.id}`}
-                                className="ml-auto text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 group/link"
-                              >
-                                Register now
-                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
-                              </Link>
+                              {module.isFilled ? (
+                                <span className="ml-auto text-xs font-bold text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 uppercase tracking-wider">
+                                  Slots Filled
+                                </span>
+                              ) : (
+                                <Link 
+                                  to={`/register/${module.id}?game=${game.id}`}
+                                  className="ml-auto text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 group/link"
+                                >
+                                  Register now
+                                  <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                                </Link>
+                              )}
                             </div>
                           </div>
                         </motion.div>
