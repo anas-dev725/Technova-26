@@ -113,7 +113,7 @@ export const modules: Module[] = [
       'All challenges must be accessed exclusively through the official competition platform.',
       'AI tools and LLMs are permitted and encouraged: use every tool at your disposal.',
       'Collaboration between crews is strictly prohibited: your signal, your glory.',
-      'Bring your own laptop: no special installation required.',
+      'Bring your own personal laptop: the platform is web-based and requires no special installation.',
       'Participants may only interact with challenges assigned to their crew. Interfering with another crew\'s session is prohibited.',
       'No real-world exploits may be deployed against competition infrastructure. All hacking is contained within the simulated environment.',
       'The flag format is strictly ZEROSIG{...}: submissions outside this format will be rejected.',
@@ -140,6 +140,7 @@ export const modules: Module[] = [
     skills: ['Logic and Automation', 'Strategic Decision Making', 'Game Theory', 'Behavioral Design'],
     rulesList: [
       'Teams of 2 to 3 participants.',
+      'Competition will be held on our systems as the platform is web-based.',
       'Agents must be written in Python 3.9+.',
       'Only free-tier LLM APIs are permitted. No paid plans or credits allowed.',
       'AI coding assistants (ChatGPT, Claude, Copilot, Cursor) are permitted and encouraged.',
@@ -170,6 +171,7 @@ export const modules: Module[] = [
     skills: ['Data Analysis', 'Problem Solving', 'Critical Thinking', 'Investigative Logic'],
     rulesList: [
       'Teams of 2 to 3 participants.',
+      'Competition will be held on our systems as the platform is web-based.',
       'No generative AI tools permitted: no ChatGPT, Claude, Copilot, or any LLM coding assistant.',
       'No mobile devices allowed during the competition.',
       'Absolute team isolation, you may only communicate within your duo. Cross-team communication is strictly prohibited.',
@@ -200,7 +202,7 @@ export const modules: Module[] = [
       'All interactions with the AI must occur exclusively through the official competition platform. No external API access is permitted.',
       'All AI tools and LLMs are permitted to assist in crafting prompts: use every tool at your disposal.',
       'Sharing prompts, strategies, or extracted secrets with other participants during the event is strictly prohibited.',
-      'Bring your own laptop: the platform is web-based and requires no special installation.',
+      'Competition will be held on our systems as the platform is web-based.',
       'Each participant may only interact with the challenge assigned to them. Probing or interfering with other participants\' instances is prohibited.',
       'The hidden system prompt is server-side and inaccessible. Accessing it through technical means outside the platform is a violation.',
       'Organizers reserve the right to adapt rules in response to unforeseen circumstances. All decisions are final.'

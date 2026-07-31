@@ -541,12 +541,12 @@ export default function ModuleDetail() {
                             {(module.id === 'startup-launchpad' || module.id === 'fyp-warriors' ? [
                               'Valid University ID Card',
                               'Own devices, standees, and socket extensions'
-                            ] : module.id === 'esports-competition' ? [
+                            ] : module.id === 'capture-the-flag' ? [
                               'Valid University ID Card',
-                              'Own mobile device with PUBG Mobile'
+                              'Bring your own personal laptop'
                             ] : [
                               'Valid University ID Card',
-                              'Own laptop with required software'
+                              'Competition held on lab systems'
                             ]).map((req, rIdx) => (
                               <div key={rIdx} className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-xl bg-blue-500/10 dark:bg-blue-500/5 flex items-center justify-center shrink-0">
