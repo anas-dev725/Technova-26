@@ -472,28 +472,45 @@ export default function Admin() {
   };
 
   const handleToggleCheckedIn = async (id: string, currentCheckedIn: boolean) => {
+    const nextCheckedIn = !currentCheckedIn;
+    const now = new Date();
+
+    // 1. Instant optimistic update in local state for zero latency UI feedback
+    setSubmissions(prev => prev.map(sub => {
+      if (sub.id === id) {
+        return {
+          ...sub,
+          checkedIn: nextCheckedIn,
+          checkedInAt: nextCheckedIn ? now : null
+        };
+      }
+      return sub;
+    }));
+
+    if (selectedSubmission?.id === id) {
+      setSelectedSubmission({ 
+        ...selectedSubmission, 
+        checkedIn: nextCheckedIn,
+        checkedInAt: nextCheckedIn ? now : null 
+      });
+    }
+
+    // 2. Async write to Firestore database (real-time synced to all other admin devices)
     try {
-      const now = new Date();
-      await submissionService.toggleCheckIn(id, !currentCheckedIn);
+      await submissionService.toggleCheckIn(id, nextCheckedIn);
+    } catch (error) {
+      console.error('Check-in toggle error:', error);
+      // Revert local optimistic state if failed
       setSubmissions(prev => prev.map(sub => {
         if (sub.id === id) {
           return {
             ...sub,
-            checkedIn: !currentCheckedIn,
-            checkedInAt: !currentCheckedIn ? now : null
+            checkedIn: currentCheckedIn,
+            checkedInAt: currentCheckedIn ? sub.checkedInAt : null
           };
         }
         return sub;
       }));
-      if (selectedSubmission?.id === id) {
-        setSelectedSubmission({ 
-          ...selectedSubmission, 
-          checkedIn: !currentCheckedIn,
-          checkedInAt: !currentCheckedIn ? now : null 
-        });
-      }
-    } catch (error) {
-      console.error('Check-in toggle error:', error);
     }
   };
 
@@ -591,8 +608,78 @@ export default function Admin() {
     });
   };
 
-  const filteredSubmissions = submissions
-    .filter(sub => {
+  const filteredSubmissions = React.useMemo(() => {
+    return submissions
+      .filter(sub => {
+        const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
+        
+        const matchesCheckIn = activeTab !== 'venue-desk' || filterCheckIn === 'all' || 
+          (filterCheckIn === 'checked-in' && !!sub.checkedIn) || 
+          (filterCheckIn === 'not-checked-in' && !sub.checkedIn);
+
+        const targetModule = modules.find(m => m.title === filterModule);
+        const matchesModule = filterModule === 'all' || 
+          sub.moduleTitle === filterModule || 
+          (targetModule && sub.moduleId === targetModule.id);
+
+        const normalizedSubUni = normalizeUniversityName(sub.university);
+        const matchesUniversity = filterUniversity === 'all' || normalizedSubUni === filterUniversity;
+        
+        const cleanId = sub.participantId ? sub.participantId.toLowerCase().replace(/[\s-]/g, '') : '';
+        const cleanSearch = searchQuery.toLowerCase().replace(/[\s-]/g, '');
+        const matchesId = cleanId && cleanSearch && cleanId.includes(cleanSearch);
+
+        const matchesSearch = !searchQuery ||
+          matchesId ||
+          sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (m.cnic && m.cnic.toLowerCase().includes(searchQuery.toLowerCase())));
+          
+        return matchesStatus && matchesCheckIn && matchesModule && matchesUniversity && matchesSearch;
+      })
+      .sort((a, b) => {
+        if (!sortConfig) return 0;
+        const { key, direction } = sortConfig;
+        const valA = a[key];
+        const valB = b[key];
+        if (valA < valB) return direction === 'asc' ? -1 : 1;
+        if (valA > valB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [submissions, filterStatus, activeTab, filterCheckIn, filterModule, filterUniversity, searchQuery, sortConfig]);
+
+  const multiModuleParticipants = React.useMemo(() => {
+    return detectMultiModuleParticipants(submissions);
+  }, [submissions]);
+
+  const uniqueModules = React.useMemo(() => {
+    return Array.from(new Set([
+      ...modules.map(m => m.title),
+      ...submissions.map(s => s.moduleTitle)
+    ])).filter(Boolean).sort();
+  }, [submissions]);
+
+  const moduleStats = React.useMemo(() => {
+    return uniqueModules.map(m => {
+      const targetModule = modules.find(mod => mod.title === m);
+      const moduleSubs = submissions.filter(s => 
+        s.moduleTitle === m || (targetModule && s.moduleId === targetModule.id)
+      );
+      return {
+        name: m,
+        count: moduleSubs.length,
+        checkedInTeams: moduleSubs.filter(s => s.checkedIn).length,
+        checkedInParticipants: moduleSubs.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0)
+      };
+    });
+  }, [uniqueModules, submissions]);
+
+  // Compute a filtered list of submissions for the university distribution stats (excluding university filter itself)
+  const submissionsForUniversityDistribution = React.useMemo(() => {
+    return submissions.filter(sub => {
       const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
       
       const matchesCheckIn = activeTab !== 'venue-desk' || filterCheckIn === 'all' || 
@@ -605,8 +692,7 @@ export default function Admin() {
         (targetModule && sub.moduleId === targetModule.id);
 
       const normalizedSubUni = normalizeUniversityName(sub.university);
-      const matchesUniversity = filterUniversity === 'all' || normalizedSubUni === filterUniversity;
-      
+
       const cleanId = sub.participantId ? sub.participantId.toLowerCase().replace(/[\s-]/g, '') : '';
       const cleanSearch = searchQuery.toLowerCase().replace(/[\s-]/g, '');
       const matchesId = cleanId && cleanSearch && cleanId.includes(cleanSearch);
@@ -620,123 +706,68 @@ export default function Admin() {
         (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (m.cnic && m.cnic.toLowerCase().includes(searchQuery.toLowerCase())));
         
-      return matchesStatus && matchesCheckIn && matchesModule && matchesUniversity && matchesSearch;
-    })
-    .sort((a, b) => {
-      if (!sortConfig) return 0;
-      const { key, direction } = sortConfig;
-      const valA = a[key];
-      const valB = b[key];
-      if (valA < valB) return direction === 'asc' ? -1 : 1;
-      if (valA > valB) return direction === 'asc' ? 1 : -1;
-      return 0;
+      return matchesStatus && matchesCheckIn && matchesModule && matchesSearch;
     });
-
-  const multiModuleParticipants = React.useMemo(() => {
-    return detectMultiModuleParticipants(submissions);
-  }, [submissions]);
-
-  const uniqueModules = Array.from(new Set([
-    ...modules.map(m => m.title),
-    ...submissions.map(s => s.moduleTitle)
-  ])).filter(Boolean).sort();
-
-  const moduleStats = uniqueModules.map(m => {
-    const targetModule = modules.find(mod => mod.title === m);
-    const moduleSubs = submissions.filter(s => 
-      s.moduleTitle === m || (targetModule && s.moduleId === targetModule.id)
-    );
-    return {
-      name: m,
-      count: moduleSubs.length,
-      checkedInTeams: moduleSubs.filter(s => s.checkedIn).length,
-      checkedInParticipants: moduleSubs.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0)
-    };
-  });
-
-  // Compute a filtered list of submissions for the university distribution stats (excluding university filter itself)
-  const submissionsForUniversityDistribution = submissions.filter(sub => {
-    const matchesStatus = filterStatus === 'all' || sub.status === filterStatus;
-    
-    const matchesCheckIn = activeTab !== 'venue-desk' || filterCheckIn === 'all' || 
-      (filterCheckIn === 'checked-in' && !!sub.checkedIn) || 
-      (filterCheckIn === 'not-checked-in' && !sub.checkedIn);
-
-    const targetModule = modules.find(m => m.title === filterModule);
-    const matchesModule = filterModule === 'all' || 
-      sub.moduleTitle === filterModule || 
-      (targetModule && sub.moduleId === targetModule.id);
-
-    const normalizedSubUni = normalizeUniversityName(sub.university);
-
-    const cleanId = sub.participantId ? sub.participantId.toLowerCase().replace(/[\s-]/g, '') : '';
-    const cleanSearch = searchQuery.toLowerCase().replace(/[\s-]/g, '');
-    const matchesId = cleanId && cleanSearch && cleanId.includes(cleanSearch);
-
-    const matchesSearch = !searchQuery ||
-      matchesId ||
-      sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      normalizedSubUni.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sub.moduleTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (sub.teamName && sub.teamName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      sub.members.some(m => m.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (m.cnic && m.cnic.toLowerCase().includes(searchQuery.toLowerCase())));
-      
-    return matchesStatus && matchesCheckIn && matchesModule && matchesSearch;
-  });
+  }, [submissions, filterStatus, activeTab, filterCheckIn, filterModule, searchQuery]);
 
   // Get unique normalized universities and their participant & team stats
-  const universityStats = Array.from(
-    new Set(submissionsForUniversityDistribution.map(s => normalizeUniversityName(s.university)))
-  ).map(uniName => {
-    const uniSubmissions = submissionsForUniversityDistribution.filter(s => normalizeUniversityName(s.university) === uniName);
-    const teamCount = uniSubmissions.length;
-    const participantCount = uniSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0);
-    const checkedInTeams = uniSubmissions.filter(s => s.checkedIn).length;
-    const checkedInParticipants = uniSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0);
-    return {
-      name: uniName,
-      teams: teamCount,
-      participants: participantCount,
-      checkedInTeams,
-      checkedInParticipants
-    };
-  }).sort((a, b) => b.participants - a.participants);
+  const universityStats = React.useMemo(() => {
+    return Array.from(
+      new Set(submissionsForUniversityDistribution.map(s => normalizeUniversityName(s.university)))
+    ).map(uniName => {
+      const uniSubmissions = submissionsForUniversityDistribution.filter(s => normalizeUniversityName(s.university) === uniName);
+      const teamCount = uniSubmissions.length;
+      const participantCount = uniSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0);
+      const checkedInTeams = uniSubmissions.filter(s => s.checkedIn).length;
+      const checkedInParticipants = uniSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0);
+      return {
+        name: uniName,
+        teams: teamCount,
+        participants: participantCount,
+        checkedInTeams,
+        checkedInParticipants
+      };
+    }).sort((a, b) => b.participants - a.participants);
+  }, [submissionsForUniversityDistribution]);
 
   // Dynamic calculations based on selected filters (module and/or university)
-  const targetSubmissions = submissions
-    .filter(s => {
-      const targetModule = modules.find(m => m.title === filterModule);
-      return filterModule === 'all' || s.moduleTitle === filterModule || (targetModule && s.moduleId === targetModule.id);
-    })
-    .filter(s => filterUniversity === 'all' || normalizeUniversityName(s.university) === filterUniversity);
+  const targetSubmissions = React.useMemo(() => {
+    return submissions
+      .filter(s => {
+        const targetModule = modules.find(m => m.title === filterModule);
+        return filterModule === 'all' || s.moduleTitle === filterModule || (targetModule && s.moduleId === targetModule.id);
+      })
+      .filter(s => filterUniversity === 'all' || normalizeUniversityName(s.university) === filterUniversity);
+  }, [submissions, filterModule, filterUniversity]);
 
-  const stats = {
-    // Basic review queue stats
-    total: targetSubmissions.length,
-    pending: targetSubmissions.filter(s => s.status === 'pending').length,
-    approved: targetSubmissions.filter(s => s.status === 'approved').length,
-    rejected: targetSubmissions.filter(s => s.status === 'rejected').length,
+  const stats = React.useMemo(() => {
+    return {
+      // Basic review queue stats
+      total: targetSubmissions.length,
+      pending: targetSubmissions.filter(s => s.status === 'pending').length,
+      approved: targetSubmissions.filter(s => s.status === 'approved').length,
+      rejected: targetSubmissions.filter(s => s.status === 'rejected').length,
 
-    // High precision event/financial statistics for the active view
-    teams: targetSubmissions.length,
-    participants: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0),
-    amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
-    amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
-    amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+      // High precision event/financial statistics for the active view
+      teams: targetSubmissions.length,
+      participants: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0),
+      amountApproved: targetSubmissions.filter(s => s.status === 'approved' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+      amountPending: targetSubmissions.filter(s => s.status === 'pending' && !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
+      amountTotal: targetSubmissions.filter(s => !s.exempted).reduce((sum, s) => sum + Number(s.totalFee || 0), 0),
 
-    // Live Event Day Check-In Venue Stats
-    checkedInTeams: targetSubmissions.filter(s => s.checkedIn).length,
-    checkedInParticipants: targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
-    checkInTeamPercentage: targetSubmissions.length ? Math.round((targetSubmissions.filter(s => s.checkedIn).length / targetSubmissions.length) * 100) : 0,
-    checkInParticipantPercentage: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0) ? Math.round((targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0) / targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0)) * 100) : 0,
-    
-    // Approved-only Check-in stats
-    approvedTeams: targetSubmissions.filter(s => s.status === 'approved').length,
-    approvedParticipants: targetSubmissions.filter(s => s.status === 'approved').reduce((sum, s) => sum + (s.members?.length || 0), 0),
-    approvedCheckedInTeams: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).length,
-    approvedCheckedInParticipants: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
-  };
+      // Live Event Day Check-In Venue Stats
+      checkedInTeams: targetSubmissions.filter(s => s.checkedIn).length,
+      checkedInParticipants: targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
+      checkInTeamPercentage: targetSubmissions.length ? Math.round((targetSubmissions.filter(s => s.checkedIn).length / targetSubmissions.length) * 100) : 0,
+      checkInParticipantPercentage: targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0) ? Math.round((targetSubmissions.filter(s => s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0) / targetSubmissions.reduce((sum, s) => sum + (s.members?.length || 0), 0)) * 100) : 0,
+      
+      // Approved-only Check-in stats
+      approvedTeams: targetSubmissions.filter(s => s.status === 'approved').length,
+      approvedParticipants: targetSubmissions.filter(s => s.status === 'approved').reduce((sum, s) => sum + (s.members?.length || 0), 0),
+      approvedCheckedInTeams: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).length,
+      approvedCheckedInParticipants: targetSubmissions.filter(s => s.status === 'approved' && s.checkedIn).reduce((sum, s) => sum + (s.members?.length || 0), 0),
+    };
+  }, [targetSubmissions]);
 
   if (loading) {
     return (
