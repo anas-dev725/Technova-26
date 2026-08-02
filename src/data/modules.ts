@@ -34,7 +34,30 @@ export interface Module {
   subGames?: SubGame[];
   isFilled?: boolean;
   targetAudience?: string;
+  certificateDriveLink?: string;
 }
+
+export const getCertificateDriveLink = (module: Module | string): string => {
+  const id = typeof module === 'string' ? module : module.id;
+  if (typeof module !== 'string' && module.certificateDriveLink) {
+    return module.certificateDriveLink;
+  }
+  // Default module drive links (admins can update these URLs anytime)
+  const defaultLinks: Record<string, string> = {
+    'fyp-warriors': 'https://drive.google.com/drive/folders/1FYP_Warriors_Certificates',
+    'startup-launchpad': 'https://drive.google.com/drive/folders/1Startup_Launchpad_Certificates',
+    'capture-the-flag': 'https://drive.google.com/drive/folders/1CTF_Certificates',
+    'agentic-ai-arena': 'https://drive.google.com/drive/folders/1Agentic_AI_Certificates',
+    'prompt-engineering': 'https://drive.google.com/drive/folders/1Prompt_Engineering_Certificates',
+    'datathon': 'https://drive.google.com/drive/folders/1Datathon_Certificates',
+    'maths-mania': 'https://drive.google.com/drive/folders/1Maths_Mania_Advanced_Certificates',
+    'maths-mania-advanced': 'https://drive.google.com/drive/folders/1Maths_Mania_Junior_Certificates',
+    'esports-competition': 'https://drive.google.com/drive/folders/1Esports_Certificates',
+    'speed-programming': 'https://drive.google.com/drive/folders/1Speed_Programming_Certificates',
+    'web-logo-designing': 'https://drive.google.com/drive/folders/1Web_Logo_Design_Certificates',
+  };
+  return defaultLinks[id] || `https://drive.google.com/drive/folders/${id}`;
+};
 
 export const modules: Module[] = [
   {
@@ -44,7 +67,7 @@ export const modules: Module[] = [
     icon: MonitorPlay,
     category: 'Innovation',
     mode: 'Squad',
-    prize: 'TBD',
+    prize: '80K PKR',
     isFilled: true,
     challengeName: 'The Final Defense',
     longDescription: 'The pinnacle of your academic and technical journey meets the ultimate pressure test. FYP Warriors is a specialized platform for final year students to pitch their capstone projects, software prototypes, or hardware inventions to industry veterans and experienced researchers.\n\nDefend your research, demonstrate your software architectures, and prove the real-world scalability of your solutions. This is not just a standard academic presentation: it is an evaluation by leading tech executives looking for exceptional talent, industrial innovation, and market readiness.',

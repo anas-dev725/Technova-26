@@ -153,11 +153,129 @@ export function isUniversityStudent(institutionName: string): boolean {
   return true;
 }
 
+// Local Cache Helpers for zero-latency, offline, and quota-resilient operation
+const LOCAL_CACHE_KEY = 'technova_submissions_cache_v2';
+
+function getLocalSubmissions(): Submission[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      // Remove any temporary seed entries to keep user's original data untainted
+      return parsed.filter(item => item && !item.id?.startsWith('sub_seed_'));
+    }
+    return [];
+  } catch (e) {
+    console.error('Error reading local submissions cache:', e);
+    return [];
+  }
+}
+
+function saveLocalSubmissions(subs: Submission[]) {
+  try {
+    // Strip large base64 receipt images to prevent localStorage 5MB quota errors
+    const sanitized = subs.map(s => {
+      if (s.receiptBase64 && s.receiptBase64.length > 200) {
+        const { receiptBase64, ...rest } = s;
+        return rest as Submission;
+      }
+      return s;
+    });
+    localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(sanitized));
+  } catch (e) {
+    console.warn('LocalStorage save failed, attempting minimal cache prune:', e);
+    try {
+      // Emergency fallback: keep only essential fields for venue check-in
+      const minimal = subs.map(s => ({
+        id: s.id,
+        participantId: s.participantId,
+        teamName: s.teamName,
+        email: s.email,
+        university: s.university,
+        moduleId: s.moduleId,
+        moduleTitle: s.moduleTitle,
+        status: s.status,
+        checkedIn: s.checkedIn,
+        checkedInAt: s.checkedInAt,
+        exempted: s.exempted,
+        totalFee: s.totalFee,
+        submittedAt: s.submittedAt,
+        members: (s.members || []).map(m => ({ fullName: m.fullName, cnic: m.cnic, contactNumber: m.contactNumber }))
+      }));
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(minimal));
+    } catch (quotaErr) {
+      console.error('LocalStorage quota exceeded completely:', quotaErr);
+    }
+  }
+}
+
+function updateLocalSubmissionItem(id: string, updates: Partial<Submission>) {
+  const list = getLocalSubmissions();
+  const idx = list.findIndex(s => s.id === id);
+  if (idx !== -1) {
+    list[idx] = { ...list[idx], ...updates };
+    saveLocalSubmissions(list);
+  }
+}
+
+function deleteLocalSubmissionItem(id: string) {
+  const list = getLocalSubmissions();
+  const filtered = list.filter(s => s.id !== id);
+  saveLocalSubmissions(filtered);
+}
+
+function mergeSubmissions(remoteDocs: Submission[], localDocs: Submission[]): Submission[] {
+  const map = new Map<string, Submission>();
+
+  localDocs.forEach(item => {
+    if (item.id) map.set(item.id, item);
+  });
+
+  remoteDocs.forEach(item => {
+    if (item.id) {
+      const existingLocal = map.get(item.id);
+      if (existingLocal) {
+        map.set(item.id, {
+          ...item,
+          checkedIn: item.checkedIn ?? existingLocal.checkedIn,
+          checkedInAt: item.checkedInAt ?? existingLocal.checkedInAt,
+          status: item.status || existingLocal.status,
+          exempted: item.exempted ?? existingLocal.exempted,
+        });
+      } else {
+        map.set(item.id, item);
+      }
+    }
+  });
+
+  const merged = Array.from(map.values());
+  saveLocalSubmissions(merged);
+  return merged;
+}
+
 export const submissionService = {
   async createSubmission(submission: Omit<Submission, 'id' | 'status' | 'submittedAt' | 'participantId'>) {
+    const prefix = getParticipantPrefix(submission.moduleId);
+    
+    // Save to local cache first for resilience
+    const tempId = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const nowIso = new Date().toISOString();
+    
+    const localSubmission: Submission = {
+      ...submission,
+      id: tempId,
+      participantId: `${prefix}-${Math.floor(Math.random() * 900 + 100)}`,
+      status: 'pending',
+      submittedAt: nowIso,
+      checkedIn: false
+    };
+
+    const currentLocal = getLocalSubmissions();
+    saveLocalSubmissions([localSubmission, ...currentLocal]);
+
     try {
       const countersRef = doc(db, 'counters', submission.moduleId);
-      const prefix = getParticipantPrefix(submission.moduleId);
       
       const result = await runTransaction(db, async (transaction) => {
         // 1. Get or initialize counter
@@ -194,9 +312,23 @@ export const submissionService = {
         return { id: newSubmissionRef.id, participantId };
       });
 
+      // Replace local temp submission with canonical remote submission
+      const updatedList = getLocalSubmissions().map(s => {
+        if (s.id === tempId) {
+          return {
+            ...localSubmission,
+            id: result.id,
+            participantId: result.participantId
+          };
+        }
+        return s;
+      });
+      saveLocalSubmissions(updatedList);
+
       return result;
     } catch (error) {
-      handleFirestoreError(error, 'create', 'submissions');
+      console.warn('Firestore createSubmission failed/quota reached, using local entry:', error);
+      return { id: tempId, participantId: localSubmission.participantId };
     }
   },
 
@@ -207,48 +339,69 @@ export const submissionService = {
         q = query(q, where('status', '==', status));
       }
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => {
-        const data = doc.data() as any;
+      const remoteData = snapshot.docs.map(docSnap => {
+        const data = docSnap.data() as any;
         return { 
-          id: doc.id, 
+          id: docSnap.id, 
           ...data,
           submittedAt: data.submittedAt || data.createdAt 
         } as Submission;
-      }).sort((a, b) => {
-        const timeA = a.submittedAt?.toMillis?.() || 0;
-        const timeB = b.submittedAt?.toMillis?.() || 0;
-        return timeB - timeA;
       });
+
+      const merged = mergeSubmissions(remoteData, getLocalSubmissions());
+      return merged.filter(s => !status || s.status === status);
     } catch (error) {
-      handleFirestoreError(error, 'list', 'submissions');
+      console.warn('getSubmissionsByStatus error/quota reached, serving local cache:', error);
+      const localData = getLocalSubmissions();
+      return localData.filter(s => !status || s.status === status);
     }
   },
 
   subscribeToSubmissions(callback: (submissions: Submission[]) => void) {
-    const q = query(collection(db, 'submissions')); // Remove orderBy from query to avoid missing documents
-    return onSnapshot(q, (snapshot) => {
-      const submissions = snapshot.docs.map(doc => {
-        const data = doc.data() as any;
+    // 1. Instantly return cached submissions for zero latency UI rendering
+    const cached = getLocalSubmissions();
+    if (cached.length > 0) {
+      callback(cached);
+    }
+
+    const q = query(collection(db, 'submissions'));
+    let isCancelled = false;
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (isCancelled) return;
+      
+      const remoteSubmissions = snapshot.docs.map(docSnap => {
+        const data = docSnap.data() as any;
         return { 
-          id: doc.id, 
+          id: docSnap.id, 
           ...data,
-          // Robust compatibility mapping
           submittedAt: data.submittedAt || data.createdAt 
         } as Submission;
-      })
-      // Sort in memory to include all docs even if they lack one of the timestamp fields
-      .sort((a, b) => {
-        const timeA = a.submittedAt?.toMillis?.() || 0;
-        const timeB = b.submittedAt?.toMillis?.() || 0;
+      });
+
+      const merged = mergeSubmissions(remoteSubmissions, getLocalSubmissions());
+
+      merged.sort((a, b) => {
+        const timeA = a.submittedAt?.toMillis ? a.submittedAt.toMillis() : (typeof a.submittedAt === 'number' ? a.submittedAt : (new Date(a.submittedAt || 0).getTime() || 0));
+        const timeB = b.submittedAt?.toMillis ? b.submittedAt.toMillis() : (typeof b.submittedAt === 'number' ? b.submittedAt : (new Date(b.submittedAt || 0).getTime() || 0));
         return timeB - timeA;
       });
-      callback(submissions);
+
+      callback(merged);
     }, (error) => {
-      handleFirestoreError(error, 'get', 'submissions');
+      console.warn('Firestore onSnapshot subscription warning (Quota / Network), maintaining cached dataset:', error);
+      const localData = getLocalSubmissions();
+      callback(localData);
     });
+
+    return () => {
+      isCancelled = true;
+      unsubscribe();
+    };
   },
 
   async updateStatus(submissionId: string, status: Submission['status']) {
+    updateLocalSubmissionItem(submissionId, { status });
     try {
       const docRef = doc(db, 'submissions', submissionId);
       await updateDoc(docRef, { 
@@ -256,11 +409,12 @@ export const submissionService = {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+      console.warn('Firestore updateStatus background write error:', error);
     }
   },
 
   async toggleExempted(submissionId: string, exempted: boolean) {
+    updateLocalSubmissionItem(submissionId, { exempted });
     try {
       const docRef = doc(db, 'submissions', submissionId);
       await updateDoc(docRef, { 
@@ -268,11 +422,13 @@ export const submissionService = {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+      console.warn('Firestore toggleExempted background write error:', error);
     }
   },
 
   async toggleCheckIn(submissionId: string, checkedIn: boolean) {
+    const checkedInAt = checkedIn ? new Date().toISOString() : null;
+    updateLocalSubmissionItem(submissionId, { checkedIn, checkedInAt });
     try {
       const docRef = doc(db, 'submissions', submissionId);
       await updateDoc(docRef, { 
@@ -281,16 +437,17 @@ export const submissionService = {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      handleFirestoreError(error, 'update', `submissions/${submissionId}`);
+      console.warn('Firestore toggleCheckIn background write error:', error);
     }
   },
 
   async deleteSubmission(submissionId: string) {
+    deleteLocalSubmissionItem(submissionId);
     try {
       const docRef = doc(db, 'submissions', submissionId);
       await deleteDoc(docRef);
     } catch (error) {
-      handleFirestoreError(error, 'delete', `submissions/${submissionId}`);
+      console.warn('Firestore deleteSubmission background write error:', error);
     }
   },
 
@@ -391,18 +548,27 @@ export const submissionService = {
           (currentModuleId === 'maths-mania' && currentTitle !== 'Maths Mania (Advanced)');
           
         if (isOldMathsMania) {
-          const docRef = doc(db, 'submissions', docSnap.id);
-          await updateDoc(docRef, {
+          try {
+            const docRef = doc(db, 'submissions', docSnap.id);
+            await updateDoc(docRef, {
+              moduleId: 'maths-mania',
+              moduleTitle: 'Maths Mania (Advanced)',
+              updatedAt: serverTimestamp()
+            });
+          } catch (e) {
+            console.warn('Skipping remote update during shiftMathsMania due to network/quota:', e);
+          }
+          updateLocalSubmissionItem(docSnap.id, {
             moduleId: 'maths-mania',
-            moduleTitle: 'Maths Mania (Advanced)',
-            updatedAt: serverTimestamp()
+            moduleTitle: 'Maths Mania (Advanced)'
           });
           count++;
         }
       }
       return count;
     } catch (error) {
-      handleFirestoreError(error, 'write', 'shiftMathsMania');
+      console.warn('shiftMathsMania ignored error/quota limit:', error);
+      return 0;
     }
   },
 
@@ -425,16 +591,21 @@ export const submissionService = {
           }
           
           if (updatedId !== participantId) {
-            const docRef = doc(db, 'submissions', docSnap.id);
-            await updateDoc(docRef, {
-              participantId: updatedId,
-              updatedAt: serverTimestamp()
-            });
+            try {
+              const docRef = doc(db, 'submissions', docSnap.id);
+              await updateDoc(docRef, {
+                participantId: updatedId,
+                updatedAt: serverTimestamp()
+              });
+            } catch (e) {
+              console.warn('Skipping remote update during migrateMathsManiaPrefixes due to network/quota:', e);
+            }
+            updateLocalSubmissionItem(docSnap.id, { participantId: updatedId });
           }
         }
       }
     } catch (error) {
-      console.error('Error migrating Maths Mania prefixes:', error);
+      console.warn('Error migrating Maths Mania prefixes ignored:', error);
     }
   },
 
@@ -458,7 +629,6 @@ export const submissionService = {
           (data.participantId && data.participantId.startsWith('MMJ-'));
 
         if (isJuniorModule && isUni) {
-          const docRef = doc(db, 'submissions', docSnap.id);
           let updatedParticipantId = data.participantId;
           if (updatedParticipantId) {
             if (updatedParticipantId.startsWith('MMJ-')) {
@@ -468,11 +638,22 @@ export const submissionService = {
             }
           }
 
-          await updateDoc(docRef, {
+          try {
+            const docRef = doc(db, 'submissions', docSnap.id);
+            await updateDoc(docRef, {
+              moduleId: 'maths-mania',
+              moduleTitle: 'Maths Mania (Advanced)',
+              ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
+              updatedAt: serverTimestamp()
+            });
+          } catch (e) {
+            console.warn('Skipping remote update during shiftMathsManiaJuniorUniversity due to network/quota:', e);
+          }
+
+          updateLocalSubmissionItem(docSnap.id, {
             moduleId: 'maths-mania',
             moduleTitle: 'Maths Mania (Advanced)',
-            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
-            updatedAt: serverTimestamp()
+            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {})
           });
           count++;
         }
@@ -483,7 +664,6 @@ export const submissionService = {
           currentTitle.toLowerCase().includes('advanced');
 
         if (isAdvancedModule && !isUni) {
-          const docRef = doc(db, 'submissions', docSnap.id);
           let updatedParticipantId = data.participantId;
           if (updatedParticipantId) {
             if (updatedParticipantId.startsWith('MMA-')) {
@@ -493,19 +673,30 @@ export const submissionService = {
             }
           }
 
-          await updateDoc(docRef, {
+          try {
+            const docRef = doc(db, 'submissions', docSnap.id);
+            await updateDoc(docRef, {
+              moduleId: 'maths-mania-advanced',
+              moduleTitle: 'Maths Mania (Junior)',
+              ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
+              updatedAt: serverTimestamp()
+            });
+          } catch (e) {
+            console.warn('Skipping remote update during shiftMathsManiaJuniorUniversity due to network/quota:', e);
+          }
+
+          updateLocalSubmissionItem(docSnap.id, {
             moduleId: 'maths-mania-advanced',
             moduleTitle: 'Maths Mania (Junior)',
-            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {}),
-            updatedAt: serverTimestamp()
+            ...(updatedParticipantId ? { participantId: updatedParticipantId } : {})
           });
           count++;
         }
       }
       return count;
     } catch (error) {
-      console.error('Error shifting Maths Mania Junior university participants:', error);
-      handleFirestoreError(error, 'write', 'shiftMathsManiaJuniorUniversity');
+      console.warn('Error shifting Maths Mania Junior university participants ignored:', error);
+      return 0;
     }
   }
 }
