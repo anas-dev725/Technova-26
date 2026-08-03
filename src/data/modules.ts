@@ -44,11 +44,11 @@ export const getCertificateDriveLink = (module: Module | string): string => {
   }
   // Default module drive links (admins can update these URLs anytime)
   const defaultLinks: Record<string, string> = {
-    'fyp-warriors': 'https://drive.google.com/drive/folders/1FYP_Warriors_Certificates',
+    'fyp-warriors': 'https://drive.google.com/drive/folders/1NlMLX2yEvKCsEArI-Y5LNMwNRGPZWuB6',
     'startup-launchpad': 'https://drive.google.com/drive/folders/1Startup_Launchpad_Certificates',
     'capture-the-flag': 'https://drive.google.com/drive/folders/1CTF_Certificates',
-    'agentic-ai-arena': 'https://drive.google.com/drive/folders/1Agentic_AI_Certificates',
-    'prompt-engineering': 'https://drive.google.com/drive/folders/1Prompt_Engineering_Certificates',
+    'agentic-ai-arena': 'https://drive.google.com/drive/folders/1AifwtpU-RlZrPpZow5NRpF7hO2qLSrK2',
+    'prompt-engineering': 'https://drive.google.com/drive/folders/1PEAps2RbvFNmZPwUUWzyIKVNc_k9VGvK',
     'datathon': 'https://drive.google.com/drive/folders/1Datathon_Certificates',
     'maths-mania': 'https://drive.google.com/drive/folders/1Maths_Mania_Advanced_Certificates',
     'maths-mania-advanced': 'https://drive.google.com/drive/folders/1Maths_Mania_Junior_Certificates',
@@ -69,6 +69,7 @@ export const modules: Module[] = [
     mode: 'Squad',
     prize: '80K PKR',
     isFilled: true,
+    certificateDriveLink: 'https://drive.google.com/drive/folders/1NlMLX2yEvKCsEArI-Y5LNMwNRGPZWuB6',
     challengeName: 'The Final Defense',
     longDescription: 'The pinnacle of your academic and technical journey meets the ultimate pressure test. FYP Warriors is a specialized platform for final year students to pitch their capstone projects, software prototypes, or hardware inventions to industry veterans and experienced researchers.\n\nDefend your research, demonstrate your software architectures, and prove the real-world scalability of your solutions. This is not just a standard academic presentation: it is an evaluation by leading tech executives looking for exceptional talent, industrial innovation, and market readiness.',
     skills: ['System Architecture', 'Technical Defense', 'Academic Research', 'Product Scalability'],
@@ -158,6 +159,7 @@ export const modules: Module[] = [
     mode: 'Duo',
     prize: 'Upto 70K PKR',
     isFilled: true,
+    certificateDriveLink: 'https://drive.google.com/drive/folders/1AifwtpU-RlZrPpZow5NRpF7hO2qLSrK2',
     challengeName: 'The Trust Arena',
     longDescription: 'Build agents that think. Let them compete. Watch trust emerge. The Trust Arena is a multi-agent strategy tournament built on the Prisoner\'s Dilemma, focusing on the foundational problems of cooperation, deception, and emergent trust in AI systems.\n\nYou design and engineer an intelligent agent that perceives its environment, reasons autonomously, communicates with opponents, and decides when to cooperate and when to betray.\n\nEvery round, every decision, every message shapes the outcome. The arena rewards those who read the room.\n\nPerceive, Reason, Communicate, and Act.',
     skills: ['Logic and Automation', 'Strategic Decision Making', 'Game Theory', 'Behavioral Design'],
@@ -217,6 +219,7 @@ export const modules: Module[] = [
     mode: 'Individual',
     prize: 'TBD',
     isFilled: true,
+    certificateDriveLink: 'https://drive.google.com/drive/folders/1PEAps2RbvFNmZPwUUWzyIKVNc_k9VGvK',
     challengeName: 'Crack the Code',
     longDescription: 'The AI does not want to talk. Your job is to make it. Crack the Code is an AI adversarial challenge where you go head-to-head against a language model that has been given a secret and told never to reveal it.\n\nYour only weapon is language. Through careful reasoning, creative misdirection, and precision prompt construction, you must engineer your way past the AI\'s defenses and extract what lies beneath.\n\nThree phases with escalating resistance.\n\nOne objective: make it talk, probe, engineer, and conquer.',
     skills: ['AI Communication', 'Creative Communication', 'Logical Reasoning', 'Lateral Thinking'],
