@@ -45,7 +45,7 @@ export const getCertificateDriveLink = (module: Module | string): string => {
   // Default module drive links (admins can update these URLs anytime)
   const defaultLinks: Record<string, string> = {
     'fyp-warriors': 'https://drive.google.com/drive/folders/1NlMLX2yEvKCsEArI-Y5LNMwNRGPZWuB6',
-    'startup-launchpad': 'https://drive.google.com/drive/folders/1Startup_Launchpad_Certificates',
+    'startup-launchpad': 'https://drive.google.com/drive/folders/1-5Mg0huKWrHflqM0i0mqgKK1_iTWIgn_',
     'capture-the-flag': 'https://drive.google.com/drive/folders/13YQWy4kcIQGZ0_mmjuafB9DbCEUWcRxE',
     'agentic-ai-arena': 'https://drive.google.com/drive/folders/1AifwtpU-RlZrPpZow5NRpF7hO2qLSrK2',
     'prompt-engineering': 'https://drive.google.com/drive/folders/1PEAps2RbvFNmZPwUUWzyIKVNc_k9VGvK',
@@ -101,6 +101,7 @@ export const modules: Module[] = [
     mode: 'Squad',
     prize: 'Upto 100K PKR',
     isFilled: true,
+    certificateDriveLink: 'https://drive.google.com/drive/folders/1-5Mg0huKWrHflqM0i0mqgKK1_iTWIgn_',
     challengeName: 'The Pitch Arena',
     longDescription: 'Do you have a game-changing product, prototype, or software solution waiting to be discovered? Startup Launchpad is the ultimate arena to pitch your vision. Here, you will showcase your innovative concepts, functional minimum viable products (MVPs), or full-fledged software directly to our panel of seasoned judges and industry mentors.\n\nFlesh out your business model, prepare your decks, and prepare to deliver a high-energy presentation. Convince the judges that your team has what it takes to scale, disrupt, and capture the market.',
     skills: ['Entrepreneurial Pitching', 'Product Strategy', 'Business Modeling', 'Persuasive Delivery'],
