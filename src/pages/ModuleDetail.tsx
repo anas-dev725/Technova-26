@@ -138,26 +138,6 @@ export default function ModuleDetail() {
           Back to Modules
         </button>
 
-        {module.isFilled && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-6 rounded-[2rem] bg-red-500/10 border border-red-500/20 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left justify-between"
-          >
-            <div className="flex flex-col sm:flex-row items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-red-500/20 flex items-center justify-center shrink-0">
-                <AlertCircle className="w-6 h-6 text-red-500" />
-              </div>
-              <div>
-                <h4 className="text-lg font-black text-red-600 dark:text-red-400 uppercase tracking-wide">Registrations Closed</h4>
-                <p className="text-sm font-semibold text-gray-650 dark:text-gray-300">
-                  All available team slots for <strong className="font-bold">{module.title}</strong> have been completely filled up.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-8">
@@ -327,19 +307,12 @@ export default function ModuleDetail() {
                                 <Trophy className="w-4 h-4 text-amber-500" />
                                 <span className="text-xs font-bold text-amber-500 uppercase tracking-widest">{game.prize} Prize Pool</span>
                               </div>
-                              {module.isFilled ? (
-                                <span className="ml-auto text-xs font-bold text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 uppercase tracking-wider">
-                                  Slots Filled
-                                </span>
-                              ) : (
-                                <Link 
-                                  to={`/register/${module.id}?game=${game.id}`}
-                                  className="ml-auto text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 group/link"
-                                >
-                                  Register now
-                                  <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
-                                </Link>
-                              )}
+                              <button
+                                disabled
+                                className="ml-auto text-xs font-bold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/5 px-3.5 py-1.5 rounded-lg cursor-not-allowed opacity-70"
+                              >
+                                Register Now
+                              </button>
                             </div>
                           </div>
                         </motion.div>
@@ -654,22 +627,12 @@ export default function ModuleDetail() {
                   </div>
                 </div>
 
-                {module.isFilled ? (
-                  <button
-                    disabled
-                    className="w-full h-16 bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-2xl font-bold flex flex-col items-center justify-center cursor-not-allowed opacity-80"
-                  >
-                    <span className="text-sm uppercase tracking-wider font-black">Slots Filled</span>
-                    <span className="text-[10px] font-bold tracking-tight uppercase opacity-70">Registrations Closed</span>
-                  </button>
-                ) : (
-                  <Link
-                    to={`/register/${module.id}?mode=${selectedMode}`}
-                    className="w-full h-16 bg-blue-600 text-white rounded-2xl font-bold flex items-center justify-center hover:bg-blue-500 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-600/20"
-                  >
-                    Register Now
-                  </Link>
-                )}
+                <button
+                  disabled
+                  className="w-full h-16 bg-gray-200/80 dark:bg-white/10 text-gray-400 dark:text-gray-500 border border-gray-300/30 dark:border-white/10 rounded-2xl font-extrabold text-sm uppercase tracking-wider flex items-center justify-center cursor-not-allowed opacity-70 select-none"
+                >
+                  Register Now
+                </button>
                 
                 <p className="text-center mt-4 text-xs text-gray-500 font-medium flex items-center justify-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />

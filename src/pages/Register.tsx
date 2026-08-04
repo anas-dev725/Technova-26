@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2, Check, Server, GraduationCap } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Upload, X, User, ShieldCheck, Camera, Gamepad2, Check, Server, GraduationCap, Sparkles } from 'lucide-react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -389,15 +389,15 @@ export default function Register() {
           </button>
           
           <div className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-[3rem] p-12 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-red-500/5 rounded-full blur-2xl" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-blue-500/5 rounded-full blur-2xl" />
             
-            <div className="w-20 h-20 bg-red-500/10 dark:bg-red-500/20 rounded-[1.5rem] border border-red-500/20 flex items-center justify-center mx-auto mb-6">
-              <AlertCircle className="w-10 h-10 text-red-500" />
+            <div className="w-20 h-20 bg-blue-500/10 dark:bg-blue-500/20 rounded-[1.5rem] border border-blue-500/20 flex items-center justify-center mx-auto mb-6">
+              <Sparkles className="w-10 h-10 text-blue-500" />
             </div>
             
-            <h2 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-4">REGISTRATIONS CLOSED</h2>
+            <h2 className="text-3xl font-display font-black text-gray-900 dark:text-white mb-4">THANK YOU FOR YOUR RESPONSE!</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-8 leading-relaxed">
-              Registrations for TechNova '26 are now officially closed as we have received maximum responses across all modules. Thank you for the overwhelming support and enthusiasm!
+              TechNova '26 has officially concluded. Thank you for your overwhelming support and enthusiasm! See you in the next editions.
             </p>
             
             <button

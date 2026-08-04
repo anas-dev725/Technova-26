@@ -265,14 +265,6 @@ export default function Home() {
                 const TeamIcon = mod.mode === 'Individual' ? User : mod.mode === 'Duo' ? Users : UsersRound;
                 return (
                   <div key={`${mod.id}-${i}`} className="w-[350px] shrink-0 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group relative">
-                    {mod.isFilled && (
-                      <div className="absolute top-0 left-6 z-10">
-                        <span className="px-3.5 py-1 rounded-b-xl bg-red-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-red-600/30 flex items-center gap-1.5 border-b border-x border-red-400/30">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                          Slots Filled
-                        </span>
-                      </div>
-                    )}
                     {mod.targetAudience && (
                       <div className="absolute top-0 right-6 z-10">
                         <span className="px-3.5 py-1 rounded-b-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest shadow-md shadow-indigo-600/30 flex items-center gap-1.5 border-b border-x border-indigo-400/30">
@@ -583,18 +575,24 @@ export default function Home() {
             <div className="absolute -bottom-12 -right-12 w-72 h-72 bg-white/5 rounded-full blur-3xl pointer-events-none" />
             
             <div className="relative z-10 flex flex-col items-center">
-              {/* Registrations Closed Title */}
+              {/* Thank You Title */}
               <h2 className="text-3xl sm:text-5xl lg:text-6xl font-sans font-black text-white mb-6 tracking-tight leading-tight select-none">
-                Registrations Closed!
+                Thank You For Your Response!
               </h2>
 
               {/* Description Paragraph */}
               <p className="text-blue-50/90 text-sm sm:text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed font-medium select-none">
-                Registrations for TechNova '26 are officially closed as we have received maximum responses across all modules. Thank you to everyone who registered!
+                TechNova '26 has officially concluded. Thank you to all participants, mentors, and partners for making this edition remarkable! See you in the next editions.
               </p>
 
-              {/* View Modules Button */}
-              <div className="w-full flex justify-center">
+              {/* Disabled Register Button & View Modules Button */}
+              <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                  disabled
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 rounded-full bg-white/20 text-white/70 font-extrabold text-sm sm:text-base cursor-not-allowed border border-white/20 font-sans opacity-70"
+                >
+                  Register Now
+                </button>
                 <motion.div
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}

@@ -108,15 +108,6 @@ export default function Modules() {
                   className="group relative bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 rounded-[2.5rem] p-8 hover:bg-gray-50 dark:hover:bg-[#151515] transition-all duration-500 flex flex-col h-full shadow-lg hover:shadow-2xl"
                 >
                   <Link to={`/modules/${mod.id}`} className="absolute inset-0 z-10" />
-                  
-                  {mod.isFilled && (
-                    <div className="absolute top-0 right-0 z-20">
-                      <div className="bg-red-600 text-white text-[10px] font-black uppercase tracking-widest py-1.5 px-4 rounded-bl-2xl rounded-tr-[2.5rem] shadow-lg shadow-red-600/30 flex items-center gap-1.5 border-b border-l border-red-400/30">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                        Slots Filled
-                      </div>
-                    </div>
-                  )}
 
                   {mod.targetAudience && (
                     <div className="absolute top-0 left-0 z-20">
@@ -152,11 +143,6 @@ export default function Modules() {
                           {mod.targetAudience}
                         </span>
                       )}
-                      {mod.isFilled && (
-                        <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-500/20 flex items-center gap-1">
-                          Slots Filled
-                        </span>
-                      )}
                     </div>
                     <h3 className="text-2xl font-display font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
                       {mod.title}
@@ -174,12 +160,8 @@ export default function Modules() {
                       </div>
                     </div>
                     
-                    <div className={`w-full h-12 rounded-xl font-bold text-sm flex items-center justify-center transition-all duration-300 ${
-                      mod.isFilled 
-                        ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20' 
-                        : 'bg-blue-600/5 dark:bg-blue-600/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white'
-                    }`}>
-                      {mod.isFilled ? 'Slots Filled (View)' : 'View Details'}
+                    <div className="w-full h-12 rounded-xl font-bold text-sm flex items-center justify-center transition-all duration-300 bg-blue-600/5 dark:bg-blue-600/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white">
+                      View Details
                     </div>
                   </div>
                 </motion.div>

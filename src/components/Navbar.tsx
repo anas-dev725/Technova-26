@@ -122,17 +122,13 @@ export default function Navbar() {
                 </AnimatePresence>
               </button>
 
-              {/* Dynamic Registrations Closed CTA button */}
-              <Link
-                to="/modules"
-                className="relative flex items-center gap-1.5 h-10 px-5 rounded-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_4px_15px_rgba(225,29,72,0.25)] hover:shadow-[0_8px_25px_rgba(225,29,72,0.4)] active:scale-95 group overflow-hidden"
+              {/* Disabled Register Now CTA button */}
+              <button
+                disabled
+                className="relative flex items-center gap-1.5 h-10 px-5 rounded-full bg-gray-200/80 dark:bg-white/10 text-gray-400 dark:text-gray-500 font-bold text-xs uppercase tracking-widest cursor-not-allowed border border-gray-300/30 dark:border-white/10 select-none opacity-70"
               >
-                <span className="relative z-10 flex items-center gap-1.5">
-                  Registrations Closed
-                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-rose-500 to-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </Link>
+                Register Now
+              </button>
             </div>
 
             {/* Mobile Interaction Bars */}
@@ -195,14 +191,12 @@ export default function Navbar() {
                   );
                 })}
                 
-                <Link
-                  to="/modules"
-                  className="mt-3 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white text-center font-bold text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(225,29,72,0.3)] hover:shadow-lg transition-all"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                <button
+                  disabled
+                  className="mt-3 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gray-200/80 dark:bg-white/10 text-gray-400 dark:text-gray-500 font-bold text-xs uppercase tracking-widest cursor-not-allowed border border-gray-300/30 dark:border-white/10 select-none opacity-70"
                 >
-                  Registrations Closed
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </Link>
+                  Register Now
+                </button>
               </div>
             </motion.div>
           </div>
