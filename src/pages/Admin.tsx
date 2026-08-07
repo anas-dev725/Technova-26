@@ -276,6 +276,10 @@ export function detectMultiModuleParticipants(submissionsList: Submission[]): Mu
   return results.sort((a, b) => b.uniqueModules.length - a.uniqueModules.length || b.totalRegistrations - a.totalRegistrations);
 }
 
+// SET THIS TO 'true' TO DISABLE DATA DISPLAY AND PREVENT FIREBASE QUOTA ERRORS.
+// SET THIS TO 'false' WHEN YOU ARE READY TO RE-ENABLE DATA DISPLAY AGAIN.
+const IS_FIREBASE_QUOTA_EXCEEDED = true;
+
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -356,6 +360,11 @@ export default function Admin() {
   }, []);
 
   const loadSubmissions = () => {
+    if (IS_FIREBASE_QUOTA_EXCEEDED) {
+      setSubmissions([]);
+      return () => {};
+    }
+
     // Silently auto-migrate Maths Mania prefixes and shift Junior university participants to Advanced module
     submissionService.migrateMathsManiaPrefixes().catch(err => {
       console.warn('Auto-migrate Maths Mania prefixes notice:', err);
@@ -969,8 +978,29 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* Firebase Quota Alert Strip */}
+        {IS_FIREBASE_QUOTA_EXCEEDED && (
+          <motion.div 
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 px-6 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 flex items-center justify-between gap-3 text-xs sm:text-sm font-semibold shadow-sm my-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0 text-amber-500">
+                <AlertCircle className="w-4 h-4 animate-pulse" />
+              </div>
+              <div>
+                <span className="font-bold text-amber-800 dark:text-amber-200">Quota Notice:</span> You have exceeded the Firebase quota limit, the data can't be displayed.
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex px-3 py-1 rounded-full bg-amber-500/20 text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-300 shrink-0 border border-amber-500/30">
+              Quota Exceeded
+            </span>
+          </motion.div>
+        )}
+
         {/* Live Venue Desk Banner & Quick Stats */}
-        {activeTab === 'venue-desk' && (
+            {activeTab === 'venue-desk' && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
